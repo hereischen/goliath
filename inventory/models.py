@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.db import models
 from django.contrib.postgres.fields import JSONField
+from django.core.exceptions import ValidationError
+from django.core.exceptions import NON_FIELD_ERRORS
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -84,3 +86,18 @@ class Inventory(models.Model):
     def __unicode__(self):
         return unicode("库存: %s %s 标价：%s 数量：%s." % (
             self.merchant, self.merchandise, self.price, self.quantity))
+
+    def validate_unique(self, *args, **kwargs):
+        # 商户与商品在库存中唯一
+        super(Inventory, self).validate_unique(*args, **kwargs)
+        if not self.id:
+            if (self.__class__.objects.filter(
+                merchandise=self.merchandise,
+                    merchant=self.merchant).exists()):
+                raise ValidationError(
+                    {NON_FIELD_ERRORS: [('该商户商品的库存已经存在.'), ], }
+                )
+
+    def save(self, *args, **kwargs):
+        self.validate_unique()
+        super(Inventory, self).save(*args, **kwargs)
