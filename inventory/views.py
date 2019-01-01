@@ -5,14 +5,10 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.http import HttpResponseBadRequest
 
-# from .models import (Brand,
-#                      Category,
-#                      Merchandise,
-#                      Inventory)
-# from .serializers import (BrandSerializer,
-#                           CategorySerializer,)
+from .serializers import (UpdateInventorySerializer,)
 from .forms import (BCMForm,
                     InventoryForm)
+from .models import Inventory
 
 
 @api_view(['GET'])
@@ -33,3 +29,23 @@ def invlist(request, merchant):
         serializer = form.list_inventory()
         return Response(serializer.data)
     return HttpResponseBadRequest('Invalid Inventory Request')
+
+
+@api_view(['POST'])
+def update_inventory(request):
+    """更新库存的view."""
+    serializer = UpdateInventorySerializer(data=request.data)
+    if serializer.is_valid():
+        if not serializer.validated_data['add']:
+            # 从库存借出, 减
+            return Response(serializer.borrow_from_inventory())
+
+        if(Inventory.objects.filter(
+            merchandise=serializer.validated_data['merchandise_id'],
+            merchant=serializer.validated_data['current_merchant_id'])
+                .exists()):
+                # 库存项已存在, 增
+                return Response(serializer.add_to_inventory())
+        # 创建新的库存项
+        return Response(serializer.create_new_inventory())
+    return HttpResponseBadRequest('Invalid update Inventory Request')
