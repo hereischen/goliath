@@ -48,11 +48,12 @@ class UpdateInventorySerializer(serializers.Serializer):
     current_merchant_id = serializers.CharField(required=True)
     merchandise_id = serializers.IntegerField(required=True)
     quantity = serializers.IntegerField(required=True)
-    price = serializers.DecimalField(required=True,
+    # optional
+    price = serializers.DecimalField(required=False,
                                      max_digits=11, decimal_places=2)
-
-    add = serializers.BooleanField(default=True)
+    deposit = serializers.BooleanField(default=True)
     remarks = serializers.CharField(required=False)
+    withdraw_from = serializers.JSONField(required=False)
 
     def create_new_inventory(self):
         try:
@@ -62,6 +63,8 @@ class UpdateInventorySerializer(serializers.Serializer):
                 id=self.validated_data['current_merchant_id'])
         except ObjectDoesNotExist:
             return {"result": "fail"}
+        if not self.validated_data.get("price"):
+            return {"result": "fail"}
         Inventory.objects.create(merchandise=md,
                                  merchant=cm,
                                  quantity=self.validated_data['quantity'],
@@ -70,18 +73,45 @@ class UpdateInventorySerializer(serializers.Serializer):
                                  )
         return {"result": "create"}
 
-    def add_to_inventory(self):
+    def deposit_to_inventory(self):
         try:
             inv = Inventory.objects.get(
                 merchandise=self.validated_data['merchandise_id'],
                 merchant=self.validated_data['current_merchant_id'])
         except ObjectDoesNotExist:
             return {"result": "fail"}
-        inv.price = self.validated_data['price']
+        if self.validated_data.get("price"):
+            inv.price = self.validated_data['price']
         inv.quantity += self.validated_data['quantity']
-        inv.remarks = self.validated_data.get('remarks')
+        remarks = self.validated_data.get('remarks')
+        if remarks:
+            inv.remarks += ("=>" + remarks)
         inv.save()
         return {"result": "success"}
 
-    def borrow_from_inventory(self):
+    def withdraw_from_inventory(self):
+        try:
+            current_inv = Inventory.objects.get(
+                merchandise=self.validated_data['merchandise_id'],
+                merchant=self.validated_data['current_merchant_id'])
+        except ObjectDoesNotExist:
+            return {"result": "fail", "details": "找不到您的库存"}
+
+        if self.validated_data['quantity'] > current_inv.quantity:
+            return {"result": "fail", "details": "您的库存不足"}
+
+        for item in self.validated_data.get('withdraw_from'):
+            try:
+                withdraw_inv = Inventory.objects.get(
+                    merchandise=self.validated_data['merchandise_id'],
+                    merchant=item['merchant'])
+            except ObjectDoesNotExist:
+                return {"result": "fail", "details": "找不到对应商户的库存"}
+            if int(item['quantity']) > withdraw_inv.quantity:
+                return {"result": "fail", "details": "对应商户的库存不足"}
+            withdraw_inv.quantity -= int(item['quantity'])
+            remarks = item.get('remarks')
+            if remarks:
+                withdraw_inv.remarks += ("=>" + remarks)
+            withdraw_inv.save()
         return {"result": "success"}

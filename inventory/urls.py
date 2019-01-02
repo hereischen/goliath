@@ -16,5 +16,5 @@ urlpatterns = [
     url(r'^inventories/merchants/(?P<merchant>0|\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b)/$',
         invlist, name='invlist'),
     # 修改库存, 新建,增,减
-    url(r'inventories/update/$', update_inventory, name='update_inventory'),
+    url(r'^inventories/update/$', update_inventory, name='update_inventory'),
 ]
