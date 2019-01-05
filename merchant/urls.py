@@ -4,8 +4,7 @@ from django.conf.urls import url
 
 from .views import (LoginView,
                     LogoutView,
-                    RegisterView,
-                    MerchantListView)
+                    RegisterView)
 
 app_name = 'merchant'
 urlpatterns = [
@@ -15,6 +14,4 @@ urlpatterns = [
     url(r'^logout/', LogoutView.as_view(), name='logout'),
     # 注册
     url(r'^register/', RegisterView.as_view(), name='register'),
-    # 列出所有注册merchant
-    url(r'^list/', MerchantListView.as_view(), name='merchant_list'),
 ]

@@ -7,12 +7,9 @@ from django.contrib.auth import (authenticate,
                                  login,
                                  logout,
                                  hashers)
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from .models import Merchant
 from .forms import LoginForm, RegisterForm
-from .serializers import MerchantSerializer
 
 
 class LoginView(View):
@@ -78,14 +75,3 @@ class RegisterView(View):
             return redirect(to='merchant:login')
         return render(request, 'register.html',
                       {'message': '验证码错误！', 'forms': forms})
-
-
-class MerchantListView(APIView):
-    """返回所有合作商户基本信息."""
-
-    def get(self, request, format=None):
-        merchants = (Merchant.objects.all()
-                                     .exclude(is_staff=True)
-                                     .exclude(is_superuser=True))
-        serializer = MerchantSerializer(merchants, many=True)
-        return Response(serializer.data)

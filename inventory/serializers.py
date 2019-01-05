@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
 from merchant.models import Merchant
+from merchant.serializers import MerchantSerializer
 from .models import (Brand,
                      Category,
                      Merchandise,
@@ -37,10 +38,11 @@ class MerchandiseSerializer(serializers.ModelSerializer):
 
 class InventorySerializer(serializers.ModelSerializer):
     merchandise = MerchandiseSerializer(many=False, read_only=True)
+    merchant = MerchantSerializer(many=False, read_only=True)
 
     class Meta:
         model = Inventory
-        fields = ('id', 'quantity', 'merchandise', 'modified_date')
+        fields = ('id', 'merchant', 'quantity', 'merchandise', 'modified_date')
 
 
 class UpdateInventorySerializer(serializers.Serializer):

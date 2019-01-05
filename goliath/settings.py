@@ -27,7 +27,7 @@ SECRET_KEY = '&yn728!+a@%xt6p&-b8dc2&8m#y15fq!htwrg#@gra4w0xuvdg'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -140,4 +140,8 @@ SUIT_CONFIG = {
     'ADMIN_NAME': 'Goliath 共享库存',
     'SHOW_REQUIRED_ASTERISK': True,
     'CONFIRM_UNSAVED_CHANGES': True
+}
+
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "goliath.pagination.StandardPagination",
 }

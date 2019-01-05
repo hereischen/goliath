@@ -1,34 +1,97 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.db.models import Sum
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
+from rest_framework.generics import ListAPIView
 
-from .serializers import (UpdateInventorySerializer,)
-from .forms import (BCMForm,
-                    InventoryForm)
-from .models import Inventory
-
-
-@api_view(['GET'])
-def bcmlist(request, bcm, bcm_id):
-    """返回所有品牌Brand/品类Category/商品Merchandise信息."""
-    form = BCMForm({'bcm': bcm, 'bcm_id': bcm_id})
-    if form.is_valid():
-        serializer = form.list_bcm()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+from goliath.pagination import StandardPagination
+from .models import (Brand,
+                     Category,
+                     Merchandise,
+                     Inventory)
+from .serializers import (BrandSerializer,
+                          CategorySerializer,
+                          MerchandiseSerializer,
+                          InventorySerializer,
+                          UpdateInventorySerializer,)
 
 
-@api_view(['GET'])
-def invlist(request, merchant):
-    """返回所有库存Inventory信息."""
-    form = InventoryForm({'merchant': merchant})
-    if form.is_valid():
-        serializer = form.list_inventory()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class BrandList(ListAPIView):
+    """返回所有品牌信息."""
+    pagination_class = StandardPagination
+    serializer_class = BrandSerializer
+
+    def get_queryset(self):
+        queryset = Brand.objects.all()
+        _id = self.request.query_params.get('id')
+        if _id is not None:
+            queryset = queryset.filter(id=_id)
+        return queryset
+
+
+class CategoryList(ListAPIView):
+    """返回所有品类信息."""
+    pagination_class = StandardPagination
+    serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        queryset = Category.objects.all()
+        _id = self.request.query_params.get('id')
+        if _id is not None:
+            queryset = queryset.filter(id=_id)
+        return queryset
+
+
+class MerchandiseList(ListAPIView):
+    """返回所有商品信息."""
+    pagination_class = StandardPagination
+    serializer_class = MerchandiseSerializer
+
+    def get_queryset(self):
+        queryset = Category.objects.all()
+        _id = self.request.query_params.get('id')
+        if _id is not None:
+            queryset = queryset.filter(id=_id)
+        return queryset
+
+
+class InventoryList(ListAPIView):
+    """返回所有压缩后的库存信息."""
+    pagination_class = StandardPagination
+    serializer_class = InventorySerializer
+
+    def get_queryset(self):
+        zipped = (Inventory.objects.values('merchandise')
+                                   .annotate(quantity=Sum('quantity')))
+        for item in zipped:
+            item['merchandise'] = Merchandise.objects.get(
+                id=item['merchandise'])
+        return zipped
+
+
+class MerchantInventoryList(ListAPIView):
+    """返回某商户的库存详细信息."""
+    pagination_class = StandardPagination
+    serializer_class = InventorySerializer
+
+    def get_queryset(self):
+        _id = self.request.query_params.get('id')
+        queryset = Inventory.objects.all().filter(merchant=_id)
+        return queryset
+
+
+class MerchandiseInventoryList(ListAPIView):
+    """返回某商商品的库存详细信息."""
+    pagination_class = StandardPagination
+    serializer_class = InventorySerializer
+
+    def get_queryset(self):
+        _id = self.request.query_params.get('id')
+        queryset = Inventory.objects.all().filter(merchandise=_id)
+        return queryset
 
 
 @api_view(['POST'])
