@@ -31,8 +31,7 @@ class LoginView(View):
                 return render(request, 'login.html', {'login': LoginForm(),
                               'message': '输入的账号被禁用!'})
             login(request, user)
-            # FIXME! inventory页(in dev)
-            return redirect(to='inventory:index')
+            return redirect(to='index')
         return render(request, 'login.html', {'login': LoginForm(),
                       'message': '输入的信息不全!'})
 
@@ -72,6 +71,7 @@ class RegisterView(View):
             user.address = forms.cleaned_data["address"]
             user.dingding = forms.cleaned_data["dingding"]
             user.save()
-            return redirect(to='merchant:login')
+            return render(request, 'login.html', {'login': LoginForm(),
+                          'message': '注册成功请登录!'})
         return render(request, 'register.html',
                       {'message': '验证码错误！', 'forms': forms})

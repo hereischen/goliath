@@ -19,7 +19,10 @@ from __future__ import unicode_literals
 from django.conf.urls import url, include
 from django.contrib import admin
 
+from .views import index
+
 urlpatterns = [
+    url(r'^$', index, name='index'),
     url(r'^admin/', admin.site.urls),
     # 商户(user)体系
     url(r'^merchant/', include('merchant.urls', namespace='merchant')),
