@@ -7,6 +7,6 @@ from django.shortcuts import render, redirect
 def index(request):
     if request.user.is_authenticated():
         # FIXME
-        return render(request, 'base.html')
+        return render(request, 'frontend/index.html')
     else:
         return redirect(to='merchant:login')

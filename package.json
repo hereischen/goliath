@@ -1,0 +1,33 @@
+{
+  "name": "goliath",
+  "version": "1.0.0",
+  "description": "A shared inventory.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack --mode development frontend/src/index.js --output static/frontend/main.js",
+    "build": "webpack --mode production frontend/src/index.js --output static/frontend/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hereischen/goliath.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hereischen/goliath/issues"
+  },
+  "homepage": "https://github.com/hereischen/goliath#readme",
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "prop-types": "^15.6.2",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.2.0"
+  }
+}
