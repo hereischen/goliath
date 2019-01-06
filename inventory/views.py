@@ -51,7 +51,7 @@ class MerchandiseList(ListAPIView):
     serializer_class = MerchandiseSerializer
 
     def get_queryset(self):
-        queryset = Category.objects.all()
+        queryset = Merchandise.objects.all()
         _id = self.request.query_params.get('id')
         if _id is not None:
             queryset = queryset.filter(id=_id)
