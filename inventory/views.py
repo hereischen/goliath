@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import logging
 
 from django.db.models import Sum
 from rest_framework.response import Response
@@ -18,6 +19,8 @@ from .serializers import (BrandSerializer,
                           InventorySerializer,
                           UpdateInventorySerializer,)
 
+logger = logging.getLogger(__name__)
+
 
 class BrandList(ListAPIView):
     """返回所有品牌信息."""
@@ -25,6 +28,8 @@ class BrandList(ListAPIView):
     serializer_class = BrandSerializer
 
     def get_queryset(self):
+        logger.info('[BrandList] Received data : %s' %
+                    self.request.query_params)
         queryset = Brand.objects.all()
         _id = self.request.query_params.get('id')
         if _id is not None:
@@ -38,6 +43,8 @@ class CategoryList(ListAPIView):
     serializer_class = CategorySerializer
 
     def get_queryset(self):
+        logger.info('[CategoryList] Received data : %s' %
+                    self.request.query_params)
         queryset = Category.objects.all()
         _id = self.request.query_params.get('id')
         if _id is not None:
@@ -51,6 +58,8 @@ class MerchandiseList(ListAPIView):
     serializer_class = MerchandiseSerializer
 
     def get_queryset(self):
+        logger.info('[MerchandiseList] Received data : %s' %
+                    self.request.query_params)
         queryset = Merchandise.objects.all()
         _id = self.request.query_params.get('id')
         if _id is not None:
@@ -78,6 +87,8 @@ class MerchantInventoryList(ListAPIView):
     serializer_class = InventorySerializer
 
     def get_queryset(self):
+        logger.info('[MerchantInventoryList] Received data : %s' %
+                    self.request.query_params)
         _id = self.request.query_params.get('id')
         queryset = Inventory.objects.all().filter(merchant=_id)
         return queryset
@@ -89,6 +100,8 @@ class MerchandiseInventoryList(ListAPIView):
     serializer_class = InventorySerializer
 
     def get_queryset(self):
+        logger.info('[MerchantInventoryList] Received data : %s' %
+                    self.request.data)
         _id = self.request.query_params.get('id')
         queryset = Inventory.objects.all().filter(merchandise=_id)
         return queryset
@@ -97,6 +110,7 @@ class MerchandiseInventoryList(ListAPIView):
 @api_view(['POST'])
 def update_inventory(request):
     """更新库存的view."""
+    logger.info('[update_inventory] Received data : %s' % request.data)
     serializer = UpdateInventorySerializer(data=request.data)
     if serializer.is_valid():
         if not serializer.validated_data['deposit']:
