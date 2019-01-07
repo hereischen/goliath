@@ -5,7 +5,7 @@ import logging
 from django.db.models import Sum
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from rest_framework import status
+from rest_framework import status, filters
 from rest_framework.generics import ListAPIView
 
 from goliath.pagination import StandardPagination
@@ -26,6 +26,8 @@ class BrandList(ListAPIView):
     """返回所有品牌信息."""
     pagination_class = StandardPagination
     serializer_class = BrandSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('brand',)
 
     def get_queryset(self):
         logger.info('[BrandList] Received data : %s' %
@@ -41,6 +43,8 @@ class CategoryList(ListAPIView):
     """返回所有品类信息."""
     pagination_class = StandardPagination
     serializer_class = CategorySerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('category',)
 
     def get_queryset(self):
         logger.info('[CategoryList] Received data : %s' %
@@ -56,6 +60,8 @@ class MerchandiseList(ListAPIView):
     """返回所有商品信息."""
     pagination_class = StandardPagination
     serializer_class = MerchandiseSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('^code',)
 
     def get_queryset(self):
         logger.info('[MerchandiseList] Received data : %s' %
@@ -71,6 +77,10 @@ class InventoryList(ListAPIView):
     """返回所有压缩后的库存信息."""
     pagination_class = StandardPagination
     serializer_class = InventorySerializer
+    # FIXME: search does not work
+    # after zip it is not a model queryset anymore
+    # filter_backends = (filters.SearchFilter,)
+    # search_fields = ('merchandise__code',)
 
     def get_queryset(self):
         zipped = (Inventory.objects.values('merchandise')
@@ -85,6 +95,8 @@ class MerchantInventoryList(ListAPIView):
     """返回某商户的库存详细信息."""
     pagination_class = StandardPagination
     serializer_class = InventorySerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('^merchandise__code',)
 
     def get_queryset(self):
         logger.info('[MerchantInventoryList] Received data : %s' %
