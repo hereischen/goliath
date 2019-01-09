@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import logging
 
 from django.db.models import Sum
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from rest_framework import status
+from rest_framework import status, filters
 from rest_framework.generics import ListAPIView
 
 from goliath.pagination import StandardPagination
@@ -18,13 +19,19 @@ from .serializers import (BrandSerializer,
                           InventorySerializer,
                           UpdateInventorySerializer,)
 
+logger = logging.getLogger(__name__)
+
 
 class BrandList(ListAPIView):
     """返回所有品牌信息."""
     pagination_class = StandardPagination
     serializer_class = BrandSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('brand',)
 
     def get_queryset(self):
+        logger.info('[BrandList] Received data : %s' %
+                    self.request.query_params)
         queryset = Brand.objects.all()
         _id = self.request.query_params.get('id')
         if _id is not None:
@@ -36,8 +43,12 @@ class CategoryList(ListAPIView):
     """返回所有品类信息."""
     pagination_class = StandardPagination
     serializer_class = CategorySerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('category',)
 
     def get_queryset(self):
+        logger.info('[CategoryList] Received data : %s' %
+                    self.request.query_params)
         queryset = Category.objects.all()
         _id = self.request.query_params.get('id')
         if _id is not None:
@@ -49,9 +60,13 @@ class MerchandiseList(ListAPIView):
     """返回所有商品信息."""
     pagination_class = StandardPagination
     serializer_class = MerchandiseSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('^code',)
 
     def get_queryset(self):
-        queryset = Category.objects.all()
+        logger.info('[MerchandiseList] Received data : %s' %
+                    self.request.query_params)
+        queryset = Merchandise.objects.all()
         _id = self.request.query_params.get('id')
         if _id is not None:
             queryset = queryset.filter(id=_id)
@@ -62,6 +77,10 @@ class InventoryList(ListAPIView):
     """返回所有压缩后的库存信息."""
     pagination_class = StandardPagination
     serializer_class = InventorySerializer
+    # FIXME: search does not work
+    # after zip it is not a model queryset anymore
+    # filter_backends = (filters.SearchFilter,)
+    # search_fields = ('merchandise__code',)
 
     def get_queryset(self):
         zipped = (Inventory.objects.values('merchandise')
@@ -76,8 +95,12 @@ class MerchantInventoryList(ListAPIView):
     """返回某商户的库存详细信息."""
     pagination_class = StandardPagination
     serializer_class = InventorySerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('^merchandise__code',)
 
     def get_queryset(self):
+        logger.info('[MerchantInventoryList] Received data : %s' %
+                    self.request.query_params)
         _id = self.request.query_params.get('id')
         queryset = Inventory.objects.all().filter(merchant=_id)
         return queryset
@@ -89,6 +112,8 @@ class MerchandiseInventoryList(ListAPIView):
     serializer_class = InventorySerializer
 
     def get_queryset(self):
+        logger.info('[MerchantInventoryList] Received data : %s' %
+                    self.request.data)
         _id = self.request.query_params.get('id')
         queryset = Inventory.objects.all().filter(merchandise=_id)
         return queryset
@@ -97,6 +122,7 @@ class MerchandiseInventoryList(ListAPIView):
 @api_view(['POST'])
 def update_inventory(request):
     """更新库存的view."""
+    logger.info('[update_inventory] Received data : %s' % request.data)
     serializer = UpdateInventorySerializer(data=request.data)
     if serializer.is_valid():
         if not serializer.validated_data['deposit']:

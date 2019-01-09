@@ -146,3 +146,47 @@ SUIT_CONFIG = {
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "goliath.pagination.StandardPagination",
 }
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': ('%(levelname)s %(asctime)s %(module)s '
+                       '%(process)d %(thread)d %(message)s')
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        }
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'site.log'),
+            'formatter': 'verbose'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'propagate': True,
+            'level': 'INFO'
+        },
+        'merchant': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'inventory': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+    }
+}
