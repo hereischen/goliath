@@ -17,18 +17,20 @@ export default class InventoryTable extends React.Component{
     }
 
     getBody() {
-        return this.state.inventories && _.map(this.state.inventories, (invt, index) => {
+        return !_.isEmpty(this.state.inventories) && _.map(this.state.inventories, (invt, index) => {
             return (<tr key={invt.id}>
-                <th>{index+1}</th>
+                <th>{index + 1}</th>
                 <th>{invt.brand}</th>
                 <th>{invt.category}</th>
                 <th>{invt.remarks}</th>
                 <th>{invt.quantity}</th>
             </tr>)
-        })
+        });
     }
+
     render() {
-        return (<table className="table table-striped table-dark">
+        const emptyContent = (<p className="empty-form">没有相关数据</p>);
+        return (<div><table className="table table-striped table-dark">
             <thead>
             <tr>
                 <th scope="col">编号</th>
@@ -41,6 +43,8 @@ export default class InventoryTable extends React.Component{
             <tbody>
                 {this.getBody()}
             </tbody>
-        </table>);
+        </table>
+            {_.isEmpty(this.state.inventories) && emptyContent}
+        </div>);
     }
 }

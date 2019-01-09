@@ -146,7 +146,7 @@ A shared inventory.
 ```
 #### 3. 查询某个商户库存接口
 接口地址：
-`GET http://127.0.0.1:8000/inventory/brands `
+`GET http://127.0.0.1:8000/inventory/inventories/merchants`
 
 查询某个商户的库存`http://127.0.0.1:8000/inventory/inventories/merchants?id=a445041c-ee12-42a4-821c-1ca6d0c0bdab`
 

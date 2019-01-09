@@ -164,3 +164,6 @@ typings/
 
 # next.js build output
 .next
+
+# ide
+.idea/
