@@ -6,6 +6,38 @@ html {
     font-size: 16px;
   }
 }
+h3 {
+  margin: 0;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0 20px;
+  align-items: center;
+  font-size: 16px;
+  height: 87px;
+}
+.header a, .header a:hover {
+  color: #343a40;
+  cursor: pointer;
+}
+
+.btn.btn-primary  {
+  color: #007bff;
+  background: #fff;
+  border: 1px solid #007bff;
+}
+
+.btn.btn-primary:hover {
+  color: #fff;
+  background: #007bff;
+}
+
+.header a:hover {
+  text-decoration: none;
+}
 
 .container {
   max-width: 960px;

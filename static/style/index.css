@@ -3,3 +3,7 @@
     font-size: 24px;
     text-align: center;
 }
+
+.section {
+    flex-grow: 1;
+}
