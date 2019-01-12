@@ -136,7 +136,10 @@ bower_components
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
+
+# project compiled files
 static/frontend/main.js
+static/css/bootstrap.min.css.map
 
 # Dependency directories
 node_modules/
