@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
+<!-- Custom styles for this template -->
+<link href="{% static 'style/index.css' %}" rel="stylesheet">
+
   <section class="section">
     <div class="container">
           <div id="app" class="columns" currentUser= {{user.id}}><!-- React --></div>
