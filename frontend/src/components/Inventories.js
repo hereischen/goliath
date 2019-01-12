@@ -89,11 +89,17 @@ export default class Inventories extends React.Component {
     render() {
         return (<div>
             <ul className="nav nav-tabs">
-                <li className={this.state.currentTable === Inventories.TabType.ALL ? 'active' : ''}>
-                    <a data-toggle="tab" href='#all' onClick={() => this.setState({currentTable: Inventories.TabType.ALL})}>总表</a>
+                <li className="nav-item">
+                    <a className={`nav-link ${this.state.currentTable === Inventories.TabType.ALL ? 'active' : ''}`}
+                       data-toggle="tab"
+                       href='#all'
+                       onClick={() => this.setState({currentTable: Inventories.TabType.ALL})}>总表</a>
                 </li>
                 <li className={this.state.currentTable === Inventories.TabType.PERSONAL ? 'active' : ''}>
-                    <a data-toggle="tab" href="#personal"  onClick={() => this.setState({currentTable: Inventories.TabType.PERSONAL})}>个人表</a>
+                    <a className={`nav-link ${this.state.currentTable === Inventories.TabType.ALL ? 'active' : ''}`}
+                       data-toggle="tab"
+                       href="#personal"
+                       onClick={() => this.setState({currentTable: Inventories.TabType.PERSONAL})}>个人表</a>
                 </li>
             </ul>
             <div className="tab-content">
