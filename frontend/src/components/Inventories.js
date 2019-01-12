@@ -56,7 +56,7 @@ export default class Inventories extends React.Component {
     }
 
     getPersonalInventories() {
-        $.get(`/inventory/inventories/merchants?=${this.props.currentUser}`, (data) => {
+            $.get(`/inventory/inventories/merchants?id=${this.props.currentUser}`, (data) => {
             const inventories = Inventories.buildInventoryTable(data.results);
             this.setState({
                 personalInventories: inventories

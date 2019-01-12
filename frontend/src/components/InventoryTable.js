@@ -22,7 +22,7 @@ export default class InventoryTable extends React.Component{
                 <th>{index + 1}</th>
                 <th>{invt.brand}</th>
                 <th>{invt.category}</th>
-                <th>{invt.remarks}</th>
+                <th>{invt.code}</th>
                 <th>{invt.quantity}</th>
             </tr>)
         });
@@ -34,9 +34,9 @@ export default class InventoryTable extends React.Component{
             <thead>
             <tr>
                 <th scope="col">编号</th>
-                <th scope="col">名称</th>
                 <th scope="col">品牌</th>
                 <th scope="col">品类</th>
+                <th scope="col">商品编码</th>
                 <th scope="col">数量</th>
             </tr>
             </thead>
