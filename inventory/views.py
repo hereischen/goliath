@@ -17,6 +17,7 @@ from .serializers import (BrandSerializer,
                           CategorySerializer,
                           MerchandiseSerializer,
                           InventorySerializer,
+                          MerchantInventorySerializer,
                           UpdateInventorySerializer,)
 
 logger = logging.getLogger(__name__)
@@ -94,7 +95,7 @@ class InventoryList(ListAPIView):
 class MerchantInventoryList(ListAPIView):
     """返回某商户的库存详细信息."""
     pagination_class = StandardPagination
-    serializer_class = InventorySerializer
+    serializer_class = MerchantInventorySerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('^merchandise__code',)
 
