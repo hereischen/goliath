@@ -31,6 +31,7 @@ export default class PersonalDataTable extends React.Component{
                 code: invt.merchandise.code,
                 remarks: invt.merchandise.remarks,
                 quantity: invt.quantity,
+                price: invt.price,
                 modifiedDate: utils.formatDate(invt.modified_date, "YYYY-MM-DD HH:MM"),
             }
         });
@@ -69,6 +70,7 @@ export default class PersonalDataTable extends React.Component{
                                 {text: "品类", selector: "category"},
                                 {text: "商品编码", selector: "code"},
                                 {text: "数量", selector: "quantity"},
+                                {text: "价格", selector: "price"},
                                 {text: "修改时间", selector: "modifiedDate"},
                             ]}
             />
