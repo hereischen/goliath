@@ -3,7 +3,6 @@ import Select from 'react-select';
 import _ from 'lodash';
 
 class SelectMerchandise extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -11,6 +10,7 @@ class SelectMerchandise extends React.Component {
           options: []
         };
         this.buildOptions = this.buildOptions.bind(this);
+        this.handleChange = this.handleChange.bind(this);
         this.getMerchandise();
     }
 
@@ -27,11 +27,11 @@ class SelectMerchandise extends React.Component {
             return {
                 value: mdse.id,
                 label: mdse.code
-            }
+            };
         });
     }
 
-    handleChange = (selectedOption) => {
+    handleChange(selectedOption) {
         this.setState({ selectedOption });
         console.log(`Option selected:`, selectedOption);
     }
@@ -43,8 +43,7 @@ class SelectMerchandise extends React.Component {
             <Select
                 value={selectedOption}
                 onChange={this.handleChange}
-                options={options}
-            />
+                options={options}/>
     );
   }
 }

@@ -14,14 +14,18 @@ export default class AllInvtDataTable extends React.Component{
             allInventories: [],
             url : "/inventory/inventories"
         };
-        this.getAllInventories();
+        this.getAllInventories(this.state.url);
         this.showDetailsDialog = this.showDetailsDialog.bind(this);
         this.setNext = this.setNext.bind(this);
         this.setPrevious = this.setPrevious.bind(this);
     }
 
-    getAllInventories() {
-            $.get(this.state.url, (data) => {
+    getAllInventories(url) {
+        if (!url) {
+            console.error("url should not be null!");
+            return;
+        }
+        $.get(url, (data) => {
             const inventories = AllInvtDataTable.buildAllInventoryTable(data.results);
             this.setState({
                 next: data.next,
@@ -45,17 +49,11 @@ export default class AllInvtDataTable extends React.Component{
     }
 
     setNext() {
-        this.setState({
-            url : this.state.next
-        });
-        this.getAllInventories();
+        this.getAllInventories(this.state.next);
     }
 
     setPrevious() {
-        this.setState({
-            url : this.state.previous
-        });
-        this.getAllInventories();
+        this.getAllInventories(this.state.previous);
     }
 
     showDetailsDialog() {
@@ -94,8 +92,8 @@ export default class AllInvtDataTable extends React.Component{
                             ]}
             />
             <Pager>
-                <Pager.Item onClick={this.setPrevious}>上一页</Pager.Item>
-                <Pager.Item onClick={this.setNext}>下一页</Pager.Item>
+                <Pager.Item onClick={this.setPrevious} disabled={!this.state.previous}>上一页</Pager.Item>
+                <Pager.Item onClick={this.setNext} disabled={!this.state.next}>下一页</Pager.Item>
             </Pager>
             <Dialog ref={(el) => {
                 this.dialog = el
