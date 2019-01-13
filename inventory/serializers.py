@@ -48,8 +48,7 @@ class InventorySerializer(serializers.ModelSerializer):
 class MerchantInventorySerializer(InventorySerializer):
     class Meta:
         model = Inventory
-        fields = ('id', 'merchant', 'price',
-                  'quantity', 'merchandise', 'modified_date')
+        fields = ('id', 'price', 'quantity', 'merchandise', 'modified_date')
 
 
 class UpdateInventorySerializer(serializers.Serializer):
