@@ -6,6 +6,7 @@ export default class InventoryTable extends React.Component{
         super(props);
         this.state = {
             inventories: props.data,
+            columns: props.columns
         }
     }
 
@@ -19,13 +20,22 @@ export default class InventoryTable extends React.Component{
     getBody() {
         return !_.isEmpty(this.state.inventories) && _.map(this.state.inventories, (invt, index) => {
             return (<tr key={invt.id}>
-                <th>{index + 1}</th>
-                <th>{invt.brand}</th>
-                <th>{invt.category}</th>
-                <th>{invt.code}</th>
-                <th>{invt.quantity}</th>
+                <td>{index + 1}</td>
+                {
+                    _.map(this.state.columns, column => {
+                        return (<td>{invt[column.selector]}</td>)
+                    })
+                }
             </tr>)
         });
+    }
+
+
+    renderTitle() {
+        const columns = [(<th key="0">编号</th>)];
+        return _.concat(columns, _.map(this.state.columns, (column,index) => {
+                return (<th scope="col" key={index+1}>{column.text}</th>);
+        }));
     }
 
     render() {
@@ -33,11 +43,7 @@ export default class InventoryTable extends React.Component{
         return (<div><table className="table table-striped table-dark">
             <thead>
             <tr>
-                <th scope="col">编号</th>
-                <th scope="col">品牌</th>
-                <th scope="col">品类</th>
-                <th scope="col">商品编码</th>
-                <th scope="col">数量</th>
+                {this.renderTitle()}
             </tr>
             </thead>
             <tbody>
