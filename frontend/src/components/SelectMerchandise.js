@@ -15,7 +15,7 @@ class SelectMerchandise extends React.Component {
     }
 
     getMerchandise() {
-        $.get("inventory/merchandise", (data) => {
+        $.get("inventory/merchandise?page_size=5000", (data) => {
             this.setState({
                 options: this.buildOptions(data.results)
             });
@@ -37,8 +37,7 @@ class SelectMerchandise extends React.Component {
     }
 
     render() {
-        const { selectedOption } = this.state;
-        const { options } = this.state;
+        const { selectedOption, options } = this.state;
 
         return (
             <Select
