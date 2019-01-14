@@ -1,5 +1,7 @@
 import React from 'react';
 import InventoryTable from "./InventoryTable";
+import Dialog from "react-bootstrap-dialog";
+import Pager from 'react-bootstrap/lib/Pagination';
 import utils from "../utils/utils";
 import InformationDialog from "./InformationDialog";
 
@@ -7,19 +9,30 @@ export default class PersonalDataTable extends React.Component{
     constructor (props) {
         super(props);
         this.state = {
+            next: null,
+            previous: null,
             personalInventories: [],
             showCreateInvtDialog: false,
+            url: `/inventory/inventories/merchants?id=${this.props.currentUser}`
         };
-        this.getPersonalInventories();
+        this.getPersonalInventories(this.state.url);
         this.showCreateDialog = this.showCreateDialog.bind(this);
         this.cancelSave = this.cancelSave.bind(this);
         this.saveInventory = this.saveInventory.bind(this);
+        this.setNext = this.setNext.bind(this);
+        this.setPrevious = this.setPrevious.bind(this);
     }
 
-    getPersonalInventories() {
-            $.get(`/inventory/inventories/merchants?id=${this.props.currentUser}`, (data) => {
+    getPersonalInventories(url) {
+        if (!url) {
+            console.error("url should not be null!");
+            return;
+        }
+            $.get(url, (data) => {
             const inventories = PersonalDataTable.buildPersonalInventoryTable(data.results);
             this.setState({
+                next: data.next,
+                previous: data.previous,
                 personalInventories: inventories
             });
         });
@@ -38,6 +51,14 @@ export default class PersonalDataTable extends React.Component{
                 modifiedDate: utils.formatDate(invt.modified_date, "YYYY-MM-DD HH:MM"),
             }
         });
+    }
+
+    setNext() {
+        this.getPersonalInventories(this.state.next);
+    }
+
+    setPrevious() {
+        this.getPersonalInventories(this.state.previous);
     }
 
     showCreateDialog() {
@@ -78,6 +99,13 @@ export default class PersonalDataTable extends React.Component{
             {/*<Dialog ref={(el) => {*/}
                 {/*this.dialog = el*/}
             {/*}}/>*/}
+            <Pager>
+                <Pager.Item onClick={this.setPrevious} disabled={!this.state.previous}>上一页</Pager.Item>
+                <Pager.Item onClick={this.setNext} disabled={!this.state.next}>下一页</Pager.Item>
+            </Pager>
+            <Dialog ref={(el) => {
+                this.dialog = el
+            }}/>
         </div>);
     }
 }

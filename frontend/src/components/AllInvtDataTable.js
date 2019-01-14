@@ -8,7 +8,6 @@ export default class AllInvtDataTable extends React.Component{
     constructor (props) {
         super(props);
         this.state = {
-            // "count": 2,
             next: null,
             previous: null,
             allInventories: [],
