@@ -1,16 +1,19 @@
 import React from 'react';
 import InventoryTable from "./InventoryTable";
-import Dialog from "react-bootstrap-dialog";
 import utils from "../utils/utils";
+import InformationDialog from "./InformationDialog";
 
 export default class PersonalDataTable extends React.Component{
     constructor (props) {
         super(props);
         this.state = {
             personalInventories: [],
+            showCreateInvtDialog: false,
         };
         this.getPersonalInventories();
         this.showCreateDialog = this.showCreateDialog.bind(this);
+        this.cancelSave = this.cancelSave.bind(this);
+        this.saveInventory = this.saveInventory.bind(this);
     }
 
     getPersonalInventories() {
@@ -38,29 +41,22 @@ export default class PersonalDataTable extends React.Component{
     }
 
     showCreateDialog() {
-        this.dialog.show({
-            title: '添加库存',
-            body: (<div>想睡觉了。。。。明天再写
-                <input type="text" placeholder="睡觉睡觉😪"/>
-            </div>),
-            bsSize: 'large',
-            onHide: (dialog) => {
-                dialog.hide();
-                console.log('closed by clicking background.');
-            },
-
-            actions: [
-                Dialog.CancelAction(() => {
-                    console.log("cancel click")
-                }),
-                Dialog.OKAction(() => {
-                    console.log("ok click")
-                })
-            ],
-        })
+        this.setState( {showCreateInvtDialog: true});
     }
 
+    getSaveDialogBody() {
+
+    }
+
+    saveInventory() {
+
+    }
+
+    cancelSave() {
+        this.setState( {showCreateInvtDialog: false});
+    }
     render() {
+        const saveDialogBody = this.getSaveDialogBody();
         return (<div id="personal">
             <button className="btn btn-default" onClick={this.showCreateDialog}>新建库存</button>
             <InventoryTable className="table"
@@ -74,9 +70,14 @@ export default class PersonalDataTable extends React.Component{
                                 {text: "修改时间", selector: "modifiedDate"},
                             ]}
             />
-            <Dialog ref={(el) => {
-                this.dialog = el
-            }}/>
+            <InformationDialog show={this.state.showCreateInvtDialog}
+                               onConfirm={this.saveInventory}
+                               onCancel={this.cancelSave}
+                               body={saveDialogBody}
+                               title="新建库存"/>
+            {/*<Dialog ref={(el) => {*/}
+                {/*this.dialog = el*/}
+            {/*}}/>*/}
         </div>);
     }
 }
