@@ -22,8 +22,8 @@ export default class InventoryTable extends React.Component{
             return (<tr key={invt.id}>
                 <td>{index + 1}</td>
                 {
-                    _.map(this.state.columns, column => {
-                        return (<td>{invt[column.selector]}</td>)
+                    _.map(this.state.columns, (column, ind) => {
+                        return (<td key={ind}>{invt[column.selector]}</td>)
                     })
                 }
             </tr>)

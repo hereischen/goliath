@@ -1,18 +1,24 @@
 import React from 'react';
 import Modal from 'react-bootstrap/lib/Modal';
 import Button from 'react-bootstrap/lib/Button';
+import PropTypes from 'prop-types';
 
 class InformationDialog extends React.Component {
+
   constructor(props) {
     super(props);
-
-    // this.handleShow = this.handleShow.bind(this);
-    // this.handleClose = this.handleClose.bind(this);
-
     this.state = {
       show: props.show
     };
   }
+
+  static propTypes = {
+      show: PropTypes.bool,
+      title: PropTypes.string,
+      body: PropTypes.element,
+      onCancel: PropTypes.func,
+      onConfirm: PropTypes.func,
+  };
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.show !== prevState.show) {
@@ -20,22 +26,10 @@ class InformationDialog extends React.Component {
     }
     return {show: prevState.show};
   }
-  //
-  // handleClose() {
-  //   this.setState({ show: false });
-  // }
-  //
-  // handleShow() {
-  //   this.setState({ show: true });
-  // }
 
   render() {
-
     return (
       <div>
-        {/*<Button bsStyle="primary" bsSize="large" onClick={this.handleShow}>*/}
-            {/*{this.props.title}*/}
-        {/*</Button>*/}
         <Modal show={this.state.show} onHide={this.props.onCancel}>
           <Modal.Header closeButton>
             <Modal.Title>{this.props.title}</Modal.Title>
