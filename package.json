@@ -26,6 +26,7 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "bootstrap": "^3.3.7",
     "jquery": "^3.3.1",
+    "less-loader": "^4.1.0",
     "lodash": "^4.17.11",
     "moment": "^2.23.0",
     "prop-types": "^15.6.2",

@@ -20,17 +20,10 @@ class InformationDialog extends React.Component {
       onConfirm: PropTypes.func,
   };
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.show !== prevState.show) {
-      return ({show: nextProps.show})
-    }
-    return {show: prevState.show};
-  }
-
   render() {
     return (
       <div>
-        <Modal show={this.state.show} onHide={this.props.onCancel}>
+        <Modal show={this.props.show} onHide={this.props.onCancel} className="information">
           <Modal.Header closeButton>
             <Modal.Title>{this.props.title}</Modal.Title>
           </Modal.Header>

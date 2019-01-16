@@ -1,86 +1,86 @@
 import React from 'react';
 import InformationDialog from './InformationDialog'
-import Select from 'react-select';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
+import SelectMerchandise from "./SelectMerchandise";
 
 class PersonalInventoryUpdateDialog extends React.Component {
     constructor(props){
         super(props);
-
         this.state = {
             show: props.show,
             options: [],
+            selectedBrand: "",
+            selectedCategory: "",
+            selectedMerchantId: 0,
+            price: 0,
+            quantity: 0,
         };
 
         this.saveInventory = this.saveInventory.bind(this);
-        this.onChangeBrand = this.onChangeBrand.bind(this);
         this.cancelSave = this.cancelSave.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onChangePrice = this.onChangePrice.bind(this);
+        this.onChangeCount = this.onChangeCount.bind(this);
     }
 
     static propTypes = {
-      show: PropTypes.bool,
+        show: PropTypes.bool,
+        onCancel: PropTypes.func,
+        currentUser: PropTypes.string
     };
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        let result;
-        if (_.isEmpty(prevState.option)) {
-             const option = PersonalInventoryUpdateDialog.getMerchandise();
-            return result = {...option}
+    static getDerivedStateFromProps(props, state) {
+        if (props.show !== state.show) {
+            return {show: props.show};
         }
-        console.log(prevState);
-        if (nextProps.show !== prevState.show) {
-           return result = {...{show: nextProps.show}}
-        }
-        return result;
+        return state;
     }
 
-    onChangeBrand() {
-
+    onChange(selectedMerchandise) {
+        this.setState({
+            selectedBrand:selectedMerchandise.brand.brand,
+            selectedCategory:selectedMerchandise.category.category,
+            selectedMerchantId: selectedMerchandise.id,
+        })
     }
 
     saveInventory() {
-
+        console.log(this.state);
+        $.post("/inventory/update/", {
+            current_merchant_id: this.props.currentUser,
+            merchandise_id: this.state.selectedMerchantId,
+            quantity: this.state.quantity,
+            price: this.state.price,
+            remarks: "",
+        })
     }
 
     cancelSave() {
-
         this.setState({show: false});
+        this.props.cancelSave();
     }
 
-    static getMerchandise() {
-        $.get("inventory/merchandise?page_size=5000", (data) => {
-            return {options: PersonalInventoryUpdateDialog.buildOptions(data.results)}
-        });
+    onChangePrice(event) {
+        this.setState( {price: event.target.value})
     }
-
-    static buildOptions(merchantdise) {
-        return _.map(merchantdise, mdse => {
-            return {
-                value: mdse.id,
-                label: mdse.code
-            };
-        });
+    onChangeCount(event) {
+        this.setState({quantity: event.target.value});
     }
-
     getSaveDialogBody() {
-        return (<form>
-            <label>品牌</label>
-            <Select
-                onChange={this.onChangeBrand}
-                option={this.state.options}
-                // value={this.state.options[0]}
-            />
-            <label>品类</label><input placeholder="品类"/>
-            <label>商品编码</label><input placeholder="商品编码"/>
-            <label>数量</label><input placeholder="品牌"/>
-            <label>价格</label><input placeholder="品牌"/>
+        return (<form className="fieldSection">
+            <div className="item">
+                <span>商品编码</span>
+                <SelectMerchandise onChange={this.onChange}/>
+            </div>
+            <div className="item"><span>品牌</span><input placeholder="品牌" value={this.state.selectedBrand} disabled/></div>
+            <div className="item">品类<input placeholder="品类"  value={this.state.selectedCategory} disabled/></div>
+            <div className="item">价格<input placeholder="品牌"  value={this.state.price} onChange={this.onChangePrice} type="number" min="0"/></div>
+            <div className="item">数量<input placeholder="品牌"  value={this.state.quantity} onChange={this.onChangeCount} type="number" min="0"/></div>
         </form>);
-
     }
 
     render() {
-        console.log(this.state.show);
         const saveDialogBody = this.getSaveDialogBody();
         return (<InformationDialog show={this.state.show}
                                    onConfirm={this.saveInventory}

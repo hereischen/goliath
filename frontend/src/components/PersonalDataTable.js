@@ -1,6 +1,5 @@
 import React from 'react';
 import InventoryTable from "./InventoryTable";
-import Dialog from "react-bootstrap-dialog";
 import Pager from 'react-bootstrap/lib/Pagination';
 import utils from "../utils/utils";
 import PersonalInventoryUpdateDialog from './PersonalInventoryUpdateDialog';
@@ -19,6 +18,7 @@ export default class PersonalDataTable extends React.Component{
         this.showCreateDialog = this.showCreateDialog.bind(this);
         this.setNext = this.setNext.bind(this);
         this.setPrevious = this.setPrevious.bind(this);
+        this.cancelSave = this.cancelSave.bind(this);
     }
 
     getPersonalInventories(url) {
@@ -64,6 +64,9 @@ export default class PersonalDataTable extends React.Component{
         this.setState( {showCreateInvtDialog: true});
     }
 
+    cancelSave() {
+        this.setState( { showCreateInvtDialog: false});
+    }
     render() {
         return (<div id="personal">
             <button className="btn btn-default" onClick={this.showCreateDialog}>新建库存</button>
@@ -83,7 +86,7 @@ export default class PersonalDataTable extends React.Component{
                 <Pager.Item onClick={this.setPrevious} disabled={!this.state.previous}>上一页</Pager.Item>
                 <Pager.Item onClick={this.setNext} disabled={!this.state.next}>下一页</Pager.Item>
             </Pager>
-            <PersonalInventoryUpdateDialog show={this.state.showCreateInvtDialog}/>
+             <PersonalInventoryUpdateDialog show={this.state.showCreateInvtDialog} cancelSave={this.cancelSave} currentUser={this.props.currentUser}/>
         </div>);
     }
 }
