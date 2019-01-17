@@ -1,0 +1,19 @@
+.information .fieldSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+.fieldSection .item {
+    width: 200px;
+    margin-bottom: 10px;
+}
+
+.item .select {
+    display: inline-block;
+    width: 134px;
+}
+
+.item span {
+    margin-right: 10px;
+}
