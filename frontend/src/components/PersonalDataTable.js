@@ -88,7 +88,6 @@ export default class PersonalDataTable extends React.Component{
                 <Pager.Item onClick={this.setNext} disabled={!this.state.next}>下一页</Pager.Item>
             </Pager>
              <PersonalInventoryCreateDialog show={this.state.showCreateInvtDialog} cancelSave={this.cancelSave} currentUser={this.props.currentUser}/>
-             <PersonalInventoryUpdateDialog show={this.state.showCreateInvtDialog} cancelSave={this.cancelSave} currentUser={this.props.currentUser}/>
         </div>);
     }
 }
