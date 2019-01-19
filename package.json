@@ -4,8 +4,8 @@
   "description": "A shared inventory.",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --mode development frontend/src/index.js --output static/frontend/main.js",
-    "build": "webpack --mode production frontend/src/index.js --output static/frontend/main.js"
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,7 @@
     "babel-loader": "^8.0.5",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "bootstrap": "^3.3.7",
+    "css-loader": "^2.1.0",
     "jquery": "^3.3.1",
     "less-loader": "^4.1.0",
     "lodash": "^4.17.11",
@@ -35,8 +36,11 @@
     "react-bootstrap-dialog": "^0.10.0",
     "react-dom": "^16.7.0",
     "react-select": "^2.2.0",
+    "style-loader": "^0.23.1",
     "webpack": "^4.28.3",
     "webpack-cli": "^3.2.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "less": "^3.9.0"
+  }
 }
