@@ -13,8 +13,10 @@ class PersonalInventoryCreateDialog extends React.Component {
             selectedBrand: "",
             selectedCategory: "",
             selectedMerchandiseId: 0,
+            selectedMerchandiseCode: "",
             price: 0,
             quantity: 0,
+            confirmed: false
         };
 
         this.saveInventory = this.saveInventory.bind(this);
@@ -22,6 +24,8 @@ class PersonalInventoryCreateDialog extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.onChangePrice = this.onChangePrice.bind(this);
         this.onChangeCount = this.onChangeCount.bind(this);
+        this.getConfirmed = this.getConfirmed.bind(this);
+        this.cancelConfirm = this.cancelConfirm.bind(this);
     }
 
     static propTypes = {
@@ -42,6 +46,7 @@ class PersonalInventoryCreateDialog extends React.Component {
             selectedBrand:selectedMerchandise.brand.brand,
             selectedCategory:selectedMerchandise.category.category,
             selectedMerchandiseId: selectedMerchandise.id,
+            selectedMerchandiseCode: selectedMerchandise.code,
         })
     }
 
@@ -67,26 +72,36 @@ class PersonalInventoryCreateDialog extends React.Component {
     onChangeCount(event) {
         this.setState({quantity: event.target.value});
     }
+    getConfirmed(){
+        this.setState({confirmed: true});
+    }
+    cancelConfirm(){
+        this.setState({confirmed: false});
+    }
     getSaveDialogBody() {
-        return (<form className="fieldSection">
-            <div className="item">
-                <span>编码:</span>
-                <SelectMerchandise onChange={this.onChange}/>
-            </div>
-            <div className="item"><span>品牌:</span><input placeholder="品牌" value={this.state.selectedBrand} disabled/></div>
-            <div className="item"><span>品类:</span><input placeholder="品类"  value={this.state.selectedCategory} disabled/></div>
-            <div className="item"><span>价格:</span><input placeholder="新建库存价格" value={this.state.price} onChange={this.onChangePrice} type="number" min="0"/></div>
-            <div className="item"><span>数量:</span><input placeholder="新建库存数量" value={this.state.quantity} onChange={this.onChangeCount} type="number" min="0"/></div>
-        </form>);
+        const dialogBody = (this.state.confirmed ? 
+            (<div>请确认创建{this.state.selectedBrand}{this.state.selectedCategory}{this.state.selectedMerchandiseCode}的库存, 价格:{this.state.price}, 数量:{this.state.quantity}</div>)
+            :(<form className="fieldSection">
+                <div className="item">
+                    <span>编码:</span>
+                    <SelectMerchandise onChange={this.onChange}/>
+                </div>
+                <div className="item"><span>品牌:</span><input placeholder="品牌" value={this.state.selectedBrand} disabled/></div>
+                <div className="item"><span>品类:</span><input placeholder="品类"  value={this.state.selectedCategory} disabled/></div>
+                <div className="item"><span>价格:</span><input placeholder="新建库存价格" value={this.state.price} onChange={this.onChangePrice} type="number" min="0" /></div>
+                <div className="item"><span>数量:</span><input placeholder="新建库存数量" value={this.state.quantity} onChange={this.onChangeCount} type="number" min="0" /></div>
+            </form>));
+
+        return dialogBody;
     }
 
     render() {
         const saveDialogBody = this.getSaveDialogBody();
         return (<InformationDialog show={this.state.show}
-                                   onConfirm={this.saveInventory}
-                                   onCancel={this.cancelSave}
+                                   onConfirm={this.state.confirmed ? this.saveInventory : this.getConfirmed}
+                                   onCancel={this.state.confirmed ? this.cancelConfirm : this.cancelSave}
                                    body={saveDialogBody}
-                                   title="新建商品库存"/>);
+                                   title={this.state.confirmed ? "确认库存信息" : "新建商品库存"}/>);
     }
 }
 
