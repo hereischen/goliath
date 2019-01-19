@@ -2,8 +2,9 @@ import React from 'react';
 import InformationDialog from './InformationDialog'
 import _ from 'lodash';
 import PropTypes from 'prop-types';
+import SelectMerchandise from "./SelectMerchandise";
 
-class PersonalInventoryUpdateDialog extends React.Component {
+class PersonalInventoryCreateDialog extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -14,7 +15,6 @@ class PersonalInventoryUpdateDialog extends React.Component {
             selectedMerchandiseId: 0,
             price: 0,
             quantity: 0,
-            deposit: false,
         };
 
         this.saveInventory = this.saveInventory.bind(this);
@@ -47,8 +47,6 @@ class PersonalInventoryUpdateDialog extends React.Component {
 
     saveInventory() {
         console.log(this.state);
-        (this.state.deposit ? 
-        // 新增 
         $.post("/inventory/update/", {
             current_merchant_id: this.props.currentUser,
             merchandise_id: this.state.selectedMerchandiseId,
@@ -56,15 +54,6 @@ class PersonalInventoryUpdateDialog extends React.Component {
             price: this.state.price,
             remarks: "",
         })
-        // 取出
-        :$.post("/inventory/update/", {
-            current_merchant_id: this.props.currentUser,
-            merchandise_id: this.state.selectedMerchandiseId,
-            quantity: this.state.quantity,
-            deposit: this.state.deposit,
-            remarks: "",
-        })
-        )
     }
 
     cancelSave() {
@@ -78,25 +67,27 @@ class PersonalInventoryUpdateDialog extends React.Component {
     onChangeCount(event) {
         this.setState({quantity: event.target.value});
     }
-    getDepositDialogBody() {
+    getSaveDialogBody() {
         return (<form className="fieldSection">
-            <div className="item"><span>最新价格</span><input placeholder="最新价格"  value={this.state.price} onChange={this.onChangePrice} type="number" min="0"/></div>
-            <div className="item"><span>新增数量</span><input placeholder="新增数量"  value={this.state.quantity} onChange={this.onChangeCount} type="number" min="0"/></div>
+            <div className="item">
+                <span>编码:</span>
+                <SelectMerchandise onChange={this.onChange}/>
+            </div>
+            <div className="item"><span>品牌:</span><input placeholder="品牌" value={this.state.selectedBrand} disabled/></div>
+            <div className="item"><span>品类:</span><input placeholder="品类"  value={this.state.selectedCategory} disabled/></div>
+            <div className="item"><span>价格:</span><input placeholder="新建库存价格" value={this.state.price} onChange={this.onChangePrice} type="number" min="0"/></div>
+            <div className="item"><span>数量:</span><input placeholder="新建库存数量" value={this.state.quantity} onChange={this.onChangeCount} type="number" min="0"/></div>
         </form>);
     }
-    getWithdrawDialogBody() {
-        return (<form className="fieldSection">
-            <div className="item"><span>取出数量</span><input placeholder="取出数量"  value={this.state.quantity} onChange={this.onChangeCount} type="number" min="0"/></div>
-        </form>);
-    }
+
     render() {
-        const saveDialogBody = this.state.deposit ? this.getDepositDialogBody() : this.getWithdrawDialogBody();
+        const saveDialogBody = this.getSaveDialogBody();
         return (<InformationDialog show={this.state.show}
                                    onConfirm={this.saveInventory}
                                    onCancel={this.cancelSave}
                                    body={saveDialogBody}
-                                   title={this.state.deposit ? "新增商品库存" : "取出商品库存"} />);
+                                   title="新建商品库存"/>);
     }
 }
 
-export default PersonalInventoryUpdateDialog
+export default PersonalInventoryCreateDialog

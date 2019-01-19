@@ -2,6 +2,7 @@ import React from 'react';
 import InventoryTable from "./InventoryTable";
 import Pager from 'react-bootstrap/lib/Pagination';
 import utils from "../utils/utils";
+import PersonalInventoryCreateDialog from './PersonalInventoryCreateDialog';
 import PersonalInventoryUpdateDialog from './PersonalInventoryUpdateDialog';
 
 export default class PersonalDataTable extends React.Component{
@@ -86,6 +87,7 @@ export default class PersonalDataTable extends React.Component{
                 <Pager.Item onClick={this.setPrevious} disabled={!this.state.previous}>上一页</Pager.Item>
                 <Pager.Item onClick={this.setNext} disabled={!this.state.next}>下一页</Pager.Item>
             </Pager>
+             <PersonalInventoryCreateDialog show={this.state.showCreateInvtDialog} cancelSave={this.cancelSave} currentUser={this.props.currentUser}/>
              <PersonalInventoryUpdateDialog show={this.state.showCreateInvtDialog} cancelSave={this.cancelSave} currentUser={this.props.currentUser}/>
         </div>);
     }
