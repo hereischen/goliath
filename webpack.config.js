@@ -1,4 +1,14 @@
+const path = require('path');
+
 module.exports = {
+    entry: [
+        './frontend/src/index.js',
+        './frontend/src/main.less'
+        ],
+    output: {
+        path: path.resolve(__dirname, 'static', 'frontend'),
+        filename: 'main.js'
+    },
     module: {
         rules: [
             {
@@ -9,9 +19,13 @@ module.exports = {
                 }
             },
             {
-                test: /\.less$/,
+                test: /\.less$/, // .less and .css
                 exclude: /node_modules/,
-                loader: 'less-loader' // compiles Less to CSS
+                use: [ 
+                    'style-loader',
+                    'css-loader' ,
+                    'less-loader'
+                ],
             }
         ]
     }
