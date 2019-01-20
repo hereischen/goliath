@@ -27,8 +27,10 @@ class BrandList(ListAPIView):
     """返回所有品牌信息."""
     pagination_class = StandardPagination
     serializer_class = BrandSerializer
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('brand',)
+    ordering_fields = ('brand', 'modified_date')
+    ordering = ('brand',)
 
     def get_queryset(self):
         logger.info('[BrandList] Received data : %s' %
@@ -44,8 +46,10 @@ class CategoryList(ListAPIView):
     """返回所有品类信息."""
     pagination_class = StandardPagination
     serializer_class = CategorySerializer
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('category',)
+    ordering_fields = ('category', 'modified_date')
+    ordering = ('category',)
 
     def get_queryset(self):
         logger.info('[CategoryList] Received data : %s' %
@@ -61,8 +65,10 @@ class MerchandiseList(ListAPIView):
     """返回所有商品信息."""
     pagination_class = StandardPagination
     serializer_class = MerchandiseSerializer
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('^code',)
+    ordering_fields = ('code', 'modified_date')
+    ordering = ('code',)
 
     def get_queryset(self):
         logger.info('[MerchandiseList] Received data : %s' %
@@ -96,8 +102,10 @@ class MerchantInventoryList(ListAPIView):
     """返回某商户的库存详细信息."""
     pagination_class = StandardPagination
     serializer_class = MerchantInventorySerializer
-    filter_backends = (filters.SearchFilter,)
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
     search_fields = ('^merchandise__code',)
+    ordering_fields = ('merchandise__code', 'modified_date')
+    ordering = ('merchandise__code',)
 
     def get_queryset(self):
         logger.info('[MerchantInventoryList] Received data : %s' %
@@ -111,6 +119,9 @@ class MerchandiseInventoryList(ListAPIView):
     """返回某商商品的库存详细信息."""
     pagination_class = StandardPagination
     serializer_class = InventorySerializer
+    filter_backends = (filters.OrderingFilter,)
+    ordering_fields = ('merchandise__code', 'modified_date')
+    ordering = ('merchandise__code',)
 
     def get_queryset(self):
         logger.info('[MerchantInventoryList] Received data : %s' %
