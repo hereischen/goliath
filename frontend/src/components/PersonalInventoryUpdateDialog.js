@@ -1,6 +1,5 @@
 import React from 'react';
 import InformationDialog from './InformationDialog'
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 
 class PersonalInventoryUpdateDialog extends React.Component {

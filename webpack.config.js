@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
@@ -9,6 +10,13 @@ module.exports = {
         path: path.resolve(__dirname, 'static', 'frontend'),
         filename: 'main.js'
     },
+    plugins: [
+        new webpack.ProvidePlugin({
+          $: 'jquery',
+          jQuery: 'jquery',
+          _: 'lodash',
+        })
+    ],
     module: {
         rules: [
             {
@@ -19,7 +27,8 @@ module.exports = {
                 }
             },
             {
-                test: /\.less$/, // .less and .css
+                // test: /\.(le|c)ss$/, // .less and .css
+                test: /\.less$/,
                 exclude: /node_modules/,
                 use: [ 
                     'style-loader',

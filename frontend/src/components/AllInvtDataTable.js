@@ -2,7 +2,6 @@ import React from 'react';
 import InventoryTable from "./InventoryTable";
 import Dialog from "react-bootstrap-dialog";
 import Pager from 'react-bootstrap/lib/Pagination';
-import utils from "../utils/utils";
 
 export default class AllInvtDataTable extends React.Component{
     constructor (props) {
