@@ -145,6 +145,9 @@ SUIT_CONFIG = {
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "goliath.pagination.StandardPagination",
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
 }
 
 LOGGING = {

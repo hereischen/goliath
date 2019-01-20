@@ -1,4 +1,22 @@
+const webpack = require('webpack');
+const path = require('path');
+
 module.exports = {
+    entry: [
+        './frontend/src/index.js',
+        './frontend/src/main.less'
+        ],
+    output: {
+        path: path.resolve(__dirname, 'static', 'frontend'),
+        filename: 'main.js'
+    },
+    plugins: [
+        new webpack.ProvidePlugin({
+          $: 'jquery',
+          jQuery: 'jquery',
+          _: 'lodash',
+        })
+    ],
     module: {
         rules: [
             {
@@ -9,9 +27,14 @@ module.exports = {
                 }
             },
             {
+                // test: /\.(le|c)ss$/, // .less and .css
                 test: /\.less$/,
                 exclude: /node_modules/,
-                loader: 'less-loader' // compiles Less to CSS
+                use: [ 
+                    'style-loader',
+                    'css-loader' ,
+                    'less-loader'
+                ],
             }
         ]
     }

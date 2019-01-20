@@ -1,6 +1,5 @@
 import React from 'react';
 import Select from 'react-select';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 
 class SelectMerchandise extends React.Component {

@@ -1,6 +1,4 @@
 import React from "react";
-import _ from 'lodash';
-import utils from '../utils/utils';
 import InventoryTable from "./InventoryTable";
 import AllInvtDataTable from "./AllInvtDataTable";
 import PersonalDataTable from "./PersonalDataTable";
