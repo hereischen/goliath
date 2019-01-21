@@ -20,7 +20,6 @@ class PersonalInventoryUpdateDialog extends React.Component {
 
         this.saveInventory = this.saveInventory.bind(this);
         this.cancelSave = this.cancelSave.bind(this);
-        this.onChange = this.onChange.bind(this);
         this.onChangePrice = this.onChangePrice.bind(this);
         this.onChangeCount = this.onChangeCount.bind(this);
         this.getConfirmed = this.getConfirmed.bind(this);
@@ -28,9 +27,10 @@ class PersonalInventoryUpdateDialog extends React.Component {
     }
 
     static propTypes = {
+        deposit: PropTypes.bool,
         show: PropTypes.bool,
         onCancel: PropTypes.func,
-        currentUser: PropTypes.string
+        currentUser: PropTypes.string,
     };
 
     static getDerivedStateFromProps(props, state) {
@@ -38,15 +38,6 @@ class PersonalInventoryUpdateDialog extends React.Component {
             return {show: props.show};
         }
         return state;
-    }
-
-    onChange(selectedMerchandise) {
-        this.setState({
-            selectedBrand:selectedMerchandise.brand.brand,
-            selectedCategory:selectedMerchandise.category.category,
-            selectedMerchandiseId: selectedMerchandise.id,
-            selectedMerchandiseCode: selectedMerchandise.code
-        })
     }
 
     saveInventory() {
@@ -73,12 +64,13 @@ class PersonalInventoryUpdateDialog extends React.Component {
 
     cancelSave() {
         this.setState({show: false});
-        this.props.cancelSave();
+        this.props.closeDialog();
     }
 
     onChangePrice(event) {
         this.setState( {price: event.target.value})
     }
+
     onChangeCount(event) {
         this.setState({quantity: event.target.value});
     }

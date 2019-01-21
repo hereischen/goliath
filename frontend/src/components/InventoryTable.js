@@ -6,7 +6,7 @@ export default class InventoryTable extends React.Component{
         this.state = {
             inventories: props.data,
             columns: props.columns
-        }
+        };
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -22,7 +22,10 @@ export default class InventoryTable extends React.Component{
                 <td>{index + 1}</td>
                 {
                     _.map(this.state.columns, (column, ind) => {
-                        return (<td key={ind}>{invt[column.selector]}</td>)
+                        if (column.type === "action") {
+                            return (column.renderContent(invt, ind));
+                        }
+                        return (<td key={ind}>{invt[column.selector]}</td>);
                     })
                 }
             </tr>)
@@ -32,8 +35,8 @@ export default class InventoryTable extends React.Component{
 
     renderTitle() {
         const columns = [(<th key="0">编号</th>)];
-        return _.concat(columns, _.map(this.state.columns, (column,index) => {
-                return (<th scope="col" key={index+1}>{column.text}</th>);
+        return _.concat(columns, _.map(this.state.columns, (column, index) => {
+            return (<th scope="col" key={index+1}>{column.title}</th>);
         }));
     }
 

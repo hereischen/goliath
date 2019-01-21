@@ -29,7 +29,7 @@ class PersonalInventoryCreateDialog extends React.Component {
 
     static propTypes = {
         show: PropTypes.bool,
-        onCancel: PropTypes.func,
+        closeDialog: PropTypes.func,
         currentUser: PropTypes.string
     };
 
@@ -57,12 +57,24 @@ class PersonalInventoryCreateDialog extends React.Component {
             quantity: this.state.quantity,
             price: this.state.price,
             remarks: "",
+        }, () => {
+            this.setState({
+                show: false,
+                confirmed: false,
+                selectedBrand: "",
+                selectedCategory: "",
+                selectedMerchandiseId: 0,
+                selectedMerchandiseCode: "",
+                price: 0,
+                quantity: 0,
+            });
+            this.props.closeDialog();
         })
     }
 
     cancelSave() {
         this.setState({show: false});
-        this.props.cancelSave();
+        this.props.closeDialog();
     }
 
     onChangePrice(event) {
