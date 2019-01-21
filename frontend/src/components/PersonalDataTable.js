@@ -14,22 +14,19 @@ export default class PersonalDataTable extends React.Component{
             personalInventories: [],
             showCreateInvtDialog: false,
             showUpdateInvtDialog: false,
-            url: `/inventory/inventories/merchants?id=${this.props.currentUser}`
+
         };
-        this.getPersonalInventories(this.state.url);
+        this.getPersonalInventories();
         this.showCreateDialog = this.showCreateDialog.bind(this);
         this.setNext = this.setNext.bind(this);
         this.setPrevious = this.setPrevious.bind(this);
-        this.cancelSave = this.cancelSave.bind(this);
         this.onRowClick = this.onRowClick.bind(this);
+        this.onSaveInventry = this.onSaveInventry.bind(this);
     }
 
-    getPersonalInventories(url) {
-        if (!url) {
-            console.error("url should not be null!");
-            return;
-        }
-            $.get(url, (data) => {
+
+    getPersonalInventories() {
+        $.get(`/inventory/inventories/merchants?id=${this.props.currentUser}`, (data) => {
             const inventories = PersonalDataTable.buildPersonalInventoryTable(data.results);
             this.setState({
                 next: data.next,
@@ -67,14 +64,12 @@ export default class PersonalDataTable extends React.Component{
         this.setState( {showCreateInvtDialog: true});
     }
 
-    cancelSave() {
-        this.setState( { showCreateInvtDialog: false});
-    }
-
     onRowClick(id, deposit) {
+        const selectedMchds = _.find(this.state.personalInventories, invt => invt.id === id);
         this.setState({
             deposit: deposit,
             showUpdateInvtDialog: true,
+            selectedMerchandise: selectedMchds,
         });
     }
 
@@ -116,13 +111,18 @@ export default class PersonalDataTable extends React.Component{
                     title: "操作",
                     renderContent: (invt, ind) =>
                         (<td key={ind}>
-                            <button onClick={() => {this.onRowClick(invt.id, false)}}>+</button>
-                            <button onClick={() => {this.onRowClick(invt.id, true)}}>-</button></td>)
+                            <button onClick={() => {this.onRowClick(invt.id, true)}}>+</button>
+                            <button onClick={() => {this.onRowClick(invt.id, false)}}>-</button></td>)
                 }
 
             ];
         }
 
+    onSaveInventry() {
+        this.setState({showUpdateInvtDialog: false});
+
+        this.getPersonalInventories(this.state.url);
+    }
     render() {
         return (<div id="personal">
             <button className="btn btn-default" onClick={this.showCreateDialog}>新建库存</button>
@@ -134,8 +134,17 @@ export default class PersonalDataTable extends React.Component{
                 <Pager.Item onClick={this.setPrevious} disabled={!this.state.previous}>上一页</Pager.Item>
                 <Pager.Item onClick={this.setNext} disabled={!this.state.next}>下一页</Pager.Item>
             </Pager>
-            <PersonalInventoryCreateDialog show={this.state.showCreateInvtDialog} closeDialog={this.cancelSave} currentUser={this.props.currentUser}/>
-            <PersonalInventoryUpdateDialog deposit={this.state.deposit} show={this.state.showUpdateInvtDialog}/>
+
+            <PersonalInventoryCreateDialog show={this.state.showCreateInvtDialog}
+                                           closeDialog={() => {this.setState( { showCreateInvtDialog: false});}}
+                                           currentUser={this.props.currentUser}/>
+
+            <PersonalInventoryUpdateDialog deposit={this.state.deposit}
+                                           show={this.state.showUpdateInvtDialog}
+                                           closeDialog={() => this.setState({showUpdateInvtDialog: false})}
+                                           onSaveInventry={this.onSaveInventry}
+                                           selectedMerchandise={this.state.selectedMerchandise}
+                                           currentUser={this.props.currentUser}/>
         </div>);
     }
 }
