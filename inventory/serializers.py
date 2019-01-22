@@ -107,8 +107,13 @@ class UpdateInventorySerializer(serializers.Serializer):
 
         if self.validated_data['quantity'] > current_inv.quantity:
             return {"result": "fail", "details": "您的库存不足"}
+        current_inv.quantity -= self.validated_data['quantity']
+        c_remarks = self.validated_data.get('remarks')
+        if c_remarks:
+            current_inv.remarks += ("=>" + c_remarks)
+        current_inv.save()
 
-        for item in self.validated_data.get('withdraw_from'):
+        for item in self.validated_data.get('withdraw_from', []):
             try:
                 withdraw_inv = Inventory.objects.get(
                     merchandise=self.validated_data['merchandise_id'],
