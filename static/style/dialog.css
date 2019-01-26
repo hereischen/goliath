@@ -18,3 +18,7 @@
     margin-right: 10px;
     font-weight: bold;
 }
+
+.deposit-dialog .modal-dialog{
+    width: 1000px;
+}

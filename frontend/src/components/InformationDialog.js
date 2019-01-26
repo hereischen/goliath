@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/lib/Button';
 import PropTypes from 'prop-types';
 
 class InformationDialog extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -23,7 +22,7 @@ class InformationDialog extends React.Component {
   render() {
     return (
       <div>
-        <Modal show={this.props.show} onHide={this.props.onCancel} className="information">
+        <Modal show={this.props.show} onHide={this.props.onCancel} className={`information ${this.props.className}`}>
           <Modal.Header closeButton>
             <Modal.Title>{this.props.title}</Modal.Title>
           </Modal.Header>

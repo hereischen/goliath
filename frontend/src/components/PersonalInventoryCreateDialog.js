@@ -50,7 +50,6 @@ class PersonalInventoryCreateDialog extends React.Component {
     }
 
     saveInventory() {
-        console.log(this.state);
         $.post("/inventory/update/", {
             current_merchant_id: this.props.currentUser,
             merchandise_id: this.state.selectedMerchandiseId,
