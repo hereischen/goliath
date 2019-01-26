@@ -1,6 +1,6 @@
 import React from 'react';
 import InventoryTable from "./InventoryTable";
-import Dialog from "react-bootstrap-dialog";
+import RentDialog from './RentDialog';
 import Pager from 'react-bootstrap/lib/Pagination';
 
 export default class AllInvtDataTable extends React.Component{
@@ -10,12 +10,16 @@ export default class AllInvtDataTable extends React.Component{
             next: null,
             previous: null,
             allInventories: [],
-            url : "/inventory/inventories"
+            url : "/inventory/inventories",
+            depositTableData: [],
+            showDepositDialog: false,
+            selectedMerchandiseId: 0,
         };
         this.getAllInventories(this.state.url);
-        this.showDetailsDialog = this.showDetailsDialog.bind(this);
         this.setNext = this.setNext.bind(this);
         this.setPrevious = this.setPrevious.bind(this);
+        this.onRowClick = this.onRowClick.bind(this);
+        this.onCloseDialog = this.onCloseDialog.bind(this);
     }
 
     getAllInventories(url) {
@@ -54,48 +58,88 @@ export default class AllInvtDataTable extends React.Component{
         this.getAllInventories(this.state.previous);
     }
 
-    showDetailsDialog() {
-        this.dialog.show({
-            title: '库存详情',
-            body: (<div>库存详情
-                   </div>),
-            bsSize: 'large',
-            onHide: (dialog) => {
-                dialog.hide();
-                console.log('closed by clicking background.');
-            },
-
-            actions: [
-                Dialog.CancelAction(() => {
-                    console.log("cancel click")
-                }),
-                Dialog.OKAction(() => {
-                    console.log("ok click")
-                })
-            ],
-        })
+    onRowClick(merchandise) {
+        $.get(`inventory/inventories/merchandise?id=${merchandise.id}`, (data) => {
+            const depositTableData = this.buildDepositData(data.results);
+            this.setState({
+                depositTableData: depositTableData,
+                showDepositDialog: true,
+                selectedMerchandiseId: merchandise.id,
+            });
+        });
     }
 
+    buildDepositData(data) {
+        return _(data)
+            .filter(mcht => mcht.merchant.id !== this.props.currentUser)
+            .map((mcht => {
+           return  {
+               merchantName: mcht.merchant.name,
+               merchantId: mcht.merchant.id,
+               mobile: mcht.merchant.mobile,
+               email: mcht.merchant.email,
+               dingding: mcht.merchant.dingding,
+               address: mcht.merchant.address,
+               code: mcht.merchandise.code,
+               brand: mcht.merchandise.brand.brand,
+               category: mcht.merchandise.category.category,
+               quantity: mcht.quantity,
+               id: mcht.id,
+            }
+        })).value();
+    }
+
+    getColumns() {
+        return [{
+            title: "品牌",
+            selector: "brand",
+            type: "text",
+        }, {
+            title: "品类",
+            selector: "category",
+            type: "text",
+        }, {
+            title: "商品编码",
+            selector: "code",
+            type: "text",
+
+        }, {
+            title: "数量",
+            selector: "quantity",
+            type: "text"
+        }, {
+            title: "详情",
+            selector: "details",
+            type: "text"
+        }, {
+            title: "操作",
+            type: "action",
+            renderContent: (merchandise, ind) =>
+                        (<td key={ind}>
+                            <button onClick={() => {this.onRowClick(merchandise)}}>...</button>
+                        </td>)
+        }]
+    }
+
+    onCloseDialog() {
+        this.setState({showDepositDialog: false});
+    }
     render() {
         return (<div id="all">
-            <button className="btn btn-default" onClick={this.showDetailsDialog}>新建库存</button>
             <InventoryTable className="table"
                             data={this.state.allInventories}
-                            columns={[
-                                {text: "品牌", selector: "brand"},
-                                {text: "品类", selector: "category"},
-                                {text: "商品编码", selector: "code"},
-                                {text: "数量", selector: "quantity"},
-                                {text: "详情", selector: "details"}
-                            ]}
+                            columns={this.getColumns()}
             />
             <Pager>
                 <Pager.Item onClick={this.setPrevious} disabled={!this.state.previous}>上一页</Pager.Item>
                 <Pager.Item onClick={this.setNext} disabled={!this.state.next}>下一页</Pager.Item>
             </Pager>
-            <Dialog ref={(el) => {
-                this.dialog = el
-            }}/>
+            <RentDialog depositTableData= {this.state.depositTableData}
+                        show={this.state.showDepositDialog}
+                        onClose={this.onCloseDialog}
+                        currentUser={this.props.currentUser}
+                        selectedMerchandiseId={this.state.selectedMerchandiseId}
+            />
         </div>);
     }
 }
