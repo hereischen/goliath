@@ -51,6 +51,12 @@ class MerchantInventorySerializer(InventorySerializer):
         fields = ('id', 'price', 'quantity', 'merchandise', 'modified_date')
 
 
+class MerchandiseInventorySerializer(InventorySerializer):
+    class Meta:
+        model = Inventory
+        fields = ('id', 'price', 'quantity', 'merchant', 'modified_date')
+
+
 class UpdateInventorySerializer(serializers.Serializer):
     """更新库存的serializer."""
     current_merchant_id = serializers.CharField(required=True)
