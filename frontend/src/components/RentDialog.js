@@ -40,7 +40,7 @@ export default class RentDialog extends React.Component{
                 return;
             }
             return {
-                mechant: mcht.merchantId,
+                merchant: mcht.merchantId,
                 quantity: this.state.merchantAndNumberMapping[mcht.id],
             }
         })
@@ -52,9 +52,8 @@ export default class RentDialog extends React.Component{
             merchandise_id: this.props.selectedMerchandiseId,
             deposit: false,
             quantity: 0,
-            withdraw_from : withdraw_from,
+            withdraw_from : JSON.stringify(withdraw_from),
         };
-        console.log(request);
         $.post('/inventory/update/', request, () => {
             this.setState({show: false});
             this.props.onClose();

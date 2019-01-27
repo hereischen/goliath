@@ -108,10 +108,6 @@ export default class AllInvtDataTable extends React.Component{
             selector: "quantity",
             type: "text"
         }, {
-            title: "详情",
-            selector: "details",
-            type: "text"
-        }, {
             title: "操作",
             type: "action",
             renderContent: (merchandise, ind) =>
