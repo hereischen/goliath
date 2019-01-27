@@ -121,8 +121,8 @@ class MerchandiseInventoryList(ListAPIView):
     pagination_class = StandardPagination
     serializer_class = MerchandiseInventorySerializer
     filter_backends = (filters.OrderingFilter,)
-    ordering_fields = ('merchandise__code', 'modified_date')
-    ordering = ('merchandise__code',)
+    ordering_fields = ('modified_date',)
+    ordering = ('modified_date',)
 
     def get_queryset(self):
         logger.info('[MerchantInventoryList] Received data : %s' %
