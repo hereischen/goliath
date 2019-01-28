@@ -1,6 +1,6 @@
 import React from 'react';
 import InventoryTable from "./InventoryTable";
-import RentDialog from './RentDialog';
+import WithdrawDialog from './WithdrawDialog';
 import Pager from 'react-bootstrap/lib/Pagination';
 
 export default class AllInvtDataTable extends React.Component{
@@ -12,7 +12,7 @@ export default class AllInvtDataTable extends React.Component{
             allInventories: [],
             url : "/inventory/inventories",
             depositTableData: [],
-            showDepositDialog: false,
+            showWithdrawDialog: false,
             selectedMerchandiseId: 0,
         };
         this.getAllInventories(this.state.url);
@@ -20,6 +20,7 @@ export default class AllInvtDataTable extends React.Component{
         this.setPrevious = this.setPrevious.bind(this);
         this.onRowClick = this.onRowClick.bind(this);
         this.onCloseDialog = this.onCloseDialog.bind(this);
+        this.onConfirmWithDraw = this.onConfirmWithDraw.bind(this);
     }
 
     getAllInventories(url) {
@@ -32,7 +33,8 @@ export default class AllInvtDataTable extends React.Component{
             this.setState({
                 next: data.next,
                 previous: data.previous,
-                allInventories: inventories
+                allInventories: inventories,
+                showWithdrawDialog: false
             });
         });
     }
@@ -63,7 +65,7 @@ export default class AllInvtDataTable extends React.Component{
             const depositTableData = this.buildDepositData(data.results);
             this.setState({
                 depositTableData: depositTableData,
-                showDepositDialog: true,
+                showWithdrawDialog: true,
                 selectedMerchandiseId: merchandise.id,
             });
         });
@@ -73,20 +75,19 @@ export default class AllInvtDataTable extends React.Component{
         return _(data)
             .filter(mcht => mcht.merchant.id !== this.props.currentUser)
             .map((mcht => {
-           return  {
-               merchantName: mcht.merchant.name,
-               merchantId: mcht.merchant.id,
-               mobile: mcht.merchant.mobile,
-               email: mcht.merchant.email,
-               dingding: mcht.merchant.dingding,
-               address: mcht.merchant.address,
-               code: mcht.merchandise.code,
-               brand: mcht.merchandise.brand.brand,
-               category: mcht.merchandise.category.category,
-               quantity: mcht.quantity,
-               id: mcht.id,
-            }
-        })).value();
+                return {
+                    merchantName: mcht.merchant.name,
+                    merchantId: mcht.merchant.id,
+                    mobile: mcht.merchant.mobile,
+                    email: mcht.merchant.email,
+                    dingding: mcht.merchant.dingding,
+                    address: mcht.merchant.address,
+                    quantity: mcht.quantity,
+                    price: mcht.price,
+                    id: mcht.id,
+                }
+            }))
+            .value();
     }
 
     getColumns() {
@@ -117,8 +118,12 @@ export default class AllInvtDataTable extends React.Component{
         }]
     }
 
+    onConfirmWithDraw() {
+        this.getAllInventories(this.state.url);
+    }
+
     onCloseDialog() {
-        this.setState({showDepositDialog: false});
+        this.setState({showWithdrawDialog: false});
     }
     render() {
         return (<div id="all">
@@ -130,11 +135,12 @@ export default class AllInvtDataTable extends React.Component{
                 <Pager.Item onClick={this.setPrevious} disabled={!this.state.previous}>上一页</Pager.Item>
                 <Pager.Item onClick={this.setNext} disabled={!this.state.next}>下一页</Pager.Item>
             </Pager>
-            <RentDialog depositTableData= {this.state.depositTableData}
-                        show={this.state.showDepositDialog}
-                        onClose={this.onCloseDialog}
-                        currentUser={this.props.currentUser}
-                        selectedMerchandiseId={this.state.selectedMerchandiseId}
+            <WithdrawDialog depositTableData= {this.state.depositTableData}
+                            show={this.state.showWithdrawDialog}
+                            onClose={this.onCloseDialog}
+                            onConfirm={this.onConfirmWithDraw}
+                            currentUser={this.props.currentUser}
+                            selectedMerchandiseId={this.state.selectedMerchandiseId}
             />
         </div>);
     }

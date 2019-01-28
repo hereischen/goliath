@@ -3,13 +3,14 @@ import InformationDialog from './InformationDialog';
 import PropTypes from 'prop-types';
 import InventoryTable from "./InventoryTable";
 
-export default class RentDialog extends React.Component{
+export default class WithdrawDialog extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            show: props.showDepositDialog,
+            show: props.show,
             depositTableData: {},
             merchantAndNumberMapping: {},
+            confirm: false,
         };
 
         this.onConfirm = this.onConfirm.bind(this);
@@ -30,13 +31,21 @@ export default class RentDialog extends React.Component{
     }
 
     onCancel() {
-        this.setState({show: false});
+        this.setState({
+            show: false,
+            confirm: false,
+        });
         this.props.onClose();
     }
 
     onConfirm() {
+        if (!this.state.confirm) {
+            this.setState({confirm: true});
+            return;
+        }
+
         const withdraw_from = _(this.props.depositTableData).map((mcht) => {
-            if (!this.state.merchantAndNumberMapping[mcht.id]) {
+            if (!this.state.merchantAndNumberMapping[mcht.id] || this.state.merchantAndNumberMapping[mcht.id] < 0) {
                 return;
             }
             return {
@@ -55,8 +64,11 @@ export default class RentDialog extends React.Component{
             withdraw_from : JSON.stringify(withdraw_from),
         };
         $.post('/inventory/update/', request, () => {
-            this.setState({show: false});
-            this.props.onClose();
+            this.setState({
+                show: false,
+                confirm: false,
+            });
+            this.props.onConfirm();
         })
     }
 
@@ -67,22 +79,6 @@ export default class RentDialog extends React.Component{
 
     getColumns() {
         return ([
-            {
-                type: "text",
-                title: "品牌",
-                selector: "brand",
-            },
-            {
-                type: "text",
-                title: "品类",
-                selector: "category",
-
-            },
-            {
-                type: "text",
-                title: "商品编码",
-                selector: "code",
-            },
             {
                 type: "text",
                 title: "供货商-姓名",
@@ -105,6 +101,11 @@ export default class RentDialog extends React.Component{
             },
             {
                 type: "text",
+                title: "价格",
+                selector: "price",
+            },
+            {
+                type: "text",
                 title: "数量",
                 selector: "quantity",
             },
@@ -118,14 +119,28 @@ export default class RentDialog extends React.Component{
             }
         ]);
     }
+
+    getConfirmDialogBody() {
+        const withdraw_from = _(this.props.depositTableData).map((mcht, index) => {
+            if (!this.state.merchantAndNumberMapping[mcht.id] || this.state.merchantAndNumberMapping[mcht.id] < 0) {
+                return;
+            }
+            return (<li key={index}>请确认从 {mcht.merchantName} 处购买 {this.state.merchantAndNumberMapping[mcht.id]}件商品</li>)
+        })
+            .compact()
+            .value();
+
+        return (<ul>{withdraw_from}</ul>)
+    }
     getBody() {
-        return (<InventoryTable
+        return this.state.confirm ? this.getConfirmDialogBody() : (<InventoryTable
             columns = {this.getColumns()}
             data = {this.props.depositTableData}
         />);
     }
 
     render() {
+        console.log();
         return <InformationDialog
             className="deposit-dialog"
             show={this.state.show}
