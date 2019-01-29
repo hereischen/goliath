@@ -14,9 +14,9 @@ export default class PersonalDataTable extends React.Component{
             personalInventories: [],
             showCreateInvtDialog: false,
             showUpdateInvtDialog: false,
-
+            url: `/inventory/inventories/merchants?id=${this.props.currentUser}`
         };
-        this.getPersonalInventories();
+        this.getPersonalInventories(this.state.url);
         this.showCreateDialog = this.showCreateDialog.bind(this);
         this.setNext = this.setNext.bind(this);
         this.setPrevious = this.setPrevious.bind(this);
@@ -25,8 +25,12 @@ export default class PersonalDataTable extends React.Component{
     }
 
 
-    getPersonalInventories() {
-        $.get(`/inventory/inventories/merchants?id=${this.props.currentUser}`, (data) => {
+    getPersonalInventories(url) {
+        if (!url) {
+            console.error("url should not be null!");
+            return;
+        }
+        $.get(url, (data) => {
             const inventories = PersonalDataTable.buildPersonalInventoryTable(data.results);
             this.setState({
                 next: data.next,

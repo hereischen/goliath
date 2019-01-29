@@ -19,6 +19,10 @@
     font-weight: bold;
 }
 
+.modal-open .modal {
+    overflow: scroll;
+}
+
 .deposit-dialog .modal-dialog{
     width: 1000px;
 }
