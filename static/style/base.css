@@ -18,6 +18,7 @@ h3 {
   align-items: center;
   font-size: 16px;
   height: 87px;
+  width: 100%;
 }
 .header a, .header a:hover {
   color: #343a40;
