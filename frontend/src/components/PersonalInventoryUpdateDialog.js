@@ -14,7 +14,9 @@ class PersonalInventoryUpdateDialog extends React.Component {
             price: 0,
             quantity: 0,
             deposit: true,
-            confirmed: false
+            confirmed: false,
+            showCountHelpText: false,
+            showPriceHelpText: false,
         };
 
         this.saveInventory = this.saveInventory.bind(this);
@@ -110,7 +112,19 @@ class PersonalInventoryUpdateDialog extends React.Component {
     }
 
     getConfirmed(){
-        this.setState({confirmed: true});
+        const showCountHelpText = (!this.state.deposit && this.state.quantity < this.props.selectedMerchandise.quantity)
+        || (this.state.deposit && this.state.quantity <= 0);
+
+        const showPriceHelpText = this.state.deposit && this.state.price <= 0;
+
+        if (showPriceHelpText || showCountHelpText) {
+            this.setState({showPriceHelpText, showCountHelpText});
+        }
+        else {
+            this.setState({
+                confirmed: true,
+            });
+        }
     }
 
     cancelConfirm(){
@@ -131,12 +145,21 @@ class PersonalInventoryUpdateDialog extends React.Component {
                 <div className="item"><span className="title">品牌:</span><span>{this.props.selectedMerchandise.brand}</span></div>
                 <div className="item"><span className="title">品类:</span><span>{this.props.selectedMerchandise.category}</span></div>
                 <div className="item"><span className="title">商品编码:</span><span>{this.props.selectedMerchandise.category}</span></div>
-                <div className="item"><span className="title">最新价格:</span><input value={this.state.price}
-                                                              onChange={this.onChangePrice}
-                                                              type="number"/></div>
-                <div className="item"><span className="title">新增数量:</span><input value={this.state.quantity}
-                                                              onChange={this.onChangeCount}
-                                                              type="number"/></div>
+                <div className="item"><span className="title">最新价格:</span>
+                    <input value={this.state.price}
+                           onChange={this.onChangePrice}
+                           type="number"
+                           min="0"
+                    />
+                   {this.state.showPriceHelpText && <span style={{color: "red"}}>价格必须大于0</span>}
+
+                </div>
+                <div className="item"><span className="title">新增数量:</span>
+                    <input value={this.state.quantity}
+                           onChange={this.onChangeCount}
+                           type="number" min="0"/>
+                    {this.state.showCountHelpText && <span style={{color: "red"}}>增加数量必须大于0</span>}
+                </div>
               </form>));
         return dialogBody;
     }
@@ -149,10 +172,13 @@ class PersonalInventoryUpdateDialog extends React.Component {
                 <div className="item"><span className="title">品类:</span><span>{this.props.selectedMerchandise.category}</span></div>
                 <div className="item"><span className="title">商品编码:</span><span>{this.props.selectedMerchandise.category}</span></div>
                 <div className="item"><span className="title">最新价格:</span><span> {this.state.price}</span></div>
-                <div className="item"><span>取出数量</span><input placeholder="取出数量"
-                                                              value={this.state.quantity}
-                                                              onChange={this.onChangeCount}
-                                                              type="number" min="0"/></div>
+                <div className="item"><span>取出数量</span>
+                    <input placeholder="取出数量"
+                           value={this.state.quantity}
+                           onChange={this.onChangeCount}
+                           type="number" min="0"/>
+                    {this.state.showCountHelpText && <span style={{color: "red"}}>取出数量需要小于用户拥有的数量</span>}
+                </div>
               </form>));
         return dialogBody;
     }
