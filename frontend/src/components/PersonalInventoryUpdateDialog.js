@@ -112,9 +112,8 @@ class PersonalInventoryUpdateDialog extends React.Component {
     }
 
     getConfirmed(){
-        const showCountHelpText = (!this.state.deposit && this.state.quantity < this.props.selectedMerchandise.quantity)
-        || (this.state.deposit && this.state.quantity <= 0);
-
+        const showCountHelpText = (!this.state.deposit && this.state.quantity > this.props.selectedMerchandise.quantity)
+            || this.state.quantity <= 0;
         const showPriceHelpText = this.state.deposit && this.state.price <= 0;
 
         if (showPriceHelpText || showCountHelpText) {
