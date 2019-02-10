@@ -33,13 +33,13 @@ export default class Inventories extends React.Component {
                     <a className={`nav-link ${this.state.currentTable === Inventories.TabType.ALL ? 'active' : ''}`}
                        data-toggle="tab"
                        href='#all'
-                       onClick={() => this.setState({currentTable: Inventories.TabType.ALL})}>总表</a>
+                       onClick={() => this.setState({currentTable: Inventories.TabType.ALL})}>总库存</a>
                 </li>
                 <li className={this.state.currentTable === Inventories.TabType.PERSONAL ? 'active' : ''}>
                     <a className={`nav-link ${this.state.currentTable === Inventories.TabType.ALL ? 'active' : ''}`}
                        data-toggle="tab"
                        href="#personal"
-                       onClick={() => this.setState({currentTable: Inventories.TabType.PERSONAL})}>个人表</a>
+                       onClick={() => this.setState({currentTable: Inventories.TabType.PERSONAL})}>个人库存</a>
                 </li>
             </ul>
                 <div className="tab-content">

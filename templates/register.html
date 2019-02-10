@@ -13,35 +13,27 @@
         <form method="post" action="{% url 'merchant:register' %}">
             {% csrf_token %}
             <div class="form-group">
-                <!-- <label for="usernameInput">账号:</label> -->
                 {{ forms.username }}
             </div>
             <div class="form-group">
-                <!-- <label for="InputPassword">密码:</label> -->
                 {{ forms.password }}
             </div>
             <div class="form-group">
-                <!-- <label for="InputPassword1">重复密码:</label> -->
                 {{ forms.password1 }}
             </div>
             <div class="form-group">
-                <!-- <label for="mobileInput">移动电话:</label> -->
                 {{ forms.mobile }}
             </div>
             <div class="form-group">
-                <!-- <label for="nameInput">公司名:</label> -->
                 {{ forms.name }}
             </div>
             <div class="form-group">
-                <!-- <label for="addreesInput">公司地址:</label> -->
                 {{ forms.address }}
             </div>
             <div class="form-group">
-                <!-- <label for="emailInput">电子邮箱:</label> -->
                 {{ forms.email }}
             </div>
             <div class="form-group">
-                <!-- <label for="emailInput">钉钉:</label> -->
                 {{ forms.dingding}}
             </div>
             <div class="form-group">
