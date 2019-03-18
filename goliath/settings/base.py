@@ -135,8 +135,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
-AUTH_USER_MODEL = 'merchant.Merchant'
-
 SUIT_CONFIG = {
     'ADMIN_NAME': 'Goliath 共享库存',
     'SHOW_REQUIRED_ASTERISK': True,
