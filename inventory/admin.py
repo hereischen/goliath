@@ -29,8 +29,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Merchandise)
 class MerchandiseAdmin(admin.ModelAdmin):
-    list_display = ('brand', 'category', 'code', 'in_stock', 'remarks',
-                    'created_date', 'modified_date')
+    list_display = [field.name for field in Merchandise._meta.get_fields()]
     readonly_fields = ('created_date', 'modified_date')
 
     def has_delete_permission(self, request, obj=None):
