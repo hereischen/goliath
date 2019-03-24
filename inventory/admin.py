@@ -11,7 +11,7 @@ from .models import (Brand,
 
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
-    list_display = ('brand', 'in_stock', 'created_date', 'modified_date')
+    list_display = [field.name for field in Brand._meta.get_fields()]
     readonly_fields = ('created_date', 'modified_date')
 
     def has_delete_permission(self, request, obj=None):
@@ -20,7 +20,7 @@ class BrandAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('category', 'in_stock', 'created_date', 'modified_date')
+    list_display = [field.name for field in Category._meta.get_fields()]
     readonly_fields = ('created_date', 'modified_date')
 
     def has_delete_permission(self, request, obj=None):
@@ -38,8 +38,7 @@ class MerchandiseAdmin(admin.ModelAdmin):
 
 @admin.register(Inventory)
 class InventoryAdmin(admin.ModelAdmin):
-    list_display = ('merchandise', 'merchant', 'price', 'quantity',
-                    'remarks', 'remarks_json', 'created_date', 'modified_date')
+    list_display = [field.name for field in Inventory._meta.get_fields()]
     readonly_fields = ('created_date', 'modified_date')
 
     def has_delete_permission(self, request, obj=None):

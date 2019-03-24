@@ -10,6 +10,7 @@ from .models import (Brand,
                      Category,
                      Merchandise,
                      Inventory)
+from history.models import History
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -76,12 +77,19 @@ class CreateNewInvtSerializer(UpdateInvtBaseSerializer):
                 id=self.validated_data['current_merchant_id'])
         except ObjectDoesNotExist:
             return {"result": "fail"}
-        Inventory.objects.create(merchandise=md,
-                                 merchant=cm,
-                                 quantity=self.validated_data['quantity'],
-                                 price=self.validated_data['price'],
-                                 remarks=self.validated_data.get('remarks')
-                                 )
+        inv = Inventory.objects.create(
+            merchandise=md,
+            merchant=cm,
+            quantity=self.validated_data['quantity'],
+            price=self.validated_data['price'],
+            remarks=self.validated_data.get('remarks'))
+
+        History.objects.create(
+            inventory=inv,
+            initiator=self.validated_data['current_merchant_id'],
+            quantity=self.validated_data['quantity'],
+            price=self.validated_data['price'],
+            remarks=self.validated_data.get('remarks'))
         return {"result": "create"}
 
 
@@ -100,10 +108,15 @@ class DepositToInvtSerializer(UpdateInvtBaseSerializer):
         if self.validated_data.get("price"):
             inv.price = self.validated_data['price']
         inv.quantity += self.validated_data['quantity']
-        remarks = self.validated_data.get('remarks')
-        if remarks:
-            inv.remarks += ("=>" + remarks)
+        inv.remarks = self.validated_data.get('remarks')
         inv.save()
+
+        History.objects.create(
+            inventory=inv,
+            initiator=self.validated_data['current_merchant_id'],
+            quantity=self.validated_data['quantity'],
+            price=self.validated_data['price'],
+            remarks=self.validated_data.get('remarks'))
         return {"result": "deposit success"}
 
 
@@ -121,10 +134,16 @@ class WithdrawFromInvtSerializer(UpdateInvtBaseSerializer):
         if self.validated_data['quantity'] > inv.quantity:
             return {"result": "fail", "details": "您的库存不足"}
         inv.quantity -= self.validated_data['quantity']
-        remarks = self.validated_data.get('remarks')
-        if remarks:
-            inv.remarks += ("=>" + remarks)
+        inv.remarks = self.validated_data.get('remarks')
         inv.save()
+
+        History.objects.create(
+            type=1,
+            inventory=inv,
+            initiator=self.validated_data['current_merchant_id'],
+            quantity=self.validated_data['quantity'],
+            price=self.validated_data['price'],
+            remarks=self.validated_data.get('remarks'))
         return {"result": "withdraw success"}
 
 
@@ -143,7 +162,7 @@ class WithdrawFromOthersInvtSerializer(UpdateInvtBaseSerializer):
      }
     ]
     """
-    withdraw_from = serializers.JSONField(required=True, default=list)
+    withdraw_from = serializers.JSONField(required=True)
 
     def withdraw(self):
         try:
@@ -168,9 +187,15 @@ class WithdrawFromOthersInvtSerializer(UpdateInvtBaseSerializer):
             if int(item['quantity']) > withdraw_inv.quantity:
                 return {"result": "fail", "details": "对应商户的库存不足"}
             withdraw_inv.quantity -= int(item['quantity'])
-            # deal_price = item.get('deal_price', withdraw_inv.price)
-            # remarks = item.get('remarks')
-            # if remarks:
-            #     withdraw_inv.remarks += ("=>" + remarks)
-            # withdraw_inv.save()
-        return {"result": "withdraw success"}
+            withdraw_inv.save()
+
+            deal_price = item.get('deal_price', withdraw_inv.price)
+            History.objects.create(
+                type=2,
+                inventory=withdraw_inv,
+                initiator=self.validated_data['current_merchant_id'],
+                quantity=int(item['quantity']),
+                price=withdraw_inv.price,
+                deal_price=deal_price,
+                remarks=item.get('remarks'))
+        return {"result": "withdraw others success"}
