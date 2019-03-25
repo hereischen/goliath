@@ -54,10 +54,12 @@ class Merchandise(models.Model):
                              blank=True, verbose_name='商品型号')
     certification = models.CharField(max_length=36, default="无",
                                      verbose_name='认证')
-    after_sales = models.SmallIntegerField(default=1, verbose_name='售后服务')
+    after_sales = models.SmallIntegerField(default=1, verbose_name='售后服务',
+                                           help_text='年')
     spare_parts = models.CharField(max_length=128, null=True,
                                    blank=True, verbose_name='包装配件')
-    delivery_time = models.SmallIntegerField(default=3, verbose_name='包装配件')
+    delivery_time = models.SmallIntegerField(default=3, verbose_name='配送时间',
+                                             help_text='天')
     in_stock = models.BooleanField(default=True, verbose_name='是否上架')
     remarks = models.TextField(null=True, blank=True, verbose_name='备注')
     created_date = models.DateTimeField(auto_now_add=True,

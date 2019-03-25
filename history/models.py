@@ -31,8 +31,8 @@ class History(models.Model):
                                          verbose_name='修改时间')
 
     class Meta:
-        verbose_name = _('记录')
-        verbose_name_plural = _('记录')
+        verbose_name = _('库存记录')
+        verbose_name_plural = _('库存记录')
 
     def __unicode__(self):
         return unicode("记录%s: 发起人%s." % (self.id, self.initiator))
