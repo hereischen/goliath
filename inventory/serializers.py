@@ -142,7 +142,7 @@ class WithdrawFromInvtSerializer(UpdateInvtBaseSerializer):
             inventory=inv,
             initiator=self.validated_data['current_merchant_id'],
             quantity=self.validated_data['quantity'],
-            price=self.validated_data['price'],
+            price=inv.price,
             remarks=self.validated_data.get('remarks'))
         return {"result": "withdraw success"}
 
