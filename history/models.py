@@ -41,4 +41,4 @@ class History(models.Model):
         # 自增减库存成交价等于时价
         if self.type in (0, 1):
             self.deal_price = self.price
-        super(Inventory, self).save(*args, **kwargs)
+        super(History, self).save(*args, **kwargs)
