@@ -111,11 +111,12 @@ class DepositToInvtSerializer(UpdateInvtBaseSerializer):
         inv.remarks = self.validated_data.get('remarks')
         inv.save()
 
+        price = self.validated_data.get('price') or inv.price
         History.objects.create(
             inventory=inv,
             initiator=self.validated_data['current_merchant_id'],
             quantity=self.validated_data['quantity'],
-            price=self.validated_data['price'],
+            price=price,
             remarks=self.validated_data.get('remarks'))
         return {"result": "deposit success"}
 
@@ -142,7 +143,7 @@ class WithdrawFromInvtSerializer(UpdateInvtBaseSerializer):
             inventory=inv,
             initiator=self.validated_data['current_merchant_id'],
             quantity=self.validated_data['quantity'],
-            price=self.validated_data['price'],
+            price=inv.price,
             remarks=self.validated_data.get('remarks'))
         return {"result": "withdraw success"}
 
