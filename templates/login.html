@@ -3,8 +3,6 @@
 {% block content %}
 
 {% load static %}
-<!-- Custom styles for this template -->
-<link href="{% static 'style/login.css' %}" rel="stylesheet">
 
 <form class="form-signin" method="post" action="/merchant/login/">
     {% csrf_token %}

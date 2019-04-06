@@ -29,8 +29,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Merchandise)
 class MerchandiseAdmin(admin.ModelAdmin):
-    list_display = ('brand', 'category', 'code', 'in_stock', 'remarks',
-                    'created_date', 'modified_date')
+    list_display = ('brand', 'category', 'code', 'model', 'certification',
+                    'after_sales', 'spare_parts', 'delivery_time', 'in_stock',
+                    'remarks', 'created_date', 'modified_date')
     readonly_fields = ('created_date', 'modified_date')
 
     def has_delete_permission(self, request, obj=None):
@@ -40,7 +41,7 @@ class MerchandiseAdmin(admin.ModelAdmin):
 @admin.register(Inventory)
 class InventoryAdmin(admin.ModelAdmin):
     list_display = ('merchandise', 'merchant', 'price', 'quantity',
-                    'remarks', 'remarks_json', 'created_date', 'modified_date')
+                    'remarks', 'created_date', 'modified_date')
     readonly_fields = ('created_date', 'modified_date')
 
     def has_delete_permission(self, request, obj=None):

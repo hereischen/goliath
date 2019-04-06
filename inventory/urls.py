@@ -9,7 +9,11 @@ from .views import (BrandList,
                     InventoryList,
                     MerchantInventoryList,
                     MerchandiseInventoryList,
-                    update_inventory)
+                    create_inventory,
+                    deposit_to_inventory,
+                    withdraw_from_inventory,
+                    withdraw_from_others_inventory,
+                    )
 
 app_name = 'inventory'
 urlpatterns = [
@@ -23,6 +27,12 @@ urlpatterns = [
     url(r'^inventories/merchants$', login_required(MerchantInventoryList.as_view()), name='merchant_inventory_list'),
     # 查询某个merchandise的库存
     url(r'^inventories/merchandise$', login_required(MerchandiseInventoryList.as_view()), name='merchandise_inventory_list'),
-    # 修改库存, 新建,增,减
-    url(r'^update/$', login_required(update_inventory),name='update_inventory'),
+    # 新建库存
+    url(r'^create/$', login_required(create_inventory),name='create_inventory'),
+    # 增库存
+    url(r'^deposit/$', login_required(deposit_to_inventory),name='deposit_to_inventory'),
+    # 自减库存
+    url(r'^withdraw/$', login_required(withdraw_from_inventory),name='withdraw_from_inventory'),
+    # 取用他人库存
+    url(r'^withdraw/others/$', login_required(withdraw_from_others_inventory),name='withdraw_from_others_inventory'),
 ]

@@ -1,11 +1,13 @@
-html {
+body {
   font-size: 14px;
 }
+
 @media (min-width: 768px) {
-  html {
+  body {
     font-size: 16px;
   }
 }
+
 h3 {
   margin: 0;
 }
@@ -19,25 +21,21 @@ h3 {
   font-size: 16px;
   height: 87px;
   width: 100%;
-}
-.header a, .header a:hover {
-  color: #343a40;
-  cursor: pointer;
+  a, a:hover {
+    color: #343a40;
+    cursor: pointer;
+    text-decoration: none;
+  }
 }
 
-.btn.btn-primary  {
+.btn.btn-primary {
   color: #007bff;
   background: #fff;
   border: 1px solid #007bff;
-}
-
-.btn.btn-primary:hover {
-  color: #fff;
-  background: #007bff;
-}
-
-.header a:hover {
-  text-decoration: none;
+  &:hover {
+    color: #fff;
+    background: #007bff;
+  }
 }
 
 .container {
@@ -52,7 +50,14 @@ h3 {
   min-width: 220px;
 }
 
-.border-top { border-top: 1px solid #e5e5e5; }
-.border-bottom { border-bottom: 1px solid #e5e5e5; }
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
 
-.box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}

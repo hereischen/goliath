@@ -19,7 +19,10 @@ from .serializers import (BrandSerializer,
                           InventorySerializer,
                           MerchantInventorySerializer,
                           MerchandiseInventorySerializer,
-                          UpdateInventorySerializer,)
+                          CreateNewInvtSerializer,
+                          DepositToInvtSerializer,
+                          WithdrawFromInvtSerializer,
+                          WithdrawFromOthersInvtSerializer,)
 
 logger = logging.getLogger(__name__)
 
@@ -133,21 +136,42 @@ class MerchandiseInventoryList(ListAPIView):
 
 
 @api_view(['POST'])
-def update_inventory(request):
-    """更新库存的view."""
-    logger.info('[update_inventory] Received data : %s' % request.data)
-    serializer = UpdateInventorySerializer(data=request.data)
+def create_inventory(request):
+    """创建新库存."""
+    logger.info('[create_inventory] Received data : %s' % request.data)
+    serializer = CreateNewInvtSerializer(data=request.data)
     if serializer.is_valid():
-        if not serializer.validated_data['deposit']:
-            # 从库存借出, 减
-            return Response(serializer.withdraw_from_inventory())
+        return Response(serializer.create())
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        if(Inventory.objects.filter(
-            merchandise=serializer.validated_data['merchandise_id'],
-            merchant=serializer.validated_data['current_merchant_id'])
-                .exists()):
-                # 库存项已存在, 增
-                return Response(serializer.deposit_to_inventory())
-        # 创建新的库存项
-        return Response(serializer.create_new_inventory())
+
+@api_view(['POST'])
+def deposit_to_inventory(request):
+    """自增库存."""
+    logger.info('[deposit_to_inventory] Received data : %s' %
+                request.data)
+    serializer = DepositToInvtSerializer(data=request.data)
+    if serializer.is_valid():
+        return Response(serializer.deposit())
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def withdraw_from_inventory(request):
+    """自减库存."""
+    logger.info('[withdraw_from_inventory] Received data : %s' % request.data)
+    serializer = WithdrawFromInvtSerializer(data=request.data)
+    if serializer.is_valid():
+        return Response(serializer.withdraw())
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def withdraw_from_others_inventory(request):
+    """取用他人库存."""
+    logger.info('[withdraw_from_others_inventory] Received data : %s' %
+                request.data)
+    serializer = WithdrawFromOthersInvtSerializer(data=request.data)
+    if serializer.is_valid():
+        return Response(serializer.withdraw())
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

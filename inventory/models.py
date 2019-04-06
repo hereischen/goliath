@@ -50,6 +50,16 @@ class Merchandise(models.Model):
     brand = models.ForeignKey(Brand, verbose_name='品牌')
     category = models.ForeignKey(Category, verbose_name='品类')
     code = models.CharField(max_length=24, unique=True, verbose_name='商品编码')
+    model = models.CharField(max_length=36, null=True,
+                             blank=True, verbose_name='商品型号')
+    certification = models.CharField(max_length=36, default="无",
+                                     verbose_name='认证')
+    after_sales = models.SmallIntegerField(default=1, verbose_name='售后服务',
+                                           help_text='年')
+    spare_parts = models.CharField(max_length=128, null=True,
+                                   blank=True, verbose_name='包装配件')
+    delivery_time = models.SmallIntegerField(default=3, verbose_name='配送时间',
+                                             help_text='天')
     in_stock = models.BooleanField(default=True, verbose_name='是否上架')
     remarks = models.TextField(null=True, blank=True, verbose_name='备注')
     created_date = models.DateTimeField(auto_now_add=True,
@@ -72,8 +82,7 @@ class Inventory(models.Model):
     price = models.DecimalField(max_digits=11, decimal_places=2,
                                 verbose_name='标价')
     quantity = models.PositiveIntegerField(default=0, verbose_name='数量')
-    remarks = models.TextField(null=True, blank=True, verbose_name='备注')
-    remarks_json = JSONField(null=True, blank=True, verbose_name='JSON备注')
+    remarks = models.TextField(null=True, blank=True, verbose_name='库存备注')
     created_date = models.DateTimeField(auto_now_add=True,
                                         verbose_name='创建时间')
     modified_date = models.DateTimeField(auto_now=True,

@@ -4,8 +4,8 @@ const path = require('path');
 module.exports = {
     entry: [
         './frontend/src/index.js',
-        './frontend/src/main.less'
-        ],
+        './frontend/src/style/main.less'
+    ],
     output: {
         path: path.resolve(__dirname, 'static', 'frontend'),
         filename: 'main.js'

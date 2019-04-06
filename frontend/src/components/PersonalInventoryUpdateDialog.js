@@ -54,7 +54,7 @@ class PersonalInventoryUpdateDialog extends React.Component {
     saveInventory() {
         this.state.deposit ?
             // 新增
-            $.post("/inventory/update/", {
+            $.post("/inventory/deposit/", {
                 current_merchant_id: this.props.currentUser,
                 merchandise_id: this.state.selectedMerchandiseId,
                 quantity: this.state.quantity,
@@ -75,13 +75,12 @@ class PersonalInventoryUpdateDialog extends React.Component {
                 this.props.onSaveInventry();
             })
             // 取出
-            : $.post("/inventory/update/", {
+            : $.post("/inventory/withdraw/", {
                 current_merchant_id: this.props.currentUser,
                 merchandise_id: this.state.selectedMerchandiseId,
                 quantity: this.state.quantity,
-                deposit: this.state.deposit,
                 remarks: "",
-                withdraw_from:[],
+                price: this.state.price
             }, () => {
                 this.setState({
                     show: false,

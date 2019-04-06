@@ -59,11 +59,10 @@ export default class WithdrawDialog extends React.Component{
         const request = {
             current_merchant_id: this.props.currentUser,
             merchandise_id: this.props.selectedMerchandiseId,
-            deposit: false,
             quantity: 0,
             withdraw_from : JSON.stringify(withdraw_from),
         };
-        $.post('/inventory/update/', request, () => {
+        $.post('/inventory/withdraw/others/', request, () => {
             this.setState({
                 show: false,
                 confirm: false,
