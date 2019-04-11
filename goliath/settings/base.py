@@ -192,5 +192,10 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True
         },
+        'history': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
     }
 }
