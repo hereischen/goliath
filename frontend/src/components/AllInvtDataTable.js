@@ -1,7 +1,7 @@
 import React from 'react';
 import InventoryTable from "./InventoryTable";
 import WithdrawDialog from './WithdrawDialog';
-import Pager from 'react-bootstrap/lib/Pagination';
+import {Pager, Alert} from 'react-bootstrap';
 
 export default class AllInvtDataTable extends React.Component{
     constructor (props) {
@@ -14,6 +14,7 @@ export default class AllInvtDataTable extends React.Component{
             depositTableData: [],
             showWithdrawDialog: false,
             selectedMerchandiseId: 0,
+            showWithdrawResultAlert: false,
         };
         this.getAllInventories(this.state.url);
         this.setNext = this.setNext.bind(this);
@@ -118,7 +119,13 @@ export default class AllInvtDataTable extends React.Component{
         }]
     }
 
-    onConfirmWithDraw() {
+    onConfirmWithDraw(result) {
+        this.setState({
+            showWithdrawResultAlert: true,
+            ...result
+        });
+
+        console.log(result);
         this.getAllInventories(this.state.url);
     }
 
@@ -142,6 +149,7 @@ export default class AllInvtDataTable extends React.Component{
                             currentUser={this.props.currentUser}
                             selectedMerchandiseId={this.state.selectedMerchandiseId}
             />
+            {this.state.showWithdrawResultAlert && <Alert variant={this.state.messageType} closeLabel="close">{this.state.message}</Alert>}
         </div>);
     }
 }

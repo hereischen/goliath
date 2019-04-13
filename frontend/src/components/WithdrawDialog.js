@@ -11,7 +11,8 @@ export default class WithdrawDialog extends React.Component{
             depositTableData: {},
             merchantAndNumberMapping: {},
             confirm: false,
-            errorMessage: "",
+            messageType: "",
+            message: "",
         };
 
         this.onConfirm = this.onConfirm.bind(this);
@@ -69,9 +70,20 @@ export default class WithdrawDialog extends React.Component{
         };
 
         $.post('/inventory/withdraw/others/', request).done((data) => {
-            console.log(data);
+            this.setState({
+                message: data.detail,
+                messageType: data.result,
+            });
         }).fail((data) => {
-            this.setState({errorMessage: data.responseJSON.detail});
+            this.setState({
+                message: data.responseJSON.detail,
+                messageType: data.responseJSON.result,
+            });
+        }).always(() =>{
+            this.props.onConfirm({
+                messageType: this.state.messageType === 'fail' ? "danger" : this.state.messageType,
+                message: this.state.message
+            });
         });
     }
 
@@ -160,7 +172,6 @@ export default class WithdrawDialog extends React.Component{
             .value();
 
         return (<ul>{withdraw_from_info}
-        <p className="error">{this.state.errorMessage}</p>
         </ul>)
     }
     getBody() {
