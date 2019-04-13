@@ -33,8 +33,9 @@ class MerchandiseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Merchandise
-        fields = ('id', 'brand', 'category',
-                  'in_stock', 'code', 'remarks')
+        fields = ('id', 'brand', 'category', 'in_stock', 'code',
+                  'model', 'certification', 'after_sales', 'spare_parts',
+                  'delivery_time', 'remarks')
 
 
 class InventorySerializer(serializers.ModelSerializer):
