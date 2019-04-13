@@ -18,6 +18,7 @@ export default class WithdrawDialog extends React.Component{
         this.onCancel = this.onCancel.bind(this);
         this.onChangeDepositNumber = this.onChangeDepositNumber.bind(this);
         this.onChangeDealPrice = this.onChangeDealPrice.bind(this);
+        this.onChangeRemark = this.onChangeRemark.bind(this);
     }
 
     static props = {
@@ -54,6 +55,7 @@ export default class WithdrawDialog extends React.Component{
                 merchant: mcht.merchantId,
                 quantity: this.state.merchantAndNumberMapping[mcht.id].quantity,
                 deal_price: this.state.merchantAndNumberMapping[mcht.id].deal_price,
+                remarks: this.state.merchantAndNumberMapping[mcht.id].remark,
             }
         })
             .compact()
@@ -66,8 +68,10 @@ export default class WithdrawDialog extends React.Component{
             withdraw_from : JSON.stringify(withdraw_from),
         };
 
-        $.post('/inventory/withdraw/others/', request, (data) => {
-            this.setState({message: data.details});
+        $.post('/inventory/withdraw/others/', request).done((data) => {
+            console.log(data);
+        }).fail((data) => {
+            this.setState({errorMessage: data.responseJSON.detail});
         });
     }
 
@@ -77,10 +81,16 @@ export default class WithdrawDialog extends React.Component{
         merchantAndNumberMapping[invt.id].quantity = event.target.value;
     }
 
-    onChangeDealPrice(invt, event) {
+    onChangeDealPrice() {
         const {merchantAndNumberMapping} = this.state;
         merchantAndNumberMapping[invt.id] = merchantAndNumberMapping[invt.id]|| {};
         merchantAndNumberMapping[invt.id].deal_price = event.target.value;
+    }
+
+    onChangeRemark(invt, event) {
+        const {merchantAndNumberMapping} = this.state;
+        merchantAndNumberMapping[invt.id] = merchantAndNumberMapping[invt.id]|| {};
+        merchantAndNumberMapping[invt.id].remark = event.target.value;
     }
     getColumns() {
         return ([
@@ -127,6 +137,13 @@ export default class WithdrawDialog extends React.Component{
                 title: "成交价格",
                 renderContent: (invt, ind) => {
                     return (<td key={ind}><input type="number" placeholder={invt.price} value={invt.price} onChange={(event) => this.onChangeDealPrice(invt, event)}/></td>);
+                }
+            },
+            {
+                type: "action",
+                title: "备注",
+                renderContent: (invt, ind) => {
+                    return (<td key={ind}><textarea cols={10} rows={1} placeholder="请填写备注" onChange={(event) => this.onChangeRemark(invt, event)}/></td>);
                 }
             }
         ]);
