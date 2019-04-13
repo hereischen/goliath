@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework import serializers
+from rest_framework import serializers, status
 
 from merchant.models import Merchant
 from merchant.serializers import MerchantSerializer
@@ -65,6 +65,22 @@ class UpdateInvtBaseSerializer(serializers.Serializer):
     quantity = serializers.IntegerField(required=True)
     remarks = serializers.CharField(required=False)
 
+    @staticmethod
+    def staff_error():
+        """为管理员的商户, 实际上不应该是实体商户, 不具备操作库存权限"""
+        return ({"result": "fail", "detail": "错误的商户权限"},
+                status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @staticmethod
+    def status_code_500(detail):
+        return ({"result": "fail", "detail": detail},
+                status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @staticmethod
+    def status_code_200(detail):
+        return ({"result": "success", "detail": detail},
+                status.HTTP_200_OK)
+
 
 class CreateNewInvtSerializer(UpdateInvtBaseSerializer):
     price = serializers.DecimalField(required=True,
@@ -76,8 +92,11 @@ class CreateNewInvtSerializer(UpdateInvtBaseSerializer):
                 id=self.validated_data['merchandise_id'])
             cm = Merchant.objects.get(
                 id=self.validated_data['current_merchant_id'])
+            if cm.is_staff:
+                return self.staff_error()
         except ObjectDoesNotExist:
-            return {"result": "fail"}
+            return self.status_code_500("商户或商品不存在")
+
         inv = Inventory.objects.create(
             merchandise=md,
             merchant=cm,
@@ -91,7 +110,7 @@ class CreateNewInvtSerializer(UpdateInvtBaseSerializer):
             quantity=self.validated_data['quantity'],
             price=self.validated_data['price'],
             remarks=self.validated_data.get('remarks'))
-        return {"result": "create"}
+        return self.status_code_200("创建新库存成功")
 
 
 class DepositToInvtSerializer(UpdateInvtBaseSerializer):
@@ -103,11 +122,14 @@ class DepositToInvtSerializer(UpdateInvtBaseSerializer):
         try:
             cm = Merchant.objects.get(
                 id=self.validated_data['current_merchant_id'])
+            if cm.is_staff:
+                return self.staff_error()
             inv = Inventory.objects.get(
                 merchandise=self.validated_data['merchandise_id'],
                 merchant=cm)
         except ObjectDoesNotExist:
-            return {"result": "fail"}
+            return self.status_code_500("商户或库存不存在")
+
         prev_quantity = inv.quantity
         if self.validated_data.get("price"):
             inv.price = self.validated_data['price']
@@ -123,7 +145,7 @@ class DepositToInvtSerializer(UpdateInvtBaseSerializer):
             quantity=self.validated_data['quantity'],
             price=price,
             remarks=self.validated_data.get('remarks'))
-        return {"result": "deposit success"}
+        return self.status_code_200("自增库存成功")
 
 
 class WithdrawFromInvtSerializer(UpdateInvtBaseSerializer):
@@ -133,14 +155,16 @@ class WithdrawFromInvtSerializer(UpdateInvtBaseSerializer):
         try:
             cm = Merchant.objects.get(
                 id=self.validated_data['current_merchant_id'])
+            if cm.is_staff:
+                return self.staff_error()
             inv = Inventory.objects.get(
                 merchandise=self.validated_data['merchandise_id'],
                 merchant=cm)
         except ObjectDoesNotExist:
-            return {"result": "fail", "details": "找不到您的库存"}
+            return self.status_code_500("商户或库存不存在")
 
         if self.validated_data['quantity'] > inv.quantity:
-            return {"result": "fail", "details": "您的库存不足"}
+            return self.status_code_500("您的库存不足")
         prev_quantity = inv.quantity
         inv.quantity -= self.validated_data['quantity']
         inv.remarks = self.validated_data.get('remarks')
@@ -154,7 +178,7 @@ class WithdrawFromInvtSerializer(UpdateInvtBaseSerializer):
             quantity=self.validated_data['quantity'],
             price=inv.price,
             remarks=self.validated_data.get('remarks'))
-        return {"result": "withdraw success"}
+        return self.status_code_200("自减库存成功")
 
 
 class WithdrawFromOthersInvtSerializer(UpdateInvtBaseSerializer):
@@ -178,26 +202,28 @@ class WithdrawFromOthersInvtSerializer(UpdateInvtBaseSerializer):
         try:
             cm = Merchant.objects.get(
                 id=self.validated_data['current_merchant_id'])
+            if cm.is_staff:
+                return self.staff_error()
             # 借库存需当前用户无库存或数量为0
             current_inv = Inventory.objects.get(
                 merchandise=self.validated_data['merchandise_id'],
                 merchant=cm)
             if current_inv.quantity > 0:
-                return {"result": "fail", "details": "请先使用自己的配货"}
+                return self.status_code_500("该商品库存不为0,请先使用自己的库存")
         except ObjectDoesNotExist:
-            pass
+            return self.status_code_500("商户或库存不存在")
 
         for item in self.validated_data.get('withdraw_from', []):
             if item['merchant'] == self.validated_data['current_merchant_id']:
-                return {"result": "fail", "details": "错误的商户信息"}
+                return self.status_code_500("错误的商户信息")
             try:
                 withdraw_inv = Inventory.objects.get(
                     merchandise=self.validated_data['merchandise_id'],
                     merchant=item['merchant'])
             except ObjectDoesNotExist:
-                return {"result": "fail", "details": "找不到对应商户的库存"}
+                return self.status_code_500("找不到对应商户的库存")
             if int(item['quantity']) > withdraw_inv.quantity:
-                return {"result": "fail", "details": "对应商户的库存不足"}
+                return self.status_code_500("对应商户的库存不足")
             prev_quantity = withdraw_inv.quantity
             withdraw_inv.quantity -= int(item['quantity'])
             withdraw_inv.save()
@@ -212,4 +238,4 @@ class WithdrawFromOthersInvtSerializer(UpdateInvtBaseSerializer):
                 price=withdraw_inv.price,
                 deal_price=deal_price,
                 remarks=item.get('remarks'))
-        return {"result": "withdraw others success"}
+        return self.status_code_200("借调库存成功")

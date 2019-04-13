@@ -141,7 +141,7 @@ def create_inventory(request):
     logger.info('[create_inventory] Received data : %s' % request.data)
     serializer = CreateNewInvtSerializer(data=request.data)
     if serializer.is_valid():
-        return Response(serializer.create())
+        return Response(*serializer.create())
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -152,7 +152,7 @@ def deposit_to_inventory(request):
                 request.data)
     serializer = DepositToInvtSerializer(data=request.data)
     if serializer.is_valid():
-        return Response(serializer.deposit())
+        return Response(*serializer.deposit())
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -162,7 +162,7 @@ def withdraw_from_inventory(request):
     logger.info('[withdraw_from_inventory] Received data : %s' % request.data)
     serializer = WithdrawFromInvtSerializer(data=request.data)
     if serializer.is_valid():
-        return Response(serializer.withdraw())
+        return Response(*serializer.withdraw())
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -173,5 +173,5 @@ def withdraw_from_others_inventory(request):
                 request.data)
     serializer = WithdrawFromOthersInvtSerializer(data=request.data)
     if serializer.is_valid():
-        return Response(serializer.withdraw())
+        return Response(*serializer.withdraw())
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
