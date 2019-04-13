@@ -138,7 +138,9 @@ bower_components
 build/Release
 
 # project compiled files
-static/frontend/main.js
+static/frontend/base.js
+static/frontend/index.js
+static/frontend/react.js
 static/css/bootstrap.min.css.map
 
 # Dependency directories
