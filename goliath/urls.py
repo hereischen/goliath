@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^merchant/', include('merchant.urls', namespace='merchant')),
     # 库存体系
     url(r'^inventory/', include('inventory.urls', namespace='inventory')),
+    # 库存历史记录
+    url(r'^history/', include('history.urls', namespace='history')),
     # 验证码
     url(r'^captcha/', include('captcha.urls')),
 ]

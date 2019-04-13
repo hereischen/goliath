@@ -86,7 +86,7 @@ class CreateNewInvtSerializer(UpdateInvtBaseSerializer):
 
         History.objects.create(
             inventory=inv,
-            initiator=self.validated_data['current_merchant_id'],
+            initiator=cm,
             quantity=self.validated_data['quantity'],
             price=self.validated_data['price'],
             remarks=self.validated_data.get('remarks'))
@@ -100,11 +100,14 @@ class DepositToInvtSerializer(UpdateInvtBaseSerializer):
 
     def deposit(self):
         try:
+            cm = Merchant.objects.get(
+                id=self.validated_data['current_merchant_id'])
             inv = Inventory.objects.get(
                 merchandise=self.validated_data['merchandise_id'],
-                merchant=self.validated_data['current_merchant_id'])
+                merchant=cm)
         except ObjectDoesNotExist:
             return {"result": "fail"}
+        prev_quantity = inv.quantity
         if self.validated_data.get("price"):
             inv.price = self.validated_data['price']
         inv.quantity += self.validated_data['quantity']
@@ -114,7 +117,8 @@ class DepositToInvtSerializer(UpdateInvtBaseSerializer):
         price = self.validated_data.get('price') or inv.price
         History.objects.create(
             inventory=inv,
-            initiator=self.validated_data['current_merchant_id'],
+            initiator=cm,
+            prev_quantity=prev_quantity,
             quantity=self.validated_data['quantity'],
             price=price,
             remarks=self.validated_data.get('remarks'))
@@ -126,14 +130,17 @@ class WithdrawFromInvtSerializer(UpdateInvtBaseSerializer):
 
     def withdraw(self):
         try:
+            cm = Merchant.objects.get(
+                id=self.validated_data['current_merchant_id'])
             inv = Inventory.objects.get(
                 merchandise=self.validated_data['merchandise_id'],
-                merchant=self.validated_data['current_merchant_id'])
+                merchant=cm)
         except ObjectDoesNotExist:
             return {"result": "fail", "details": "找不到您的库存"}
 
         if self.validated_data['quantity'] > inv.quantity:
             return {"result": "fail", "details": "您的库存不足"}
+        prev_quantity = inv.quantity
         inv.quantity -= self.validated_data['quantity']
         inv.remarks = self.validated_data.get('remarks')
         inv.save()
@@ -141,7 +148,8 @@ class WithdrawFromInvtSerializer(UpdateInvtBaseSerializer):
         History.objects.create(
             type=1,
             inventory=inv,
-            initiator=self.validated_data['current_merchant_id'],
+            initiator=cm,
+            prev_quantity=prev_quantity,
             quantity=self.validated_data['quantity'],
             price=inv.price,
             remarks=self.validated_data.get('remarks'))
@@ -167,10 +175,12 @@ class WithdrawFromOthersInvtSerializer(UpdateInvtBaseSerializer):
 
     def withdraw(self):
         try:
+            cm = Merchant.objects.get(
+                id=self.validated_data['current_merchant_id'])
             # 借库存需当前用户无库存或数量为0
             current_inv = Inventory.objects.get(
                 merchandise=self.validated_data['merchandise_id'],
-                merchant=self.validated_data['current_merchant_id'])
+                merchant=cm)
             if current_inv.quantity > 0:
                 return {"result": "fail", "details": "请先使用自己的配货"}
         except ObjectDoesNotExist:
@@ -187,6 +197,7 @@ class WithdrawFromOthersInvtSerializer(UpdateInvtBaseSerializer):
                 return {"result": "fail", "details": "找不到对应商户的库存"}
             if int(item['quantity']) > withdraw_inv.quantity:
                 return {"result": "fail", "details": "对应商户的库存不足"}
+            prev_quantity = withdraw_inv.quantity
             withdraw_inv.quantity -= int(item['quantity'])
             withdraw_inv.save()
 
@@ -194,7 +205,8 @@ class WithdrawFromOthersInvtSerializer(UpdateInvtBaseSerializer):
             History.objects.create(
                 type=2,
                 inventory=withdraw_inv,
-                initiator=self.validated_data['current_merchant_id'],
+                initiator=cm,
+                prev_quantity=prev_quantity,
                 quantity=int(item['quantity']),
                 price=withdraw_inv.price,
                 deal_price=deal_price,

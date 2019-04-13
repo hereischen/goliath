@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from django.db import models
-from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.utils.translation import ugettext_lazy as _
