@@ -51,6 +51,11 @@ export default class PersonalDataTable extends React.Component{
                 remarks: invt.merchandise.remarks,
                 quantity: invt.quantity,
                 price: invt.price,
+                certification: invt.merchandise.certification,
+                delivery_time: invt.merchandise.delivery_time,
+                spare_parts: invt.merchandise.spare_parts,
+                model: invt.merchandise.model,
+                after_sales: invt.merchandise.after_sales,
                 modifiedDate: utils.formatDate(invt.modified_date, "YYYY-MM-DD HH:MM"),
             }
         });
@@ -104,13 +109,31 @@ export default class PersonalDataTable extends React.Component{
                     type: "text",
                     title: "价格",
                     selector: "price",
-                },
-                {
+                },{
+                    title: "型号",
+                    selector: "model",
+                    type: "text"
+                }, {
+                    title: "认证",
+                    selector: "certification",
+                    type: "text"
+                }, {
+                    title: "售后服务",
+                    type: "action",
+                    renderContent: (merchandise, ind) => (<td key={ind}>{merchandise.after_sales} 年</td>)
+                }, {
+                    title: "包装配件",
+                    selector: "spare_parts",
+                    type: "text"
+                }, {
+                    title: "到货时间",
+                    type: "action",
+                    renderContent: (merchandise, ind) => (<td key={ind}>{merchandise.delivery_time} 天</td>)
+                }, {
                     type: "text",
                     title: "修改时间",
                     selector: "modifiedDate"
-                },
-                {
+                }, {
                     type: "action",
                     title: "操作",
                     renderContent: (invt, ind) =>
