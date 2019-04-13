@@ -1,16 +1,25 @@
 const webpack = require('webpack');
 const path = require('path');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
+const bundles = {
+    'base': ['jquery', 'lodash'],
+    'react': ['react', 'react-dom', 'prop-types', 'react-bootstrap', 'react-select']
+};
 module.exports = {
-    entry: [
-        './frontend/src/index.js',
-        './frontend/src/style/main.less'
-    ],
+    entry: {
+        ...bundles,
+        ...{
+            index: ['./frontend/src/index.js', './frontend/src/style/main.less'
+            ]
+        }
+    },
     output: {
         path: path.resolve(__dirname, 'static', 'frontend'),
-        filename: 'main.js'
+        filename: '[name].js'
     },
     plugins: [
+        new CleanWebpackPlugin(),
         new webpack.ProvidePlugin({
           $: 'jquery',
           jQuery: 'jquery',
