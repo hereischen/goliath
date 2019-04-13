@@ -14,5 +14,6 @@ class HistorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = History
-        fields = ('id', 'type', 'quantity', 'price', 'deal_price',
-                  'remarks', 'created_date', 'inventory', 'initiator')
+        fields = ('id', 'type', 'prev_quantity', 'quantity', 'price',
+                  'deal_price', 'remarks', 'created_date',
+                  'inventory', 'initiator')

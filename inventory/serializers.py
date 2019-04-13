@@ -107,6 +107,7 @@ class DepositToInvtSerializer(UpdateInvtBaseSerializer):
                 merchant=cm)
         except ObjectDoesNotExist:
             return {"result": "fail"}
+        prev_quantity = inv.quantity
         if self.validated_data.get("price"):
             inv.price = self.validated_data['price']
         inv.quantity += self.validated_data['quantity']
@@ -117,6 +118,7 @@ class DepositToInvtSerializer(UpdateInvtBaseSerializer):
         History.objects.create(
             inventory=inv,
             initiator=cm,
+            prev_quantity=prev_quantity,
             quantity=self.validated_data['quantity'],
             price=price,
             remarks=self.validated_data.get('remarks'))
@@ -138,6 +140,7 @@ class WithdrawFromInvtSerializer(UpdateInvtBaseSerializer):
 
         if self.validated_data['quantity'] > inv.quantity:
             return {"result": "fail", "details": "您的库存不足"}
+        prev_quantity = inv.quantity
         inv.quantity -= self.validated_data['quantity']
         inv.remarks = self.validated_data.get('remarks')
         inv.save()
@@ -146,6 +149,7 @@ class WithdrawFromInvtSerializer(UpdateInvtBaseSerializer):
             type=1,
             inventory=inv,
             initiator=cm,
+            prev_quantity=prev_quantity,
             quantity=self.validated_data['quantity'],
             price=inv.price,
             remarks=self.validated_data.get('remarks'))
@@ -193,6 +197,7 @@ class WithdrawFromOthersInvtSerializer(UpdateInvtBaseSerializer):
                 return {"result": "fail", "details": "找不到对应商户的库存"}
             if int(item['quantity']) > withdraw_inv.quantity:
                 return {"result": "fail", "details": "对应商户的库存不足"}
+            prev_quantity = withdraw_inv.quantity
             withdraw_inv.quantity -= int(item['quantity'])
             withdraw_inv.save()
 
@@ -201,6 +206,7 @@ class WithdrawFromOthersInvtSerializer(UpdateInvtBaseSerializer):
                 type=2,
                 inventory=withdraw_inv,
                 initiator=cm,
+                prev_quantity=prev_quantity,
                 quantity=int(item['quantity']),
                 price=withdraw_inv.price,
                 deal_price=deal_price,

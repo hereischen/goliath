@@ -21,6 +21,8 @@ class History(models.Model):
     inventory = models.ForeignKey(Inventory, verbose_name='变动库存')
     initiator = models.ForeignKey(settings.AUTH_USER_MODEL,
                                   verbose_name='发起商户')
+    prev_quantity = models.PositiveIntegerField(default=0,
+                                                verbose_name='原库存数量')
     quantity = models.PositiveIntegerField(default=0, verbose_name='变动数量')
     price = models.DecimalField(max_digits=11, decimal_places=2,
                                 verbose_name='时价')
