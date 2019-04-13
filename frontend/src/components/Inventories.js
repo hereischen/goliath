@@ -1,5 +1,4 @@
 import React from "react";
-import InventoryTable from "./InventoryTable";
 import AllInvtDataTable from "./AllInvtDataTable";
 import PersonalDataTable from "./PersonalDataTable";
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import InventoryTable from "./InventoryTable";
 import WithdrawDialog from './WithdrawDialog';
-import Pager from 'react-bootstrap/lib/Pagination';
+import {Pager, Alert} from 'react-bootstrap';
 
 export default class AllInvtDataTable extends React.Component{
     constructor (props) {
@@ -14,6 +14,7 @@ export default class AllInvtDataTable extends React.Component{
             depositTableData: [],
             showWithdrawDialog: false,
             selectedMerchandiseId: 0,
+            showWithdrawResultAlert: false,
         };
         this.getAllInventories(this.state.url);
         this.setNext = this.setNext.bind(this);
@@ -34,7 +35,7 @@ export default class AllInvtDataTable extends React.Component{
                 next: data.next,
                 previous: data.previous,
                 allInventories: inventories,
-                showWithdrawDialog: false
+                showWithdrawDialog: false,
             });
         });
     }
@@ -47,7 +48,12 @@ export default class AllInvtDataTable extends React.Component{
                 id: invt.merchandise.id,
                 code: invt.merchandise.code,
                 remarks: invt.merchandise.remarks,
-                quantity: invt.quantity
+                quantity: invt.quantity,
+                certification: invt.merchandise.certification,
+                delivery_time: invt.merchandise.delivery_time,
+                spare_parts: invt.merchandise.spare_parts,
+                model: invt.merchandise.model,
+                after_sales: invt.merchandise.after_sales,
             }
         });
     }
@@ -109,6 +115,26 @@ export default class AllInvtDataTable extends React.Component{
             selector: "quantity",
             type: "text"
         }, {
+            title: "型号",
+            selector: "model",
+            type: "text"
+        }, {
+            title: "节能认证",
+            selector: "certification",
+            type: "text"
+        }, {
+            title: "售后服务",
+            selector: "after_sales",
+            type: "text"
+        }, {
+            title: "包装配件",
+            selector: "spare_parts",
+            type: "text"
+        },{
+            title: "预计几天到货",
+            selector: "delivery_days",
+            type: "text"
+        }, {
             title: "操作",
             type: "action",
             renderContent: (merchandise, ind) =>
@@ -118,7 +144,13 @@ export default class AllInvtDataTable extends React.Component{
         }]
     }
 
-    onConfirmWithDraw() {
+    onConfirmWithDraw(result) {
+        this.setState({
+            showWithdrawResultAlert: true,
+            ...result
+        });
+
+        console.log(result);
         this.getAllInventories(this.state.url);
     }
 
@@ -142,6 +174,7 @@ export default class AllInvtDataTable extends React.Component{
                             currentUser={this.props.currentUser}
                             selectedMerchandiseId={this.state.selectedMerchandiseId}
             />
+            {this.state.showWithdrawResultAlert && <Alert variant={this.state.messageType} closeLabel="close">{this.state.message}</Alert>}
         </div>);
     }
 }

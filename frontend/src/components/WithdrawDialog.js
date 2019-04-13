@@ -11,11 +11,15 @@ export default class WithdrawDialog extends React.Component{
             depositTableData: {},
             merchantAndNumberMapping: {},
             confirm: false,
+            messageType: "",
+            message: "",
         };
 
         this.onConfirm = this.onConfirm.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.onChangeDepositNumber = this.onChangeDepositNumber.bind(this);
+        this.onChangeDealPrice = this.onChangeDealPrice.bind(this);
+        this.onChangeRemark = this.onChangeRemark.bind(this);
     }
 
     static props = {
@@ -45,12 +49,14 @@ export default class WithdrawDialog extends React.Component{
         }
 
         const withdraw_from = _(this.props.depositTableData).map((mcht) => {
-            if (!this.state.merchantAndNumberMapping[mcht.id] || this.state.merchantAndNumberMapping[mcht.id] < 0) {
+            if (!this.state.merchantAndNumberMapping[mcht.id] || this.state.merchantAndNumberMapping[mcht.id].quantity < 0) {
                 return;
             }
             return {
                 merchant: mcht.merchantId,
-                quantity: this.state.merchantAndNumberMapping[mcht.id],
+                quantity: this.state.merchantAndNumberMapping[mcht.id].quantity,
+                deal_price: this.state.merchantAndNumberMapping[mcht.id].deal_price,
+                remarks: this.state.merchantAndNumberMapping[mcht.id].remark,
             }
         })
             .compact()
@@ -62,20 +68,42 @@ export default class WithdrawDialog extends React.Component{
             quantity: 0,
             withdraw_from : JSON.stringify(withdraw_from),
         };
-        $.post('/inventory/withdraw/others/', request, () => {
+
+        $.post('/inventory/withdraw/others/', request).done((data) => {
             this.setState({
-                show: false,
-                confirm: false,
+                message: data.detail,
+                messageType: data.result,
             });
-            this.props.onConfirm();
-        })
+        }).fail((data) => {
+            this.setState({
+                message: data.responseJSON.detail,
+                messageType: data.responseJSON.result,
+            });
+        }).always(() =>{
+            this.props.onConfirm({
+                messageType: this.state.messageType === 'fail' ? "danger" : this.state.messageType,
+                message: this.state.message
+            });
+        });
     }
 
     onChangeDepositNumber(invt, event) {
         const {merchantAndNumberMapping} = this.state;
-        merchantAndNumberMapping[invt.id] = event.target.value;
+        merchantAndNumberMapping[invt.id] = merchantAndNumberMapping[invt.id]|| {};
+        merchantAndNumberMapping[invt.id].quantity = event.target.value;
     }
 
+    onChangeDealPrice() {
+        const {merchantAndNumberMapping} = this.state;
+        merchantAndNumberMapping[invt.id] = merchantAndNumberMapping[invt.id]|| {};
+        merchantAndNumberMapping[invt.id].deal_price = event.target.value;
+    }
+
+    onChangeRemark(invt, event) {
+        const {merchantAndNumberMapping} = this.state;
+        merchantAndNumberMapping[invt.id] = merchantAndNumberMapping[invt.id]|| {};
+        merchantAndNumberMapping[invt.id].remark = event.target.value;
+    }
     getColumns() {
         return ([
             {
@@ -115,21 +143,36 @@ export default class WithdrawDialog extends React.Component{
                         (<td key={ind}>
                             <input type="number" placeholder={0} onChange={(event) => this.onChangeDepositNumber(invt, event)}/>
                         </td>)
+            },
+            {
+                type: "action",
+                title: "成交价格",
+                renderContent: (invt, ind) => {
+                    return (<td key={ind}><input type="number" placeholder={invt.price} value={invt.price} onChange={(event) => this.onChangeDealPrice(invt, event)}/></td>);
+                }
+            },
+            {
+                type: "action",
+                title: "备注",
+                renderContent: (invt, ind) => {
+                    return (<td key={ind}><textarea cols={10} rows={1} placeholder="请填写备注" onChange={(event) => this.onChangeRemark(invt, event)}/></td>);
+                }
             }
         ]);
     }
 
     getConfirmDialogBody() {
-        const withdraw_from = _(this.props.depositTableData).map((mcht, index) => {
-            if (!this.state.merchantAndNumberMapping[mcht.id] || this.state.merchantAndNumberMapping[mcht.id] < 0) {
+        const withdraw_from_info = _(this.props.depositTableData).map((mcht, index) => {
+            if (!this.state.merchantAndNumberMapping[mcht.id] || this.state.merchantAndNumberMapping[mcht.id].quantity < 0) {
                 return;
             }
-            return (<li key={index}>请确认从 {mcht.merchantName} 处购买 {this.state.merchantAndNumberMapping[mcht.id]}件商品</li>)
+            return (<li key={index}>请确认从 {mcht.merchantName} 处购买 {this.state.merchantAndNumberMapping[mcht.id].quantity}件商品</li>)
         })
             .compact()
             .value();
 
-        return (<ul>{withdraw_from}</ul>)
+        return (<ul>{withdraw_from_info}
+        </ul>)
     }
     getBody() {
         return this.state.confirm ? this.getConfirmDialogBody() : (<InventoryTable
@@ -139,7 +182,6 @@ export default class WithdrawDialog extends React.Component{
     }
 
     render() {
-        console.log();
         return <InformationDialog
             className="deposit-dialog"
             show={this.state.show}
