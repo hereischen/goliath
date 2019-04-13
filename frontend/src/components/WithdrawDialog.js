@@ -155,7 +155,7 @@ export default class WithdrawDialog extends React.Component{
                 type: "action",
                 title: "备注",
                 renderContent: (invt, ind) => {
-                    return (<td key={ind}><textarea cols={10} rows={1} placeholder="请填写备注" onChange={(event) => this.onChangeRemark(invt, event)}/></td>);
+                    return (<td key={ind}><textarea cols={15} rows={2} placeholder="请填写备注" onChange={(event) => this.onChangeRemark(invt, event)}/></td>);
                 }
             }
         ]);

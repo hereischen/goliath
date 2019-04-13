@@ -119,21 +119,21 @@ export default class AllInvtDataTable extends React.Component{
             selector: "model",
             type: "text"
         }, {
-            title: "节能认证",
+            title: "认证",
             selector: "certification",
             type: "text"
         }, {
             title: "售后服务",
-            selector: "after_sales",
-            type: "text"
+            type: "action",
+            renderContent: (merchandise, ind) => (<td key={ind}>{merchandise.after_sales} 年</td>)
         }, {
             title: "包装配件",
             selector: "spare_parts",
             type: "text"
         },{
-            title: "预计几天到货",
-            selector: "delivery_days",
-            type: "text"
+            title: "到货时间",
+            type: "action",
+            renderContent: (merchandise, ind) => (<td key={ind}>{merchandise.delivery_time} 天</td>)
         }, {
             title: "操作",
             type: "action",

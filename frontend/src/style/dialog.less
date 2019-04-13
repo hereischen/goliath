@@ -3,6 +3,7 @@
   flex-direction: column;
   align-items: center;
 
+
   .fieldSection {
     .item {
       width: 100%;
@@ -33,7 +34,15 @@
 
 .deposit-dialog {
   .modal-dialog {
-    width: 85%;
+    .modal-content {
+      .modal-body {
+        max-width:100%;
+        overflow: scroll;
+        textarea {
+          resize: none;
+        }
+      }
+    }
   }
   .error {
     color: #990000;
