@@ -122,13 +122,8 @@ export default class HistoryDataTable extends React.Component{
         }, {
             title: "创建日期",
             selector: "createdDate",
-<<<<<<< HEAD
             type: "text"
         }];
-=======
-            type: "text",
-        }]
->>>>>>> 2f64fcb1212f0b4297d390ddb69382bb9e9a715b
     }
 
     render() {
