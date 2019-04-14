@@ -167,7 +167,7 @@ export default class PersonalDataTable extends React.Component{
             <PersonalInventoryCreateDialog show={this.state.showCreateInvtDialog}
                                            closeDialog={() => {this.setState( { showCreateInvtDialog: false});}}
                                            currentUser={this.props.currentUser}
-                                           onConfirmSave={this.onInventoryCreate}/>
+                                           onInventoryCreate={this.onInventoryCreate}/>
 
             <PersonalInventoryUpdateDialog deposit={this.state.deposit}
                                            show={this.state.showUpdateInvtDialog}
