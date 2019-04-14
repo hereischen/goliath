@@ -43,6 +43,7 @@ export default class HistoryDataTable extends React.Component{
     static buildHistoryTable(histories) {
         return _.map(histories, hs => {
             return {
+                id: hs.id,
                 type: hs.type,
                 brand: hs.inventory.merchandise.brand.brand,
                 category: hs.inventory.merchandise.category.category,
@@ -121,8 +122,8 @@ export default class HistoryDataTable extends React.Component{
         }, {
             title: "创建日期",
             selector: "createdDate",
-            type: "text",
-        }]
+            type: "text"
+        }];
     }
 
     render() {
