@@ -21,7 +21,7 @@ class HistoryList(ListAPIView):
     serializer_class = HistorySerializer
     filter_backends = (filters.OrderingFilter,)
     ordering_fields = ('created_date',)
-    ordering = ('created_date',)
+    ordering = ('-created_date',)
 
     def get_queryset(self):
         logger.info('[HistoryList] Received data : %s' %
