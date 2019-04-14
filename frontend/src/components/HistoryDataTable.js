@@ -4,6 +4,12 @@ import {Pager} from 'react-bootstrap';
 import InventoryTable from "./InventoryTable";
 
 export default class HistoryDataTable extends React.Component{
+    static TYPE = {
+        0: '存入',
+        1: '自取出',
+        2: '调配'
+    };
+
     constructor (props) {
         super(props);
         this.state = {
@@ -11,7 +17,6 @@ export default class HistoryDataTable extends React.Component{
             next: null,
             previous: null,
             histories: [],
-            type: -1,
             url: `/history/histories?current_merchant_id=${this.props.currentUser}`
         };
         this.getHistories(this.state.url);
@@ -66,8 +71,8 @@ export default class HistoryDataTable extends React.Component{
     getColumns() {
         return [{
             title: "类型",
-            selector: "type",
-            type: "text",
+            type: "action",
+            renderContent: (hs, ind) => (<td key={ind}>{HistoryDataTable.TYPE[hs.type]}</td>)
         },{
             title: "品牌",
             selector: "brand",
@@ -84,44 +89,44 @@ export default class HistoryDataTable extends React.Component{
         }, {
             title: "型号",
             selector: "model",
-            type: "text"
+            type: "text",
         }, {
             title: "库存所有人",
             selector: "owner",
-            type: "text"
+            type: "text",
         }, {
             title: "发起人",
             selector: "initiator",
-            type: "text"
+            type: "text",
         }, {
             title: "时价",
             selector: "price",
-            type: "text"
+            type: "text",
         }, {
             title: "成交价",
             selector: "dealPrice",
-            type: "text"
+            type: "text",
         }, {
             title: "原库存数量",
             selector: "prevQuantity",
-            type: "text"
+            type: "text",
         }, {
             title: "变动数量",
             selector: "quantity",
-            type: "text"
+            type: "text",
         }, {
             title: "备注",
             selector: "remarks",
-            type: "text"
+            type: "text",
         }, {
             title: "创建日期",
             selector: "createdDate",
-            type: "text"
+            type: "text",
         }]
     }
 
     render() {
-        return (<div id="all">
+        return (<div id="histories">
             <InventoryTable className="table"
                             data={this.state.histories}
                             columns={this.getColumns()}
