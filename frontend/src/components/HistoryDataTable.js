@@ -4,6 +4,12 @@ import {Pager} from 'react-bootstrap';
 import InventoryTable from "./InventoryTable";
 
 export default class HistoryDataTable extends React.Component{
+    static TYPE = {
+        0: '存入',
+        1: '自取出',
+        2: '调配'
+    };
+
     constructor (props) {
         super(props);
         this.state = {
@@ -11,7 +17,6 @@ export default class HistoryDataTable extends React.Component{
             next: null,
             previous: null,
             histories: [],
-            type: -1,
             url: `/history/histories?current_merchant_id=${this.props.currentUser}`
         };
         this.getHistories(this.state.url);
@@ -66,8 +71,8 @@ export default class HistoryDataTable extends React.Component{
     getColumns() {
         return [{
             title: "类型",
-            selector: "type",
-            type: "text",
+            type: "action",
+            renderContent: (hs, ind) => (<td key={ind}>{HistoryDataTable.TYPE[hs.type]}</td>)
         },{
             title: "品牌",
             selector: "brand",
@@ -121,7 +126,7 @@ export default class HistoryDataTable extends React.Component{
     }
 
     render() {
-        return (<div id="all">
+        return (<div id="histories">
             <InventoryTable className="table"
                             data={this.state.histories}
                             columns={this.getColumns()}
