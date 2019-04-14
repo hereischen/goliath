@@ -150,7 +150,6 @@ export default class AllInvtDataTable extends React.Component{
             ...result
         });
 
-        console.log(result);
         this.getAllInventories(this.state.url);
     }
 
