@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import (ObjectDoesNotExist,
+                                    ValidationError)
 from rest_framework import serializers, status
 
 from merchant.models import Merchant
@@ -97,12 +98,15 @@ class CreateNewInvtSerializer(UpdateInvtBaseSerializer):
         except ObjectDoesNotExist:
             return self.status_code_500("商户或商品不存在")
 
-        inv = Inventory.objects.create(
-            merchandise=md,
-            merchant=cm,
-            quantity=self.validated_data['quantity'],
-            price=self.validated_data['price'],
-            remarks=self.validated_data.get('remarks'))
+        try:
+            inv = Inventory.objects.create(
+                merchandise=md,
+                merchant=cm,
+                quantity=self.validated_data['quantity'],
+                price=self.validated_data['price'],
+                remarks=self.validated_data.get('remarks'))
+        except ValidationError:
+            return self.status_code_500("该商品的库存已经存在")
 
         History.objects.create(
             inventory=inv,
