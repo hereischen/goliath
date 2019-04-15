@@ -17,6 +17,8 @@ class PersonalInventoryUpdateDialog extends React.Component {
             confirmed: false,
             showCountHelpText: false,
             showPriceHelpText: false,
+            message: "",
+            messageType: "",
         };
 
         this.saveInventory = this.saveInventory.bind(this);
@@ -53,48 +55,76 @@ class PersonalInventoryUpdateDialog extends React.Component {
 
     saveInventory() {
         this.state.deposit ?
-            // 新增
-            $.post("/inventory/deposit/", {
-                current_merchant_id: this.props.currentUser,
-                merchandise_id: this.state.selectedMerchandiseId,
-                quantity: this.state.quantity,
-                price: this.state.price,
-                remarks: "",
-            }, () => {
-                this.setState({
-                    show: false,
-                    selectedBrand: "",
-                    selectedCategory: "",
-                    selectedMerchandiseId: 0,
-                    selectedMerchandiseCode: "",
-                    price: 0,
-                    quantity: 0,
-                    deposit: true,
-                    confirmed: false,
-                });
-                this.props.onSaveInventry();
-            })
-            // 取出
-            : $.post("/inventory/withdraw/", {
-                current_merchant_id: this.props.currentUser,
-                merchandise_id: this.state.selectedMerchandiseId,
-                quantity: this.state.quantity,
-                remarks: "",
-                price: this.state.price
-            }, () => {
-                this.setState({
-                    show: false,
-                    selectedBrand: "",
-                    selectedCategory: "",
-                    selectedMerchandiseId: 0,
-                    selectedMerchandiseCode: "",
-                    price: 0,
-                    quantity: 0,
-                    deposit: true,
-                    confirmed: false
-                });
-                this.props.onSaveInventry();
-            })
+            this.depositInventory()
+            : this.withdrawInventory();
+    }
+
+    depositInventory() {
+        $.post("/inventory/deposit/", {
+            current_merchant_id: this.props.currentUser,
+            merchandise_id: this.state.selectedMerchandiseId,
+            quantity: this.state.quantity,
+            remarks: "",
+            price: this.state.price
+        }).done((data) => {
+            this.setState({
+                message: data.detail,
+                messageType: data.result,
+                show: false,
+                selectedBrand: "",
+                selectedCategory: "",
+                selectedMerchandiseId: 0,
+                selectedMerchandiseCode: "",
+                price: 0,
+                quantity: 0,
+                deposit: true,
+                confirmed: false,
+            });
+        }).fail((data) => {
+            this.setState({
+                message: data.detail,
+                messageType: data.result,
+            });
+        }).always(() => {
+            this.props.onSaveInventry({
+                messageType: this.state.messageType === 'fail' ? "danger" : this.state.messageType,
+                message: this.state.message
+            });
+        });
+    }
+
+    withdrawInventory(){
+        $.post("/inventory/withdraw/", {
+            current_merchant_id: this.props.currentUser,
+            merchandise_id: this.state.selectedMerchandiseId,
+            quantity: this.state.quantity,
+            remarks: "",
+            price: this.state.price
+        }).done((data) => {
+            this.setState({
+                message: data.detail,
+                messageType: data.result,
+                show: false,
+                selectedBrand: "",
+                selectedCategory: "",
+                selectedMerchandiseId: 0,
+                selectedMerchandiseCode: "",
+                price: 0,
+                quantity: 0,
+                deposit: true,
+                confirmed: false,
+            });
+        }).fail((data) => {
+            this.setState({
+                message: data.detail,
+                messageType: data.result,
+            });
+            }).always(() => {
+            this.props.onSaveInventry({
+                messageType: this.state.messageType === 'fail' ? "danger" : this.state.messageType,
+                message: this.state.message
+            });
+        });
     }
 
     cancelSave() {

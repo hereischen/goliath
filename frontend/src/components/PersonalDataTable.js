@@ -1,6 +1,6 @@
 import React from 'react';
 import InventoryTable from "./InventoryTable";
-import Pager from 'react-bootstrap/lib/Pagination';
+import {Pager, Alert} from 'react-bootstrap';
 import utils from "../utils/utils";
 import PersonalInventoryCreateDialog from './PersonalInventoryCreateDialog';
 import PersonalInventoryUpdateDialog from './PersonalInventoryUpdateDialog';
@@ -14,6 +14,9 @@ export default class PersonalDataTable extends React.Component{
             personalInventories: [],
             showCreateInvtDialog: false,
             showUpdateInvtDialog: false,
+            showUpdateInvtResult: false,
+            message: "",
+            messageType: "",
             url: `/inventory/inventories/merchants?id=${this.props.currentUser}`
         };
         this.getPersonalInventories(this.state.url);
@@ -78,52 +81,73 @@ export default class PersonalDataTable extends React.Component{
     }
 
     getColumns() {
-            return [
-                {
-                    type: "text",
-                    title: "品牌",
-                    selector: "brand",
-                },
-                {
-                    type: "text",
-                    title: "品类",
-                    selector: "category",
+        return [
+            {
+                type: "text",
+                title: "品牌",
+                selector: "brand",
+            },
+            {
+                type: "text",
+                title: "品类",
+                selector: "category",
 
-                },
-                {
-                    type: "text",
-                    title: "商品编码",
-                    selector: "code",
-                },
-                {
-                    type: "text",
-                    title: "数量",
-                    selector: "quantity",
-                },
-                {
-                    type: "text",
-                    title: "价格",
-                    selector: "price",
-                },
-                {
-                    type: "text",
-                    title: "修改时间",
-                    selector: "modifiedDate"
-                },
-                {
-                    type: "action",
-                    title: "操作",
-                    renderContent: (invt, ind) =>
-                        (<td key={ind}>
-                            <button onClick={() => {this.onRowClick(invt.id, true)}}>+</button>
-                            <button onClick={() => {this.onRowClick(invt.id, false)}}>-</button></td>)
-                }
+            },
+            {
+                type: "text",
+                title: "商品编码",
+                selector: "code",
+            },
+            {
+                type: "text",
+                title: "数量",
+                selector: "quantity",
+            },
+            {
+                type: "text",
+                title: "价格",
+                selector: "price",
+            },
+            {
+                type: "text",
+                title: "修改时间",
+                selector: "modifiedDate"
+            },
+            {
+                type: "action",
+                title: "操作",
+                renderContent: (invt, ind) =>
+                    (<td key={ind}>
+                        <button onClick={() => {
+                            this.onRowClick(invt.id, true)
+                        }}>+
+                        </button>
+                        <button onClick={() => {
+                            this.onRowClick(invt.id, false)
+                        }}>-
+                        </button>
+                    </td>)
+            }
 
-            ];
-        }
+        ];
+    }
 
-    onSaveInventry() {
-        this.setState({showUpdateInvtDialog: false});
+    onInventoryCreate(result) {
+        this.setState({
+            showUpdateInvtDialog: false,
+            showUpdateInvtResult: true,
+            ...result,
+        });
+
+        this.getPersonalInventories(this.state.url);
+    }
+
+    onSaveInventry(result) {
+        this.setState({
+            showUpdateInvtDialog: false,
+            showUpdateInvtResult: true,
+            ...result,
+        });
 
         this.getPersonalInventories(this.state.url);
     }
@@ -138,10 +162,12 @@ export default class PersonalDataTable extends React.Component{
                 <Pager.Item onClick={this.setPrevious} disabled={!this.state.previous}>上一页</Pager.Item>
                 <Pager.Item onClick={this.setNext} disabled={!this.state.next}>下一页</Pager.Item>
             </Pager>
+            {this.state.showUpdateInvtResult && <Alert variant={this.state.messageType} closeLabel="close">{this.state.message}</Alert>}
 
             <PersonalInventoryCreateDialog show={this.state.showCreateInvtDialog}
                                            closeDialog={() => {this.setState( { showCreateInvtDialog: false});}}
-                                           currentUser={this.props.currentUser}/>
+                                           currentUser={this.props.currentUser}
+                                           onInventoryCreate={this.onInventoryCreate}/>
 
             <PersonalInventoryUpdateDialog deposit={this.state.deposit}
                                            show={this.state.showUpdateInvtDialog}

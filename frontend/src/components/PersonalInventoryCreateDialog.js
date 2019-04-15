@@ -33,7 +33,8 @@ class PersonalInventoryCreateDialog extends React.Component {
     static propTypes = {
         show: PropTypes.bool,
         closeDialog: PropTypes.func,
-        currentUser: PropTypes.string
+        currentUser: PropTypes.string,
+        onInventoryCreate: PropTypes.func,
     };
 
     static getDerivedStateFromProps(props, state) {
@@ -59,13 +60,19 @@ class PersonalInventoryCreateDialog extends React.Component {
             quantity: this.state.quantity,
             price: this.state.price,
             remarks: "",
-        }, () => {
-            this.resetFields();
-            this.props.closeDialog();
         })
+            .done((data) => {
+                this.resetFields({message: data.message, messageType: data.messageType});
+            })
+            .fail((data) => {
+                this.resetFields({message: data.message, messageType: data.messageType})
+            })
+            .always(() => {
+                this.props.onInventoryCreate({message: this.state.message, messageType: this.state.messageType});
+            });
     }
 
-    resetFields() {
+    resetFields(result) {
         this.setState({
             show: false,
             confirmed: false,
@@ -78,6 +85,7 @@ class PersonalInventoryCreateDialog extends React.Component {
             showMerchandiseHelpText: false,
             price: '',
             quantity: '',
+            ...result
         });
     }
 
