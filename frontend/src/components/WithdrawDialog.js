@@ -42,7 +42,17 @@ export default class WithdrawDialog extends React.Component{
         this.props.onClose();
     }
 
+    isFormValid() {
+        return !_.isEmpty(this.state.merchantAndNumberMapping) && _.some(this.props.depositTableData, (mcht) => this.state.merchantAndNumberMapping[mcht.id] && this.state.merchantAndNumberMapping[mcht.id].quantity > 0 );
+    }
+
     onConfirm() {
+        if (!this.isFormValid()) {
+            this.props.onConfirm({
+                messageType: "danger",
+                message: "借调失败，填写的信息有误，请重新输入"});
+            return;
+        }
         if (!this.state.confirm) {
             this.setState({confirm: true});
             return;
@@ -73,11 +83,15 @@ export default class WithdrawDialog extends React.Component{
             this.setState({
                 message: data.detail,
                 messageType: data.result,
+                confirm: false,
+                merchantAndNumberMapping: {},
             });
         }).fail((data) => {
             this.setState({
                 message: data.responseJSON.detail,
                 messageType: data.responseJSON.result,
+                confirm: false,
+                merchantAndNumberMapping: {},
             });
         }).always(() =>{
             this.props.onConfirm({
