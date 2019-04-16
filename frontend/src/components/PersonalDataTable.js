@@ -25,6 +25,7 @@ export default class PersonalDataTable extends React.Component{
         this.setPrevious = this.setPrevious.bind(this);
         this.onRowClick = this.onRowClick.bind(this);
         this.onSaveInventry = this.onSaveInventry.bind(this);
+        this.onInventoryCreate = this.onInventoryCreate.bind(this);
     }
 
 
@@ -134,7 +135,7 @@ export default class PersonalDataTable extends React.Component{
 
     onInventoryCreate(result) {
         this.setState({
-            showUpdateInvtDialog: false,
+            showCreateInvtDialog: false,
             showUpdateInvtResult: true,
             ...result,
         });
