@@ -122,22 +122,22 @@ export default class WithdrawDialog extends React.Component{
         return ([
             {
                 type: "text",
-                title: "供货商-姓名",
+                title: "供货商",
                 selector: "merchantName"
             },
             {
                 type: "text",
-                title: "供货商-电话",
+                title: "电话",
                 selector: "mobile",
             },
             {
                 type: "text",
-                title: "供货商-邮箱",
+                title: "邮箱",
                 selector: "email",
             },
             {
                 type: "text",
-                title: "供货商-叮叮",
+                title: "钉钉",
                 selector: "dingding",
             },
             {
@@ -152,7 +152,7 @@ export default class WithdrawDialog extends React.Component{
             },
             {
                 type: "action",
-                title: "借出数量",
+                title: "借调数量",
                 renderContent: (invt, ind) =>
                         (<td key={ind}>
                             <input type="number" placeholder={0} onChange={(event) => this.onChangeDepositNumber(invt, event)}/>
@@ -180,7 +180,7 @@ export default class WithdrawDialog extends React.Component{
             if (!this.state.merchantAndNumberMapping[mcht.id] || this.state.merchantAndNumberMapping[mcht.id].quantity < 0) {
                 return;
             }
-            return (<li key={index}>请确认从 {mcht.merchantName} 处购买 {this.state.merchantAndNumberMapping[mcht.id].quantity}件商品</li>)
+            return (<li key={index}>请确认从 {mcht.merchantName} 处借调 {this.state.merchantAndNumberMapping[mcht.id].quantity}件商品</li>)
         })
             .compact()
             .value();
@@ -202,7 +202,7 @@ export default class WithdrawDialog extends React.Component{
             body={this.getBody()}
             onCancel={this.onCancel}
             onConfirm={this.onConfirm}
-            title="租借设备"
+            title="借调商品"
         />
     }
 };
