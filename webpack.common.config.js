@@ -8,11 +8,10 @@ const bundles = {
 };
 module.exports = {
     entry: {
-        ...bundles,
-        ...{
-            index: ['./frontend/src/index.js', './frontend/src/style/main.less'
+        base: ['jquery', 'lodash'],
+        react: ['react', 'react-dom', 'prop-types', 'react-bootstrap', 'react-select']
+        index: ['./frontend/src/index.js', './frontend/src/style/main.less'
             ]
-        }
     },
     output: {
         path: path.resolve(__dirname, 'static', 'frontend'),
