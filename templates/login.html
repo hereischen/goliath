@@ -4,18 +4,27 @@
 
 {% load static %}
 
-<form class="form-signin" method="post" action="/merchant/login/">
-    {% csrf_token %}
-    <h1 class="h3 mb-3 font-weight-normal">请登录</h1>
-    {% if  message %}
+<div class="picture-section">
+    <img src="/static/image/login.jpeg"/>
+</div>
+<div class="form-section">
+    <form class="form-signin" method="post" action="/merchant/login/">
+        {% csrf_token %}
+        <h1 class="h3 mb-3 font-weight-normal">请登录</h1>
+        {% if message %}
         <div class="ct-box error-box">
             <p class="errornote">{{ message }}</p>
         </div>
-    {% endif %}
-    <label for="inputEmail" class="sr-only">账号</label>
-    {{ login.username  }}
-    <label for="inputPassword" class="sr-only">密码</label>
-    {{ login.password  }}
-    <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
-</form>
+        {% endif %}
+        <div>
+            <label for="inputEmail" class="sr-only">账号</label>
+            {{ login.username }}
+        </div>
+        <div>
+            <label for="inputPassword" class="sr-only">密码</label>
+            {{ login.password }}
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+    </form>
+</div>
 {% endblock %}
