@@ -122,7 +122,7 @@ export default class PersonalDataTable extends React.Component{
                 type: "action",
                 renderContent: (merchandise, ind) => (<td key={ind}>{merchandise.after_sales} 年</td>)
             }, {
-                title: "包装配件",
+                title: "属性",
                 selector: "spare_parts",
                 type: "text"
             }, {
