@@ -24,26 +24,35 @@ body {
   }
 }
 
-.form-section {
-  display: flex;
-}
 .form-signin {
   align-self: top;
   max-width: 330px;
   padding: 15px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+
+  h1 {
+    font-weight: normal;
+  }
   .form-control {
     position: relative;
     box-sizing: border-box;
-    height: auto;
+    height: 36px;
     padding: 10px;
-    font-size: 16px;
+    font-size: 14px;
   }
   input {
     margin-bottom: 10px;
+    margin-left: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
   }
+  button {
+    height: 32px;
+    font-size: 16px;
+  }
+
 }
 
 
