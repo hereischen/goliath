@@ -6,10 +6,40 @@
 
 .section {
     flex-grow: 1;
+    background: #fff;
+    .container {
+        margin-top: 16px;
+    }
 }
 
 .pagination {
     display: flex;
     justify-content: center;
     padding: 0;
+}
+
+
+.nav-tabs {
+    .nav-link>a, .nav-link>a:hover, .nav-link>a:focus{
+        font-size: 14px;
+        color: #999;
+    }
+    li.active {
+        a, a:focus, a:hover {
+            margin: 0;
+            border-top: 3px solid #ff982d;
+            color: #333;
+            border-radius: 3px 3px 0 0;
+        }
+    }
+}
+
+#personal {
+    display: flex;
+    flex-direction: column;
+    .create-inventory {
+        align-self: flex-end;
+        height: 32px;
+        margin-top: 12px;
+    }
 }

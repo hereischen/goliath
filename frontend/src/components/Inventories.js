@@ -1,4 +1,5 @@
 import React from "react";
+import {Tabs, Tab} from "react-bootstrap";
 import AllInvtDataTable from "./AllInvtDataTable";
 import PersonalDataTable from "./PersonalDataTable";
 import HistoryDataTable from "./HistoryDataTable";
@@ -48,31 +49,19 @@ export default class Inventories extends React.Component {
     }
 
     render() {
-        return (<div>
-            <ul className="nav nav-tabs">
-                <li className={`nav-item ${this.state.currentTable === Inventories.TabType.ALL ? 'active' : ''}`}>
-                    <a className={`nav-link ${this.state.currentTable === Inventories.TabType.ALL ? 'active' : ''}`}
-                       data-toggle="tab"
-                       href='#all'
-                       onClick={() => this.setState({currentTable: Inventories.TabType.ALL})}>总库存</a>
-                </li>
-                <li className={this.state.currentTable === Inventories.TabType.PERSONAL ? 'active' : ''}>
-                    <a className={`nav-link ${this.state.currentTable === Inventories.TabType.PERSONAL ? 'active' : ''}`}
-                       data-toggle="tab"
-                       href="#personal"
-                       onClick={() => this.setState({currentTable: Inventories.TabType.PERSONAL})}>个人库存</a>
-                </li>
-                <li className={this.state.currentTable === Inventories.TabType.HISTORY ? 'active' : ''}>
-                    <a className={`nav-link ${this.state.currentTable === Inventories.TabType.HISTORY ? 'active' : ''}`}
-                       data-toggle="tab"
-                       href="#history"
-                       onClick={() => this.setState({currentTable: Inventories.TabType.HISTORY})}>库存历史</a>
-                </li>
-            </ul>
-            <div className="tab-content">
-               {this.switchDataTable()}
-            </div>
-        </div>)
+        return (
+            <Tabs defaultActiveKey="all">
+                <Tab eventKey="all" title="总库存" tabClassName="nav-link">
+                    <AllInvtDataTable currentUser={this.props.currentUser}/>
+                </Tab>
+                <Tab eventKey="personal" title="个人库存" tabClassName="nav-link">
+                    <PersonalDataTable currentUser={this.props.currentUser}/>;
+                </Tab>
+                <Tab eventKey="history" title="库存历史" tabClassName="nav-link">
+                    <HistoryDataTable currentUser={this.props.currentUser}/>;
+                </Tab>
+            </Tabs>
+        )
     }
 }
 

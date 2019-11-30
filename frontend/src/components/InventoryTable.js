@@ -58,7 +58,7 @@ export default class InventoryTable extends React.Component{
 
     render() {
         const emptyContent = (<p className="empty-form">没有相关数据</p>);
-        return (<div><table className="table table-striped table-dark">
+        return (<div><table className="table table-hover">
             <thead>
             <tr>
                 {this.renderTitle()}
