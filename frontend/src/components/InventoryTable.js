@@ -5,7 +5,8 @@ export default class InventoryTable extends React.Component{
         super(props);
         this.state = {
             inventories: props.data,
-            columns: props.columns
+            columns: props.columns,
+            className: props.className,
         };
     }
 
@@ -14,6 +15,13 @@ export default class InventoryTable extends React.Component{
             return ({ inventories: nextProps.data});
         }
         return ({prevState});
+    }
+
+    getClassName(className, needEllipsis) {
+        const ellipsisClass = needEllipsis ? "ellipsis" : "";
+        const customClass = className || "";
+
+        return `${ellipsisClass} ${customClass}`.trim();
     }
 
     getBody() {
@@ -25,7 +33,7 @@ export default class InventoryTable extends React.Component{
                         if (column.type === "action") {
                             return (column.renderContent(invt, ind));
                         }
-                        return (<td key={ind}>{invt[column.selector]}</td>);
+                        return (<td className={this.getClassName(column.className, column.ellipsis)} key={ind} title={invt[column.selector]}>{invt[column.selector]}</td>);
                     })
                 }
             </tr>)

@@ -65,7 +65,7 @@ export default class WithdrawDialog extends React.Component{
             return {
                 merchant: mcht.merchantId,
                 quantity: this.state.merchantAndNumberMapping[mcht.id].quantity,
-                deal_price: this.state.merchantAndNumberMapping[mcht.id].deal_price,
+                deal_price: this.state.merchantAndNumberMapping[mcht.id].deal_price || mcht.price,
                 remarks: this.state.merchantAndNumberMapping[mcht.id].remark,
             }
         })
@@ -107,8 +107,10 @@ export default class WithdrawDialog extends React.Component{
         merchantAndNumberMapping[invt.id].quantity = event.target.value;
     }
 
-    onChangeDealPrice() {
+    onChangeDealPrice(invt, event) {
         const {merchantAndNumberMapping} = this.state;
+
+        console.log(merchantAndNumberMapping);
         merchantAndNumberMapping[invt.id] = merchantAndNumberMapping[invt.id]|| {};
         merchantAndNumberMapping[invt.id].deal_price = event.target.value;
     }
@@ -123,7 +125,9 @@ export default class WithdrawDialog extends React.Component{
             {
                 type: "text",
                 title: "供货商",
-                selector: "merchantName"
+                selector: "merchantName",
+                className: "merchantName",
+                ellipsis: true,
             },
             {
                 type: "text",
@@ -162,7 +166,9 @@ export default class WithdrawDialog extends React.Component{
                 type: "action",
                 title: "成交价格",
                 renderContent: (invt, ind) => {
-                    return (<td key={ind}><input type="number" placeholder={invt.price} value={invt.price} onChange={(event) => this.onChangeDealPrice(invt, event)}/></td>);
+                    return (<td key={ind}>
+                        <input type="number" placeholder={invt.price} defaultValue={invt.price} onChange={(event) => this.onChangeDealPrice(invt, event)}/>
+                    </td>);
                 }
             },
             {
