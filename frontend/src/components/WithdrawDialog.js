@@ -126,32 +126,36 @@ export default class WithdrawDialog extends React.Component{
                 type: "text",
                 title: "供货商",
                 selector: "merchantName",
-                className: "merchantName",
-                ellipsis: true,
+                width: 100,
             },
             {
                 type: "text",
                 title: "电话",
+                width: 120,
                 selector: "mobile",
             },
             {
                 type: "text",
                 title: "邮箱",
+                width: 200,
                 selector: "email",
             },
             {
                 type: "text",
                 title: "钉钉",
+                width: 150,
                 selector: "dingding",
             },
             {
                 type: "text",
                 title: "价格",
+                width: 100,
                 selector: "price",
             },
             {
                 type: "text",
                 title: "数量",
+                width: 50,
                 selector: "quantity",
             },
             {

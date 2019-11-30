@@ -17,13 +17,16 @@ export default class InventoryTable extends React.Component{
         return ({prevState});
     }
 
-    getClassName(className, needEllipsis) {
-        const ellipsisClass = needEllipsis ? "ellipsis" : "";
+    getClassName(className) {
+        const ellipsisClass = "ellipsis";
         const customClass = className || "";
 
         return `${ellipsisClass} ${customClass}`.trim();
     }
 
+    getRowWidth(width) {
+        return width || 100;
+    }
     getBody() {
         return !_.isEmpty(this.state.inventories) && _.map(this.state.inventories, (invt, index) => {
             return (<tr key={invt.id}>
@@ -33,7 +36,12 @@ export default class InventoryTable extends React.Component{
                         if (column.type === "action") {
                             return (column.renderContent(invt, ind));
                         }
-                        return (<td className={this.getClassName(column.className, column.ellipsis)} key={ind} title={invt[column.selector]}>{invt[column.selector]}</td>);
+                        return (<td className={this.getClassName(column.className)}
+                                    key={ind}
+                                    style={{maxWidth: `${this.getRowWidth(column.width)}px`, }}
+                                    title={invt[column.selector]}>
+                            {invt[column.selector]}
+                        </td>);
                     })
                 }
             </tr>)
