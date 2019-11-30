@@ -2,7 +2,6 @@ import React from "react";
 import AllInvtDataTable from "./AllInvtDataTable";
 import PersonalDataTable from "./PersonalDataTable";
 import HistoryDataTable from "./HistoryDataTable";
-import {Tabs} from 'react-bootstrap';
 
 export default class Inventories extends React.Component {
     static TabType = {
