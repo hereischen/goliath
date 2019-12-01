@@ -3,25 +3,25 @@
 {% block content %}
 
 {% load static %}
-
-<div class="picture-section">
-    <img src="/static/image/登录.png"/>
-</div>
 <div class="form-section">
     <form class="form-signin" method="post" action="/merchant/login/">
         {% csrf_token %}
-        <h1 class="h3 mb-3 font-weight-normal">请登录</h1>
+        <span>欢迎登录</span>
+        <h1 class="h3 mb-3 font-weight-normal">河南省政府采购</h1>
+        <h1 class="h3 mb-3 font-weight-normal sub">网上商城共享库</h1>
         {% if message %}
         <div class="ct-box error-box">
             <p class="errornote">{{ message }}</p>
         </div>
         {% endif %}
-        <div>
+        <div class="user-name">
             <label for="inputEmail" class="sr-only">账号</label>
+            <i class="fa fa-user"></i>
             {{ login.username }}
         </div>
         <div>
             <label for="inputPassword" class="sr-only">密码</label>
+            <i class="fa fa-lock"></i>
             {{ login.password }}
         </div>
         <button class="btn btn-primary" type="submit">登录</button>
