@@ -73,7 +73,7 @@ export default class HistoryDataTable extends React.Component{
         return [{
             title: "类型",
             type: "action",
-            renderContent: (hs, ind) => (<td key={ind}>{HistoryDataTable.TYPE[hs.type]}</td>)
+            renderContent: (hs, ind) => (<td className="ellipsis" style={{maxWidth : "200px"}} key={ind}>{HistoryDataTable.TYPE[hs.type]}</td>)
         },{
             title: "品牌",
             selector: "brand",
@@ -95,34 +95,7 @@ export default class HistoryDataTable extends React.Component{
             title: "库存所有人",
             selector: "owner",
             type: "text",
-        }, {
-            title: "发起人",
-            selector: "initiator",
-            type: "text",
-        }, {
-            title: "时价",
-            selector: "price",
-            type: "text",
-        }, {
-            title: "成交价",
-            selector: "dealPrice",
-            type: "text",
-        }, {
-            title: "原库存数量",
-            selector: "prevQuantity",
-            type: "text",
-        }, {
-            title: "变动数量",
-            selector: "quantity",
-            type: "text",
-        }, {
-            title: "备注",
-            selector: "remarks",
-            type: "text",
-        }, {
-            title: "创建日期",
-            selector: "createdDate",
-            type: "text"
+            width: 200,
         }];
     }
 

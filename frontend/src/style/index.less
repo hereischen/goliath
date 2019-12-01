@@ -7,9 +7,7 @@
 .section {
     flex-grow: 1;
     background: #fff;
-    .container {
-        margin-top: 16px;
-    }
+    padding: 0 12px;
 }
 
 .pagination {
@@ -41,5 +39,11 @@
         align-self: flex-end;
         height: 32px;
         margin-top: 12px;
+        border-color: #ff8548;
+        color: #ff8548;
+        &:active, &:hover{
+            background: #ff8548;
+            color: #fff;
+        }
     }
 }
