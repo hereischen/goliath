@@ -27,39 +27,76 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 650px;
   margin: auto;
+  background-image: url('/static/image/login_bg.png');
+  background-size: cover;
+  min-width: 1150px;
+  overflow: scroll;
 }
 .form-signin {
-  padding: 15px;
-  margin: 0 auto;
   width: 430px;
+  margin:150px 40px 0 0;
   display: flex;
+  align-self: flex-end;
   flex-direction: column;
+  align-items: flex-start;
+  span {
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
 
   h1 {
     font-weight: normal;
     font-size: 28px;
+    margin-top: 4px;
+    margin-bottom: 0;
+  }
+  .sub {
     margin-bottom: 20px;
   }
+
   .form-control {
     position: relative;
     box-sizing: border-box;
-    padding: 10px;
+    padding: 10px 10px 0 10px;
     font-size: 14px;
+  }
+
+  .fa {
+    font-size: 16px;
+    height: 28px;
+    border-bottom: 1px solid #333;
   }
 
   input {
     height: 48px;
+    width: 320px;
+    background: #f5f5f5;
+    display: inline-block;
     margin-bottom: 16px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
-  button {
-    height: 40px;
-    font-size: 16px;
-    margin-top: 8px;
-  }
+    margin-left: -4px;
+    padding-left:12px;
 
+    border: none;
+    border-bottom: 1px solid #333;
+    border-radius: 0;
+    box-shadow: none;
+    &:active, &:focus {
+      box-shadow: none;
+      border-bottom: 1px solid #333;
+    }
+  }
+  button.btn, .btn-primary {
+    height: 28px;
+    line-height: 14px;
+    font-size: 20px;
+    margin-top: 8px;
+    border-radius: 16px;
+    width: 100px;
+    background: #007bff;
+    color: #fff;
+  }
 }
 
 
