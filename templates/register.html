@@ -11,7 +11,7 @@
         {% endif %}
 
         <div class="form-section">
-            <form method="post" class="form-signin" action="{% url 'merchant:register' %}">
+            <form method="post" class="form-register" action="{% url 'merchant:register' %}">
                 {% csrf_token %}
                 <div class="form-group">
                     {{ forms.username }}
