@@ -46,7 +46,9 @@ export default class PersonalDataTable extends React.Component{
     }
 
     static buildPersonalInventoryTable(inventories) {
-        return _.map(inventories, invt => {
+        return _.chain(inventories)
+            .orderBy(invt => invt.merchandise.id)
+            .map(invt => {
             return {
                 brand: invt.merchandise.brand.brand,
                 category: invt.merchandise.category.category,
@@ -61,8 +63,9 @@ export default class PersonalDataTable extends React.Component{
                 model: invt.merchandise.model,
                 after_sales: invt.merchandise.after_sales,
                 modifiedDate: utils.formatDate(invt.modified_date, "YYYY-MM-DD HH:MM"),
-            }
-        });
+            }})
+            .value()
+            ;
     }
 
     setNext() {
@@ -88,6 +91,11 @@ export default class PersonalDataTable extends React.Component{
 
     getColumns() {
         return [
+            {
+                type: "text",
+                title: "编号",
+                selector: "id",
+            },
             {
                 type: "text",
                 title: "品牌",
