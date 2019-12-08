@@ -41,7 +41,9 @@ export default class HistoryDataTable extends React.Component{
     }
 
     static buildHistoryTable(histories) {
-        return _.map(histories, hs => {
+        return _.chain(histories)
+            .orderBy(his => his.id)
+            .map( hs => {
             return {
                 id: hs.id,
                 type: hs.type,
@@ -58,7 +60,8 @@ export default class HistoryDataTable extends React.Component{
                 remarks: hs.remarks,
                 createdDate: utils.formatDate(hs.created_date, "YYYY-MM-DD HH:MM"),
             }
-        });
+        })
+            .value();
     }
 
     setNext() {
@@ -71,6 +74,10 @@ export default class HistoryDataTable extends React.Component{
 
     getColumns() {
         return [{
+            type: "text",
+            title: "编号",
+            selector: "id",
+            }, {
             title: "类型",
             type: "action",
             selector: "type",

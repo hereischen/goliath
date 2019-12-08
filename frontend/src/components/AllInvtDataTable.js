@@ -41,7 +41,9 @@ export default class AllInvtDataTable extends React.Component{
     }
 
     static buildAllInventoryTable(inventories) {
-        return _.map(inventories, invt => {
+        return _.chain(inventories)
+            .orderBy(invt => invt.merchandise.id)
+            .map(invt => {
             return {
                 brand: invt.merchandise.brand.brand,
                 category: invt.merchandise.category.category,
@@ -54,8 +56,8 @@ export default class AllInvtDataTable extends React.Component{
                 spare_parts: invt.merchandise.spare_parts,
                 model: invt.merchandise.model,
                 after_sales: invt.merchandise.after_sales,
-            }
-        });
+            }})
+            .value();
     }
 
     setNext() {
@@ -98,6 +100,10 @@ export default class AllInvtDataTable extends React.Component{
 
     getColumns() {
         return [{
+            title: "编号",
+            selector: "id",
+            type: "text",
+        },{
             title: "品牌",
             selector: "brand",
             type: "text",

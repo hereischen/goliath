@@ -62,6 +62,10 @@ body {
     background: #007bff;
     color: #fff;
   }
+
+  i {
+    border-bottom: 1px solid #333;
+  }
 }
 .form-signin {
   width: 430px;
@@ -74,7 +78,9 @@ body {
     font-size: 20px;
     margin-bottom: 8px;
   }
-
+  i {
+    height: 26px;
+  }
   h1 {
     font-weight: normal;
     font-size: 28px;
@@ -113,19 +119,29 @@ body {
 
 .form-register {
   align-self: flex-end;
-  margin-right: 40px;
+  margin-right: 250px;
   margin-top: 24px;
   width:400px;
 
   .form-group {
     margin: 0;
+    height:40px;
   }
+
   input[name="captcha_1"] {
     width: 185px;
+  }
+  i {
+    height: 27px;
+  }
+  input{
+    margin: 0 0 0 -4px;
+    height: 40px;
   }
 
   button.btn, .btn-primary {
     line-height: 8px;
+    margin: 10px 100px;
   }
 }
 
