@@ -73,7 +73,10 @@ export default class HistoryDataTable extends React.Component{
         return [{
             title: "类型",
             type: "action",
-            renderContent: (hs, ind) => (<td className="ellipsis" key={ind}>{HistoryDataTable.TYPE[hs.type]}</td>)
+            selector: "type",
+            renderContent: (row) => {
+                return (`${HistoryDataTable.TYPE[row.value]}`)
+            }
         },{
             title: "品牌",
             selector: "brand",

@@ -125,7 +125,8 @@ export default class AllInvtDataTable extends React.Component{
         }, {
             title: "售后服务",
             type: "action",
-            renderContent: (merchandise, ind) => (<td key={ind}>{merchandise.after_sales} 年</td>)
+            selector: "after_sales",
+            renderContent: (row) => `${row.value} 年`,
         }, {
             title: "属性",
             selector: "spare_parts",
@@ -133,15 +134,20 @@ export default class AllInvtDataTable extends React.Component{
         },{
             title: "到货时间",
             type: "action",
-            renderContent: (merchandise, ind) => (<td key={ind}>{merchandise.delivery_time} 天</td>)
-        }, {
+            selector: "delivery_time",
+            renderContent: (row) => (`${row.value} 天`)
+        },
+            {
             title: "操作",
             type: "action",
-            renderContent: (merchandise, ind) =>
-                        (<td key={ind}>
-                            <button onClick={() => {this.onRowClick(merchandise)}}>...</button>
-                        </td>)
-        }]
+            renderContent: (row) =>
+            {
+                return (
+                    <button onClick={() => {this.onRowClick(row.original)}}>...</button>
+                )
+            }
+        }
+        ]
     }
 
     onConfirmWithDraw(result) {

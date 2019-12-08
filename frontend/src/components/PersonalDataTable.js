@@ -121,7 +121,8 @@ export default class PersonalDataTable extends React.Component{
             }, {
                 title: "售后服务",
                 type: "action",
-                renderContent: (merchandise, ind) => (<td key={ind}>{merchandise.after_sales} 年</td>)
+                selector: "after_sales",
+                renderContent: (row) => (`${row.value} 年`)
             }, {
                 title: "属性",
                 selector: "spare_parts",
@@ -129,7 +130,8 @@ export default class PersonalDataTable extends React.Component{
             }, {
                 title: "到货时间",
                 type: "action",
-                renderContent: (merchandise, ind) => (<td key={ind}>{merchandise.delivery_time} 天</td>)
+                selector: "delivery_time",
+                renderContent: (row) => (`${row.value} 天`)
             }, {
                 type: "text",
                 title: "修改时间",
@@ -138,10 +140,10 @@ export default class PersonalDataTable extends React.Component{
             }, {
                 type: "action",
                 title: "操作",
-                renderContent: (invt, ind) =>
-                    (<td key={ind}>
-                        <button onClick={() => {this.onRowClick(invt.id, true)}} className="row-action">+</button>
-                        <button onClick={() => {this.onRowClick(invt.id, false)}} className="row-action">-</button></td>)
+                renderContent: (row) =>
+                    (<>
+                        <button onClick={() => {this.onRowClick(row.original.id, true)}} className="row-action">+</button>
+                        <button onClick={() => {this.onRowClick(row.original.id, false)}} className="row-action">-</button></>)
             }
 
         ];

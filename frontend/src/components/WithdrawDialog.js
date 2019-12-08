@@ -161,25 +161,25 @@ export default class WithdrawDialog extends React.Component{
             {
                 type: "action",
                 title: "借调数量",
-                renderContent: (invt, ind) =>
-                        (<td key={ind}>
-                            <input type="number" placeholder={0} onChange={(event) => this.onChangeDepositNumber(invt, event)}/>
-                        </td>)
+                renderContent: (row) =>
+                        (<>
+                            <input type="number" placeholder={0} onChange={(event) => this.onChangeDepositNumber(row.original, event)}/>
+                        </>)
             },
             {
                 type: "action",
                 title: "成交价格",
-                renderContent: (invt, ind) => {
-                    return (<td key={ind}>
-                        <input type="number" placeholder={invt.price} defaultValue={invt.price} onChange={(event) => this.onChangeDealPrice(invt, event)}/>
-                    </td>);
+                renderContent: (row) => {
+                    return (<>
+                        <input type="number" placeholder={row.original.price} defaultValue={row.original.price} onChange={(event) => this.onChangeDealPrice(row.original, event)}/>
+                    </>);
                 }
             },
             {
                 type: "action",
                 title: "备注",
-                renderContent: (invt, ind) => {
-                    return (<td key={ind}><textarea cols={15} rows={2} placeholder="请填写备注" onChange={(event) => this.onChangeRemark(invt, event)}/></td>);
+                renderContent: (row) => {
+                    return (<><textarea cols={10} rows={2} placeholder="请填写备注" onChange={(event) => this.onChangeRemark(row.original, event)}/></>);
                 }
             }
         ]);
