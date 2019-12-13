@@ -62,11 +62,19 @@ class RegisterView(View):
             if password != password1:
                 return render(request, 'register.html',
                               {'message': '两次输入的密码不同！', 'forms': forms})
+            mobile = forms.cleaned_data["mobile"]
+            if Merchant.objects.filter(mobile=mobile):
+                return render(request, 'register.html',
+                              {'message': '该手机号已注册！', 'forms': forms})
+            name = forms.cleaned_data["name"]
+            if Merchant.objects.filter(name=name):
+                return render(request, 'register.html',
+                              {'message': '该商户名已注册！', 'forms': forms})
             user = Merchant()
             user.username = username
             user.password = hashers.make_password(password)
-            user.name = forms.cleaned_data["name"]
-            user.mobile = forms.cleaned_data["mobile"]
+            user.name = name
+            user.mobile = mobile
             user.email = forms.cleaned_data["email"]
             user.address = forms.cleaned_data["address"]
             user.dingding = forms.cleaned_data["dingding"]
