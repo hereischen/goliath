@@ -16,10 +16,10 @@ export default class Inventories extends React.Component {
                     <AllInvtDataTable currentUser={this.props.currentUser}/>
                 </Tab>
                 <Tab eventKey="personal" title="个人库存" tabClassName="nav-link">
-                    <PersonalDataTable currentUser={this.props.currentUser}/>;
+                    <PersonalDataTable currentUser={this.props.currentUser}/>
                 </Tab>
                 <Tab eventKey="history" title="库存历史" tabClassName="nav-link">
-                    <HistoryDataTable currentUser={this.props.currentUser}/>;
+                    <HistoryDataTable currentUser={this.props.currentUser}/>
                 </Tab>
             </Tabs>
         )
