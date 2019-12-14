@@ -159,6 +159,7 @@ class DepositToInvtSerializer(UpdateInvtBaseSerializer):
             prev_quantity=prev_quantity,
             quantity=self.validated_data['quantity'],
             price=price,
+            info=self.validated_data.get('info'),
             remarks=self.validated_data.get('remarks'))
         return self.status_code_200("自增库存成功")
 
@@ -194,6 +195,7 @@ class WithdrawFromInvtSerializer(UpdateInvtBaseSerializer):
             prev_quantity=prev_quantity,
             quantity=self.validated_data['quantity'],
             price=inv.price,
+            info=self.validated_data.get('info'),
             remarks=self.validated_data.get('remarks'))
         return self.status_code_200("自减库存成功")
 
@@ -254,5 +256,6 @@ class WithdrawFromOthersInvtSerializer(UpdateInvtBaseSerializer):
                 quantity=int(item['quantity']),
                 price=withdraw_inv.price,
                 deal_price=deal_price,
+                info=item.get('info'),
                 remarks=item.get('remarks'))
         return self.status_code_200("借调库存成功")
