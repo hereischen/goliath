@@ -9,8 +9,8 @@ from .models import History
 @admin.register(History)
 class HistoryAdmin(admin.ModelAdmin):
     list_display = ('type', 'inventory', 'initiator', 'price', 'deal_price',
-                    'prev_quantity', 'quantity', 'remarks', 'created_date',
-                    'modified_date')
+                    'prev_quantity', 'quantity', 'info', 'remarks',
+                    'created_date', 'modified_date')
     readonly_fields = list_display
 
     def has_delete_permission(self, request, obj=None):

@@ -41,7 +41,7 @@ class MerchandiseAdmin(admin.ModelAdmin):
 @admin.register(Inventory)
 class InventoryAdmin(admin.ModelAdmin):
     list_display = ('merchandise', 'merchant', 'price', 'quantity',
-                    'remarks', 'created_date', 'modified_date')
+                    'info', 'remarks', 'created_date', 'modified_date')
     readonly_fields = ('created_date', 'modified_date')
 
     def has_delete_permission(self, request, obj=None):

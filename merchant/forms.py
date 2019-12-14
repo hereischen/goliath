@@ -47,6 +47,10 @@ class RegisterForm(forms.Form):
                            widget=forms.TextInput(
                                attrs={"class": "form-control",
                                       "placeholder": "请输入公司名*"}))
+    dingding = forms.CharField(label='钉钉', required=True,
+                               widget=forms.TextInput(
+                                   attrs={"class": "form-control",
+                                          "placeholder": "请输入钉钉*"}))
     address = forms.CharField(label='公司地址', required=False,
                               widget=forms.TextInput(
                                   attrs={"class": "form-control",
@@ -55,8 +59,4 @@ class RegisterForm(forms.Form):
                              widget=forms.EmailInput(
                                  attrs={"class": "form-control",
                                         "placeholder": "请输入邮箱"}))
-    dingding = forms.CharField(label='钉钉', required=False,
-                               widget=forms.TextInput(
-                                   attrs={"class": "form-control",
-                                          "placeholder": "请输入钉钉"}))
     captcha = CaptchaField(error_messages={'message': '验证码错误!'})

@@ -14,6 +14,7 @@ class Merchant(AbstractUser):
     address = models.CharField(max_length=128, null=True, blank=True,
                                verbose_name='地址')
     mobile = models.CharField(max_length=15, unique=True, verbose_name='手机号')
+    # form中必填, 之后修改这里
     dingding = models.CharField(max_length=15, null=True, blank=True,
                                 verbose_name='钉钉')
 
