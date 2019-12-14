@@ -80,6 +80,7 @@ class Inventory(models.Model):
     price = models.DecimalField(max_digits=11, decimal_places=2,
                                 verbose_name='标价')
     quantity = models.PositiveIntegerField(default=0, verbose_name='数量')
+    info = models.TextField(null=True, blank=True, verbose_name='供货信息')
     remarks = models.TextField(null=True, blank=True, verbose_name='库存备注')
     created_date = models.DateTimeField(auto_now_add=True,
                                         verbose_name='创建时间')

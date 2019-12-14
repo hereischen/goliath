@@ -40,6 +40,7 @@ class MerchandiseSerializer(serializers.ModelSerializer):
 
 
 class InventorySerializer(serializers.ModelSerializer):
+    """总库存"""
     merchandise = MerchandiseSerializer(many=False, read_only=True)
     merchant = MerchantSerializer(many=False, read_only=True)
 
@@ -49,15 +50,19 @@ class InventorySerializer(serializers.ModelSerializer):
 
 
 class MerchantInventorySerializer(InventorySerializer):
+    """个人(某商户的)库存"""
     class Meta:
         model = Inventory
-        fields = ('id', 'price', 'quantity', 'merchandise', 'modified_date')
+        fields = ('id', 'price', 'quantity', 'merchandise', 'info',
+                  'modified_date')
 
 
 class MerchandiseInventorySerializer(InventorySerializer):
+    """商品库存"""
     class Meta:
         model = Inventory
-        fields = ('id', 'price', 'quantity', 'merchant', 'modified_date')
+        fields = ('id', 'price', 'quantity', 'merchant', 'info',
+                  'modified_date')
 
 
 class UpdateInvtBaseSerializer(serializers.Serializer):
@@ -84,8 +89,10 @@ class UpdateInvtBaseSerializer(serializers.Serializer):
 
 
 class CreateNewInvtSerializer(UpdateInvtBaseSerializer):
+    """Merchant新建自己的库存"""
     price = serializers.DecimalField(required=True,
                                      max_digits=11, decimal_places=2)
+    info = serializers.CharField(required=True)
 
     def create(self):
         try:
@@ -104,6 +111,7 @@ class CreateNewInvtSerializer(UpdateInvtBaseSerializer):
                 merchant=cm,
                 quantity=self.validated_data['quantity'],
                 price=self.validated_data['price'],
+                info=self.validated_data['info'],
                 remarks=self.validated_data.get('remarks'))
         except ValidationError:
             return self.status_code_500("该商品的库存已经存在")
@@ -113,6 +121,7 @@ class CreateNewInvtSerializer(UpdateInvtBaseSerializer):
             initiator=cm,
             quantity=self.validated_data['quantity'],
             price=self.validated_data['price'],
+            info=self.validated_data['info'],
             remarks=self.validated_data.get('remarks'))
         return self.status_code_200("创建新库存成功")
 
@@ -121,6 +130,7 @@ class DepositToInvtSerializer(UpdateInvtBaseSerializer):
     """Merchant增自己的库存"""
     price = serializers.DecimalField(required=False,
                                      max_digits=11, decimal_places=2)
+    info = serializers.CharField(required=False)
 
     def deposit(self):
         try:
@@ -138,6 +148,7 @@ class DepositToInvtSerializer(UpdateInvtBaseSerializer):
         if self.validated_data.get("price"):
             inv.price = self.validated_data['price']
         inv.quantity += self.validated_data['quantity']
+        inv.info = self.validated_data.get('info')
         inv.remarks = self.validated_data.get('remarks')
         inv.save()
 
@@ -154,6 +165,7 @@ class DepositToInvtSerializer(UpdateInvtBaseSerializer):
 
 class WithdrawFromInvtSerializer(UpdateInvtBaseSerializer):
     """Merchant减自己的库存"""
+    info = serializers.CharField(required=False)
 
     def withdraw(self):
         try:
@@ -171,6 +183,7 @@ class WithdrawFromInvtSerializer(UpdateInvtBaseSerializer):
             return self.status_code_500("您的库存不足")
         prev_quantity = inv.quantity
         inv.quantity -= self.validated_data['quantity']
+        inv.info = self.validated_data.get('info')
         inv.remarks = self.validated_data.get('remarks')
         inv.save()
 
