@@ -52,7 +52,6 @@ export default class AllInvtDataTable extends React.Component{
                 remarks: invt.merchandise.remarks,
                 quantity: invt.quantity,
                 certification: invt.merchandise.certification,
-                delivery_time: invt.merchandise.delivery_time,
                 spare_parts: invt.merchandise.spare_parts,
                 model: invt.merchandise.model,
                 after_sales: invt.merchandise.after_sales,
@@ -138,12 +137,6 @@ export default class AllInvtDataTable extends React.Component{
             selector: "spare_parts",
             type: "text"
         },{
-            title: "到货时间",
-            type: "action",
-            selector: "delivery_time",
-            renderContent: (row) => (`${row.value} 天`)
-        },
-            {
             title: "操作",
             type: "action",
             renderContent: (row) =>
