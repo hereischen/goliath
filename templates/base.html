@@ -1,46 +1,41 @@
 {% load static %}
 <html lang="zh-CN">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-
     <title>河南省政府采购网上商城共享库</title>
-
     <!-- Bootstrap core CSS -->
-      <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
-      <link rel="stylesheet" href="{% static 'css/iconfont.css' %}">
-      <link rel="stylesheet" href="https://unpkg.com/react-table-v6@latest/react-table.css"/>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/iconfont.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/react-table-v6@latest/react-table.css" />
+</head>
 
-  </head>
-
-      <body>
+<body>
     <!-- nav-bar -->
     <header class="header">
-      <h3 class="">河南省政府采购网上商城共享库</h3>
-      <nav class="">
-        {% if user.is_authenticated %}
-        <a class="" >欢迎您, {{user.name}}</a>
-        <a class="btn btn-primary" href="{% url 'merchant:logout' %}">退出登录</a>
-        {% else %}
-        <a class="btn btn-outline-primary" href="{% url 'merchant:login' %}">登录</a>
-        <a class="btn btn-outline-primary" href="{% url 'merchant:register' %}">注册</a>
-        {% endif %}
-      </nav>
+        <h3 class="">河南省政府采购网上商城共享库</h3>
+        <nav class="">
+            {% if user.is_authenticated %}
+            <a class="">欢迎您, {{user.name}}</a>
+            <a class="btn btn-primary" href="{% url 'merchant:logout' %}">退出登录</a>
+            {% else %}
+            <a class="btn btn-outline-primary" href="{% url 'merchant:login' %}">登录</a>
+            <a class="btn btn-outline-primary" href="{% url 'merchant:register' %}">注册</a>
+            {% endif %}
+        </nav>
     </header>
-
-
-<div id="main" class="container">
-    <div class="row"> 
-        {% block content %}
-        {% endblock %}
+    <div id="main" class="container">
+        <div class="row">
+            {% block content %}
+            {% endblock %}
         </div>
     </div>
-</header>
-<script src="{% static 'frontend/index.js' %}"></script>
-<script src="{% static 'frontend/react.js' %}"></script>
-<script src="{% static 'frontend/base.js' %}"></script>
-
+    <script src="{% static 'frontend/index.js' %}"></script>
+    <script src="{% static 'frontend/react.js' %}"></script>
+    <script src="{% static 'frontend/base.js' %}"></script>
 </body>
+
 </html>

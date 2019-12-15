@@ -1,13 +1,11 @@
 {% extends 'base.html' %}
-
 {% block content %}
-
 <div class="panel panel-default">
     <div class="panel-body">
-        {% if  message %}
-            <div class="ct-box error-box">
-                <p class="errornote">{{ message }}</p>
-            </div>
+        {% if message %}
+        <div class="ct-box error-box">
+            <p class="errornote">{{ message }}</p>
+        </div>
         {% endif %}
         <div class="form-section">
             <form method="post" class="form-register" action="{% url 'merchant:register' %}">
@@ -45,7 +43,7 @@
                     {{ forms.email }}
                 </div>
                 <div class="form-group">
-                    <label >验证码: </label>
+                    <label>验证码: </label>
                     {{ forms.captcha }}
                 </div>
                 <button class="btn btn-lg btn-primary btn-block" type="submit">注册</button>
@@ -53,5 +51,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
