@@ -62,7 +62,6 @@ class PersonalInventoryCreateDialog extends React.Component {
             remarks: "",
         })
             .done((data) => {
-                                console.log(data);
                 this.resetFields({message: data.detail, messageType: data.result});
             })
             .fail((data) => {

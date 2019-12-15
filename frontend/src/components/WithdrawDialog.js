@@ -110,7 +110,6 @@ export default class WithdrawDialog extends React.Component{
     onChangeDealPrice(invt, event) {
         const {merchantAndNumberMapping} = this.state;
 
-        console.log(merchantAndNumberMapping);
         merchantAndNumberMapping[invt.id] = merchantAndNumberMapping[invt.id]|| {};
         merchantAndNumberMapping[invt.id].deal_price = event.target.value;
     }

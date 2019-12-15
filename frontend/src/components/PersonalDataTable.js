@@ -1,6 +1,6 @@
 import React from 'react';
 import InventoryTable from "./common/InventoryTable";
-import {Pager, Alert} from 'react-bootstrap';
+import {Alert} from 'react-bootstrap';
 import utils from "../utils/utils";
 import PersonalInventoryCreateDialog from './PersonalInventoryCreateDialog';
 import PersonalInventoryUpdateDialog from './PersonalInventoryUpdateDialog';
@@ -17,7 +17,8 @@ export default class PersonalDataTable extends React.Component{
             showUpdateInvtResult: false,
             message: "",
             messageType: "",
-            url: `/inventory/inventories/merchants?id=${this.props.currentUser}`
+            url: `/inventory/inventories/merchants?id=${this.props.currentUser}`,
+            pageSize: 10,
         };
         this.getPersonalInventories(this.state.url);
         this.showCreateDialog = this.showCreateDialog.bind(this);
@@ -26,6 +27,7 @@ export default class PersonalDataTable extends React.Component{
         this.onRowClick = this.onRowClick.bind(this);
         this.onSaveInventry = this.onSaveInventry.bind(this);
         this.onInventoryCreate = this.onInventoryCreate.bind(this);
+        this.onFetchData = this.onFetchData.bind(this);
     }
 
 
@@ -176,17 +178,34 @@ export default class PersonalDataTable extends React.Component{
 
         this.getPersonalInventories(this.state.url);
     }
+
+    onFetchData(state) {
+        const url = `${this.state.url}&page_size=${state.pageSize}&page=${state.page+1}`;
+        $.get(url, (data) => {
+            const inventories = PersonalDataTable.buildPersonalInventoryTable(data.results);
+            this.setState({
+                next: data.next,
+                previous: data.previous,
+                personalInventories: inventories,
+                options: [],
+                pages: Math.ceil(data.count / state.pageSize),
+                pageSize: state.pageSize,
+            });
+        });
+    }
+
     render() {
         return (<div id="personal">
             <button className="btn btn-default create-inventory" onClick={this.showCreateDialog}>新建库存</button>
             <InventoryTable className="table"
                             data={this.state.personalInventories}
                             columns={this.getColumns()}
+                            pages={this.state.pages}
+                            pageSize={this.state.pageSize}
+                            showPagination={true}
+                            onFetchData={this.onFetchData}
+                            manual={true}
             />
-            <Pager>
-                <Pager.Item onClick={this.setPrevious} disabled={!this.state.previous}>上一页</Pager.Item>
-                <Pager.Item onClick={this.setNext} disabled={!this.state.next}>下一页</Pager.Item>
-            </Pager>
             {this.state.showUpdateInvtResult && <Alert variant={this.state.messageType} closeLabel="close">{this.state.message}</Alert>}
 
             <PersonalInventoryCreateDialog show={this.state.showCreateInvtDialog}

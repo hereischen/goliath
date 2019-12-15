@@ -1,7 +1,7 @@
 import React from 'react';
 import InventoryTable from "./common/InventoryTable";
 import WithdrawDialog from './WithdrawDialog';
-import {Pager, Alert} from 'react-bootstrap';
+import { Alert} from 'react-bootstrap';
 
 export default class AllInvtDataTable extends React.Component{
     constructor (props) {
@@ -15,6 +15,7 @@ export default class AllInvtDataTable extends React.Component{
             showWithdrawDialog: false,
             selectedMerchandiseId: 0,
             showWithdrawResultAlert: false,
+            pageSize: 10,
         };
         this.getAllInventories(this.state.url);
         this.setNext = this.setNext.bind(this);
@@ -22,6 +23,7 @@ export default class AllInvtDataTable extends React.Component{
         this.onRowClick = this.onRowClick.bind(this);
         this.onCloseDialog = this.onCloseDialog.bind(this);
         this.onConfirmWithDraw = this.onConfirmWithDraw.bind(this);
+        this.onFetchData = this.onFetchData.bind(this);
     }
 
     getAllInventories(url) {
@@ -168,22 +170,38 @@ export default class AllInvtDataTable extends React.Component{
     onCloseDialog() {
         this.setState({showWithdrawDialog: false});
     }
+
+    onFetchData(state) {
+        const url = `${this.state.url}?page_size=${state.pageSize}&page=${state.page+1}`;
+        $.get(url, (data) => {
+            const inventories = AllInvtDataTable.buildAllInventoryTable(data.results);
+            this.setState({
+                allInventories: inventories,
+                showWithdrawDialog: false,
+                pages: Math.ceil(data.count / state.pageSize),
+                pageSize: state.pageSize,
+            });
+        });
+    }
+
     render() {
         return (<div id="all">
             <InventoryTable className="table"
                             data={this.state.allInventories}
                             columns={this.getColumns()}
+                            showPagination={true}
+                            onFetchData={this.onFetchData}
+                            pages={this.state.pages}
+                            pageSize={this.state.pageSize}
+                            manual={true}
             />
-            <Pager>
-                <Pager.Item onClick={this.setPrevious} disabled={!this.state.previous}>上一页</Pager.Item>
-                <Pager.Item onClick={this.setNext} disabled={!this.state.next}>下一页</Pager.Item>
-            </Pager>
             <WithdrawDialog depositTableData= {this.state.depositTableData}
                             show={this.state.showWithdrawDialog}
                             onClose={this.onCloseDialog}
                             onConfirm={this.onConfirmWithDraw}
                             currentUser={this.props.currentUser}
                             selectedMerchandiseId={this.state.selectedMerchandiseId}
+
             />
             {this.state.showWithdrawResultAlert && <Alert variant={this.state.messageType} closeLabel="close">{this.state.message}</Alert>}
         </div>);

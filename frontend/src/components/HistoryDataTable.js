@@ -1,6 +1,5 @@
 import React from 'react';
 import utils from "../utils/utils";
-import {Pager} from 'react-bootstrap';
 import InventoryTable from "./common/InventoryTable";
 
 export default class HistoryDataTable extends React.Component{
@@ -17,12 +16,13 @@ export default class HistoryDataTable extends React.Component{
             next: null,
             previous: null,
             histories: [],
-            url: `/history/histories?current_merchant_id=${this.props.currentUser}`
+            url: `/history/histories?current_merchant_id=${this.props.currentUser}`,
+            pageSize: 10,
         };
         this.getHistories(this.state.url);
         this.setNext = this.setNext.bind(this);
         this.setPrevious = this.setPrevious.bind(this);
-
+        this.onFetchData = this.onFetchData.bind(this);
     }
 
     getHistories(url) {
@@ -136,16 +136,31 @@ export default class HistoryDataTable extends React.Component{
         }];
     }
 
+    onFetchData(state) {
+        const url = `${this.state.url}&page_size=${state.pageSize}&page=${state.page+1}`;
+        $.get(url, (data) => {
+            const histories = HistoryDataTable.buildHistoryTable(data.results);
+            this.setState({
+                next: data.next,
+                previous: data.previous,
+                histories: histories,
+                pages: Math.ceil(data.count / state.pageSize),
+                pageSize: state.pageSize,
+            });
+        });
+    }
+
     render() {
         return (<div id="histories">
             <InventoryTable className="table"
                             data={this.state.histories}
                             columns={this.getColumns()}
+                            showPagination={true}
+                            onFetchData={this.onFetchData}
+                            pages={this.state.pages}
+                            pageSize={this.state.pageSize}
+                            manual={true}
             />
-            <Pager>
-                <Pager.Item onClick={this.setPrevious} disabled={!this.state.previous}>上一页</Pager.Item>
-                <Pager.Item onClick={this.setNext} disabled={!this.state.next}>下一页</Pager.Item>
-            </Pager>
         </div>);
     }
 }
