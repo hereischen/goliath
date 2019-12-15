@@ -1,7 +1,7 @@
 import React from 'react';
-import InformationDialog from './InformationDialog';
+import InformationDialog from './common/InformationDialog';
 import PropTypes from 'prop-types';
-import InventoryTable from "./InventoryTable";
+import InventoryTable from "./common/InventoryTable";
 
 export default class WithdrawDialog extends React.Component{
     constructor(props) {

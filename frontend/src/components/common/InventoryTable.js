@@ -18,43 +18,8 @@ export default class InventoryTable extends React.Component{
         return ({prevState});
     }
 
-    getClassName(className) {
-        const ellipsisClass = "ellipsis";
-        const customClass = className || "";
-
-        return `${ellipsisClass} ${customClass}`.trim();
-    }
-
     getRowWidth(width) {
         return width || 100;
-    }
-    // getBody() {
-    //     return !_.isEmpty(this.state.inventories) && _.map(this.state.inventories, (invt, index) => {
-    //         return (<tr key={invt.id}>
-    //             <td>{index + 1}</td>
-    //             {
-    //                 _.map(this.state.columns, (column, ind) => {
-    //                     if (column.type === "action") {
-    //                         return (column.renderContent(invt, ind));
-    //                     }
-    //                     return (<td className={this.getClassName(column.className)}
-    //                                 key={ind}
-    //                                 style={{maxWidth: `${this.getRowWidth(column.width)}px`, }}
-    //                                 title={invt[column.selector]}>
-    //                         {invt[column.selector]}
-    //                     </td>);
-    //                 })
-    //             }
-    //         </tr>)
-    //     });
-    // }
-
-
-    renderTitle() {
-        const columns = [(<th key="0">编号</th>)];
-        return _.concat(columns, _.map(this.state.columns, (column, index) => {
-            return (<th scope="col" key={index+1}>{column.title}</th>);
-        }));
     }
 
     getTitle() {
@@ -77,6 +42,7 @@ export default class InventoryTable extends React.Component{
            }
         });
     }
+
     render() {
         return <ReactTable data={this.state.inventories}
                            columns={this.getTitle()}

@@ -1,5 +1,5 @@
 import React from 'react';
-import InventoryTable from "./InventoryTable";
+import InventoryTable from "./common/InventoryTable";
 import {Pager, Alert} from 'react-bootstrap';
 import utils from "../utils/utils";
 import PersonalInventoryCreateDialog from './PersonalInventoryCreateDialog';

@@ -1,7 +1,7 @@
 import React from 'react';
 import utils from "../utils/utils";
 import {Pager} from 'react-bootstrap';
-import InventoryTable from "./InventoryTable";
+import InventoryTable from "./common/InventoryTable";
 
 export default class HistoryDataTable extends React.Component{
     static TYPE = {
