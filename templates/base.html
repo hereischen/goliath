@@ -17,7 +17,7 @@
 
       <body>
     <!-- nav-bar -->
-    <div class="border-bottom box-shadow header">
+    <header class="header">
       <h3 class="">河南省政府采购网上商城共享库</h3>
       <nav class="">
         {% if user.is_authenticated %}
@@ -28,7 +28,7 @@
         <a class="btn btn-outline-primary" href="{% url 'merchant:register' %}">注册</a>
         {% endif %}
       </nav>
-    </div>
+    </header>
 
 
 <div id="main" class="container">
@@ -37,7 +37,7 @@
         {% endblock %}
         </div>
     </div>
-</div>
+</header>
 <script src="{% static 'frontend/index.js' %}"></script>
 <script src="{% static 'frontend/react.js' %}"></script>
 <script src="{% static 'frontend/base.js' %}"></script>
