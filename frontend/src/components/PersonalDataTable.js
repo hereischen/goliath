@@ -209,7 +209,7 @@ export default class PersonalDataTable extends React.Component{
     render() {
         return (<div id="personal">
             <button className="btn btn-default create-inventory" onClick={this.showCreateDialog}>新建库存</button>
-            <InventoryTable className="table"
+            <InventoryTable className="inventory-table"
                             data={this.state.personalInventories}
                             columns={this.getColumns()}
                             pages={this.state.pages}

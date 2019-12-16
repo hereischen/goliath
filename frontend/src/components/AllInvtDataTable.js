@@ -192,7 +192,7 @@ export default class AllInvtDataTable extends React.Component{
 
     render() {
         return (<div id="all">
-            <InventoryTable className="table"
+            <InventoryTable className="inventory-table"
                             data={this.state.allInventories}
                             columns={this.getColumns()}
                             showPagination={true}

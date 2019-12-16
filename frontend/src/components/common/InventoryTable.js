@@ -48,7 +48,7 @@ export default class InventoryTable extends React.Component{
     render() {
         return <ReactTable data={this.state.inventories}
                            columns={this.getTitle()}
-                           className="inventory-table -striped -highlight "
+                           className={`${this.props.className} -striped -highlight `}
                            filterable={true}
                            showPagination={this.props.showPagination}
                            manual={this.props.manual}
@@ -56,6 +56,7 @@ export default class InventoryTable extends React.Component{
                            page={this.state.pageIndex}
                            pageSize={this.props.pageSize}
                            onFetchData={this.props.onFetchData}
+                           pageSizeOptions={[10, 20, 35, 50, 100, 2000]}
                            previousText='上一页'
                            nextText='下一页'
                            noDataText = '没有数据'

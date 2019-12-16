@@ -171,7 +171,7 @@ export default class HistoryDataTable extends React.Component{
 
     render() {
         return (<div id="histories">
-            <InventoryTable className="table"
+            <InventoryTable className="inventory-table"
                             data={this.state.histories}
                             columns={this.getColumns()}
                             showPagination={true}
