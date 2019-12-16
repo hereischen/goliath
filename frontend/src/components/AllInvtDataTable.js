@@ -16,21 +16,17 @@ export default class AllInvtDataTable extends React.Component{
             selectedMerchandiseId: 0,
             showWithdrawResultAlert: false,
             pageSize: 10,
+            page: 0,
         };
-        this.getAllInventories(this.state.url);
-        this.setNext = this.setNext.bind(this);
-        this.setPrevious = this.setPrevious.bind(this);
+        this.getAllInventories();
         this.onRowClick = this.onRowClick.bind(this);
         this.onCloseDialog = this.onCloseDialog.bind(this);
         this.onConfirmWithDraw = this.onConfirmWithDraw.bind(this);
         this.onFetchData = this.onFetchData.bind(this);
     }
 
-    getAllInventories(url) {
-        if (!url) {
-            console.error("url should not be null!");
-            return;
-        }
+    getAllInventories() {
+        const url = `${this.state.url}?page_size=${this.state.pageSize}&page=${this.state.page+1}`;
         $.get(url, (data) => {
             const inventories = AllInvtDataTable.buildAllInventoryTable(data.results);
             this.setState({
@@ -59,14 +55,6 @@ export default class AllInvtDataTable extends React.Component{
                 after_sales: invt.merchandise.after_sales,
             }})
             .value();
-    }
-
-    setNext() {
-        this.getAllInventories(this.state.next);
-    }
-
-    setPrevious() {
-        this.getAllInventories(this.state.previous);
     }
 
     onRowClick(merchandise) {
@@ -156,8 +144,7 @@ export default class AllInvtDataTable extends React.Component{
             showWithdrawResultAlert: true,
             ...result
         });
-
-        this.getAllInventories(this.state.url);
+        this.getAllInventories();
     }
 
     onCloseDialog() {

@@ -18,6 +18,7 @@ export default class WithdrawDialog extends React.Component{
         this.onConfirm = this.onConfirm.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.onChangeDepositNumber = this.onChangeDepositNumber.bind(this);
+        this.onChangeInfo = this.onChangeInfo.bind(this);
         this.onChangeDealPrice = this.onChangeDealPrice.bind(this);
         this.onChangeRemark = this.onChangeRemark.bind(this);
     }
@@ -43,7 +44,12 @@ export default class WithdrawDialog extends React.Component{
     }
 
     isFormValid() {
-        return !_.isEmpty(this.state.merchantAndNumberMapping) && _.some(this.props.depositTableData, (mcht) => this.state.merchantAndNumberMapping[mcht.id] && this.state.merchantAndNumberMapping[mcht.id].quantity > 0 );
+        return !_.isEmpty(this.state.merchantAndNumberMapping) &&
+            _.some(this.props.depositTableData,
+                (mcht) => this.state.merchantAndNumberMapping[mcht.id] &&
+                    this.state.merchantAndNumberMapping[mcht.id].quantity > 0 &&
+                    !_.isEmpty(this.state.merchantAndNumberMapping[mcht.id].info)
+            );
     }
 
     onConfirm() {
@@ -67,6 +73,7 @@ export default class WithdrawDialog extends React.Component{
                 quantity: this.state.merchantAndNumberMapping[mcht.id].quantity,
                 deal_price: this.state.merchantAndNumberMapping[mcht.id].deal_price || mcht.price,
                 remarks: this.state.merchantAndNumberMapping[mcht.id].remark,
+                info: this.state.merchantAndNumberMapping[mcht.id].info,
             }
         })
             .compact()
@@ -107,9 +114,14 @@ export default class WithdrawDialog extends React.Component{
         merchantAndNumberMapping[invt.id].quantity = event.target.value;
     }
 
+    onChangeInfo(invt, event) {
+        const {merchantAndNumberMapping} = this.state;
+        merchantAndNumberMapping[invt.id] = merchantAndNumberMapping[invt.id]|| {};
+        merchantAndNumberMapping[invt.id].info = event.target.value;
+    }
+
     onChangeDealPrice(invt, event) {
         const {merchantAndNumberMapping} = this.state;
-
         merchantAndNumberMapping[invt.id] = merchantAndNumberMapping[invt.id]|| {};
         merchantAndNumberMapping[invt.id].deal_price = event.target.value;
     }
@@ -167,6 +179,19 @@ export default class WithdrawDialog extends React.Component{
             },
             {
                 type: "action",
+                title: "供货信息",
+                width: 150,
+                selector: "info",
+                renderContent: (row) =>
+                    (<>
+                        <textarea cols={15}
+                                  rows={2}
+                                  placeholder="请填写供货信息"
+                                  onChange={(event) => this.onChangeInfo(row.original, event)}/>
+                    </>)
+            },
+            {
+                type: "action",
                 title: "成交价格",
                 renderContent: (row) => {
                     return (<>
@@ -180,7 +205,8 @@ export default class WithdrawDialog extends React.Component{
                 renderContent: (row) => {
                     return (<><textarea cols={10} rows={2} placeholder="请填写备注" onChange={(event) => this.onChangeRemark(row.original, event)}/></>);
                 }
-            }
+            },
+
         ]);
     }
 
@@ -201,6 +227,8 @@ export default class WithdrawDialog extends React.Component{
         return this.state.confirm ? this.getConfirmDialogBody() : (<InventoryTable
             columns = {this.getColumns()}
             data = {this.props.depositTableData}
+            showPagination = {false}
+            pageSize={10}
         />);
     }
 

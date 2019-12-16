@@ -19,11 +19,10 @@ export default class PersonalDataTable extends React.Component{
             messageType: "",
             url: `/inventory/inventories/merchants?id=${this.props.currentUser}`,
             pageSize: 10,
+            page: 0,
         };
         this.getPersonalInventories(this.state.url);
         this.showCreateDialog = this.showCreateDialog.bind(this);
-        this.setNext = this.setNext.bind(this);
-        this.setPrevious = this.setPrevious.bind(this);
         this.onRowClick = this.onRowClick.bind(this);
         this.onSaveInventry = this.onSaveInventry.bind(this);
         this.onInventoryCreate = this.onInventoryCreate.bind(this);
@@ -31,11 +30,8 @@ export default class PersonalDataTable extends React.Component{
     }
 
 
-    getPersonalInventories(url) {
-        if (!url) {
-            console.error("url should not be null!");
-            return;
-        }
+    getPersonalInventories() {
+        const url = `${this.state.url}&page_size=${this.state.pageSize}&page=${this.state.page+1}`;
         $.get(url, (data) => {
             const inventories = PersonalDataTable.buildPersonalInventoryTable(data.results);
             this.setState({
@@ -55,6 +51,7 @@ export default class PersonalDataTable extends React.Component{
                 brand: invt.merchandise.brand.brand,
                 category: invt.merchandise.category.category,
                 id: invt.merchandise.id,
+                info: invt.info,
                 code: invt.merchandise.code,
                 remarks: invt.merchandise.remarks,
                 quantity: invt.quantity,
@@ -67,14 +64,6 @@ export default class PersonalDataTable extends React.Component{
             }})
             .value()
             ;
-    }
-
-    setNext() {
-        this.getPersonalInventories(this.state.next);
-    }
-
-    setPrevious() {
-        this.getPersonalInventories(this.state.previous);
     }
 
     showCreateDialog() {
@@ -133,6 +122,11 @@ export default class PersonalDataTable extends React.Component{
                 selector: "after_sales",
                 renderContent: (row) => (`${row.value} 年`)
             }, {
+                title: "供货信息",
+                selector: "info",
+                width: 150,
+                type: "text"
+            }, {
                 title: "属性",
                 selector: "spare_parts",
                 type: "text"
@@ -160,7 +154,7 @@ export default class PersonalDataTable extends React.Component{
             ...result,
         });
 
-        this.getPersonalInventories(this.state.url);
+        this.getPersonalInventories();
     }
 
     onSaveInventry(result) {
@@ -170,7 +164,7 @@ export default class PersonalDataTable extends React.Component{
             ...result,
         });
 
-        this.getPersonalInventories(this.state.url);
+        this.getPersonalInventories();
     }
 
     onFetchData(state) {

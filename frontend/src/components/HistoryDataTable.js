@@ -18,19 +18,14 @@ export default class HistoryDataTable extends React.Component{
             histories: [],
             url: `/history/histories?current_merchant_id=${this.props.currentUser}`,
             pageSize: 10,
+            page: 0
         };
-        this.getHistories(this.state.url);
-        this.setNext = this.setNext.bind(this);
-        this.setPrevious = this.setPrevious.bind(this);
+        this.getHistories();
         this.onFetchData = this.onFetchData.bind(this);
     }
 
-    getHistories(url) {
-        if (!url) {
-            console.error("url should not be null!");
-            return;
-        }
-        $.get(url, (data) => {
+    getHistories() {
+        $.get(`${this.state.url}&page_size=${this.state.pageSize}&page=${this.state.page + 1}`, (data) => {
             const histories = HistoryDataTable.buildHistoryTable(data.results);
             this.setState({
                 next: data.next,
@@ -47,6 +42,7 @@ export default class HistoryDataTable extends React.Component{
             return {
                 id: hs.id,
                 type: hs.type,
+                info: hs.info,
                 brand: hs.inventory.merchandise.brand.brand,
                 category: hs.inventory.merchandise.category.category,
                 code: hs.inventory.merchandise.code,
@@ -62,14 +58,6 @@ export default class HistoryDataTable extends React.Component{
             }
         })
             .value();
-    }
-
-    setNext() {
-        this.getHistories(this.state.next);
-    }
-
-    setPrevious() {
-        this.getHistories(this.state.previous);
     }
 
     getColumns() {
@@ -113,6 +101,11 @@ export default class HistoryDataTable extends React.Component{
             title: "时价",
             selector: "price",
             type: "text",
+        }, {
+            title: "供货信息",
+            selector: "info",
+            type: "text",
+            width: 150
         }, {
             title: "成交价",
             selector: "dealPrice",

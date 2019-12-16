@@ -17,6 +17,7 @@ class PersonalInventoryUpdateDialog extends React.Component {
             confirmed: false,
             showCountHelpText: false,
             showPriceHelpText: false,
+            showInfoHelpText: false,
             message: "",
             messageType: "",
         };
@@ -25,6 +26,7 @@ class PersonalInventoryUpdateDialog extends React.Component {
         this.cancelSave = this.cancelSave.bind(this);
         this.onChangePrice = this.onChangePrice.bind(this);
         this.onChangeCount = this.onChangeCount.bind(this);
+        this.onChangeInfo = this.onChangeInfo.bind(this);
         this.getConfirmed = this.getConfirmed.bind(this);
         this.cancelConfirm = this.cancelConfirm.bind(this);
     }
@@ -65,6 +67,7 @@ class PersonalInventoryUpdateDialog extends React.Component {
             merchandise_id: this.state.selectedMerchandiseId,
             quantity: this.state.quantity,
             remarks: "",
+            info: this.state.info,
             price: this.state.price
         }).done((data) => {
             this.setState({
@@ -99,6 +102,7 @@ class PersonalInventoryUpdateDialog extends React.Component {
             merchandise_id: this.state.selectedMerchandiseId,
             quantity: this.state.quantity,
             remarks: "",
+            info: this.state.info,
             price: this.state.price
         }).done((data) => {
             this.setState({
@@ -133,20 +137,25 @@ class PersonalInventoryUpdateDialog extends React.Component {
     }
 
     onChangePrice(event) {
-        this.setState( {price: event.target.value})
+        this.setState( {price: event.target.value, showPriceHelpText: false})
     }
 
     onChangeCount(event) {
-        this.setState({quantity: event.target.value});
+        this.setState({quantity: event.target.value, showCountHelpText: false});
+    }
+
+    onChangeInfo(event) {
+        this.setState({info: event.target.value, showInfoHelpText: false});
     }
 
     getConfirmed(){
         const showCountHelpText = (!this.state.deposit && this.state.quantity > this.props.selectedMerchandise.quantity)
             || this.state.quantity <= 0;
         const showPriceHelpText = this.state.deposit && this.state.price <= 0;
+        const showInfoHelpText = _.isEmpty(this.state.info);
 
         if (showPriceHelpText || showCountHelpText) {
-            this.setState({showPriceHelpText, showCountHelpText});
+            this.setState({showPriceHelpText, showCountHelpText, showInfoHelpText});
         }
         else {
             this.setState({
@@ -170,10 +179,10 @@ class PersonalInventoryUpdateDialog extends React.Component {
                 价格:{this.state.price},
                 数量:{this.state.quantity}</div>)
             :(<form className="fieldSection">
-                <div className="item"><span className="title">品牌:</span><span>{this.props.selectedMerchandise.brand}</span></div>
-                <div className="item"><span className="title">品类:</span><span>{this.props.selectedMerchandise.category}</span></div>
-                <div className="item"><span className="title">商品编码:</span><span>{this.props.selectedMerchandise.category}</span></div>
-                <div className="item"><span className="title">最新价格:</span>
+                <div className="item"><label className="title">品牌:</label><span>{this.props.selectedMerchandise.brand}</span></div>
+                <div className="item"><label className="title">品类:</label><span>{this.props.selectedMerchandise.category}</span></div>
+                <div className="item"><label className="title">商品编码:</label><span>{this.props.selectedMerchandise.category}</span></div>
+                <div className="item"><label className="title">最新价格:</label>
                     <input value={this.state.price}
                            onChange={this.onChangePrice}
                            type="number"
@@ -182,11 +191,18 @@ class PersonalInventoryUpdateDialog extends React.Component {
                    {this.state.showPriceHelpText && <span style={{color: "red"}}>价格必须大于0</span>}
 
                 </div>
-                <div className="item"><span className="title">新增数量:</span>
+                <div className="item"><label className="title">新增数量:</label>
                     <input value={this.state.quantity}
                            onChange={this.onChangeCount}
                            type="number" min="0"/>
                     {this.state.showCountHelpText && <span style={{color: "red"}}>增加数量必须大于0</span>}
+                </div>
+                <div className="item"><label className="title">供货信息:</label>
+                    <textarea value={this.state.info}
+                              onChange={this.onChangeInfo}
+                              cols={20} rows={2}
+                    />
+                    {this.state.showInfoHelpText && <span style={{color: "red"}}>增加数量必须大于0</span>}
                 </div>
               </form>));
         return dialogBody;
@@ -196,16 +212,23 @@ class PersonalInventoryUpdateDialog extends React.Component {
             (<div>请确认取出{this.state.selectedBrand}{this.state.selectedCategory}{this.state.selectedMerchandiseCode}的库存,
                 数量:{this.state.quantity}</div>)
             :(<form className="fieldSection">
-                <div className="item"><span className="title">品牌:</span><span>{this.props.selectedMerchandise.brand}</span></div>
-                <div className="item"><span className="title">品类:</span><span>{this.props.selectedMerchandise.category}</span></div>
-                <div className="item"><span className="title">商品编码:</span><span>{this.props.selectedMerchandise.category}</span></div>
-                <div className="item"><span className="title">最新价格:</span><span> {this.state.price}</span></div>
-                <div className="item"><span>取出数量</span>
+                <div className="item"><label className="title">品牌:</label><span>{this.props.selectedMerchandise.brand}</span></div>
+                <div className="item"><label className="title">品类:</label><span>{this.props.selectedMerchandise.category}</span></div>
+                <div className="item"><label className="title">商品编码:</label><span>{this.props.selectedMerchandise.category}</span></div>
+                <div className="item"><label className="title">最新价格:</label><span> {this.state.price}</span></div>
+                <div className="item"><label className="title" >取出数量</label>
                     <input placeholder="取出数量"
                            value={this.state.quantity}
                            onChange={this.onChangeCount}
                            type="number" min="0"/>
                     {this.state.showCountHelpText && <span style={{color: "red"}}>取出数量需要小于用户拥有的数量</span>}
+                </div>
+                <div className="item"><label className="title">供货信息:</label>
+                    <textarea value={this.state.info}
+                              onChange={this.onChangeInfo}
+                              cols={20} rows={2}
+                    />
+                    {this.state.showInfoHelpText && <span style={{color: "red"}}>此为必填项</span>}
                 </div>
               </form>));
         return dialogBody;

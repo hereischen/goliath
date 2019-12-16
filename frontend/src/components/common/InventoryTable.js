@@ -38,6 +38,7 @@ export default class InventoryTable extends React.Component{
                return {
                    Header: column.title,
                    accessor: column.selector,
+                   width: column.width,
                    Cell: (row) => column.renderContent(row)
                }
            }
