@@ -28,9 +28,8 @@ export default class HistoryDataTable extends React.Component{
         $.get(`${this.state.url}&page_size=${this.state.pageSize}&page=${this.state.page + 1}`, (data) => {
             const histories = HistoryDataTable.buildHistoryTable(data.results);
             this.setState({
-                next: data.next,
-                previous: data.previous,
                 histories: histories,
+                pages: Math.ceil(data.count / this.state.pageSize),
             });
         });
     }
@@ -130,17 +129,12 @@ export default class HistoryDataTable extends React.Component{
     }
 
     onFetchData(state) {
-        const url = `${this.state.url}&page_size=${state.pageSize}&page=${state.page+1}`;
-        $.get(url, (data) => {
-            const histories = HistoryDataTable.buildHistoryTable(data.results);
+        if (this.state.page !== state.page || this.state.pageSize !== state.pageSize) {
             this.setState({
-                next: data.next,
-                previous: data.previous,
-                histories: histories,
-                pages: Math.ceil(data.count / state.pageSize),
-                pageSize: state.pageSize,
-            });
-        });
+                page: state.page,
+                pageSize: state.pageSize
+            },  this.getHistories);
+        }
     }
 
     render() {

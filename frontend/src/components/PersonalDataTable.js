@@ -21,7 +21,7 @@ export default class PersonalDataTable extends React.Component{
             pageSize: 10,
             page: 0,
         };
-        this.getPersonalInventories(this.state.url);
+        this.getPersonalInventories();
         this.showCreateDialog = this.showCreateDialog.bind(this);
         this.onRowClick = this.onRowClick.bind(this);
         this.onSaveInventry = this.onSaveInventry.bind(this);
@@ -35,10 +35,9 @@ export default class PersonalDataTable extends React.Component{
         $.get(url, (data) => {
             const inventories = PersonalDataTable.buildPersonalInventoryTable(data.results);
             this.setState({
-                next: data.next,
-                previous: data.previous,
                 personalInventories: inventories,
                 options: [],
+                pages: Math.ceil(data.count / this.state.pageSize),
             });
         });
     }
@@ -168,18 +167,12 @@ export default class PersonalDataTable extends React.Component{
     }
 
     onFetchData(state) {
-        const url = `${this.state.url}&page_size=${state.pageSize}&page=${state.page+1}`;
-        $.get(url, (data) => {
-            const inventories = PersonalDataTable.buildPersonalInventoryTable(data.results);
+        if (this.state.page !== state.page || this.state.pageSize !== state.pageSize) {
             this.setState({
-                next: data.next,
-                previous: data.previous,
-                personalInventories: inventories,
-                options: [],
-                pages: Math.ceil(data.count / state.pageSize),
-                pageSize: state.pageSize,
-            });
-        });
+                page: state.page,
+                pageSize: state.pageSize
+            },  this.getPersonalInventories);
+        }
     }
 
     render() {

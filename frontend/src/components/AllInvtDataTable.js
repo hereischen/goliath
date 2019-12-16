@@ -30,10 +30,9 @@ export default class AllInvtDataTable extends React.Component{
         $.get(url, (data) => {
             const inventories = AllInvtDataTable.buildAllInventoryTable(data.results);
             this.setState({
-                next: data.next,
-                previous: data.previous,
                 allInventories: inventories,
                 showWithdrawDialog: false,
+                pages: Math.ceil(data.count / this.state.pageSize),
             });
         });
     }
@@ -151,19 +150,15 @@ export default class AllInvtDataTable extends React.Component{
         this.setState({showWithdrawDialog: false});
     }
 
-    onFetchData(state) {
-        const url = `${this.state.url}?page_size=${state.pageSize}&page=${state.page+1}`;
-        $.get(url, (data) => {
-            const inventories = AllInvtDataTable.buildAllInventoryTable(data.results);
-            this.setState({
-                allInventories: inventories,
-                showWithdrawDialog: false,
-                pages: Math.ceil(data.count / state.pageSize),
-                pageSize: state.pageSize,
-            });
-        });
-    }
 
+    onFetchData(state) {
+        if (this.state.page !== state.page || this.state.pageSize !== state.pageSize) {
+            this.setState({
+                page: state.page,
+                pageSize: state.pageSize
+            },  this.getAllInventories);
+        }
+    }
     render() {
         return (<div id="all">
             <InventoryTable className="table"
