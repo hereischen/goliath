@@ -1,5 +1,5 @@
 import React from 'react';
-import InformationDialog from './common/InformationDialog'
+import InformationDialog from '../common/InformationDialog'
 import PropTypes from 'prop-types';
 
 class PersonalInventoryUpdateDialog extends React.Component {
@@ -17,7 +17,6 @@ class PersonalInventoryUpdateDialog extends React.Component {
             confirmed: false,
             showCountHelpText: false,
             showPriceHelpText: false,
-            showInfoHelpText: false,
             message: "",
             messageType: "",
         };
@@ -50,6 +49,7 @@ class PersonalInventoryUpdateDialog extends React.Component {
             result =  {
                 selectedMerchandiseId: selectedMerchandise.id,
                 price: selectedMerchandise.price,
+                info: selectedMerchandise.info,
             };
         }
         return {...props, ...result};
@@ -132,7 +132,7 @@ class PersonalInventoryUpdateDialog extends React.Component {
     }
 
     cancelSave() {
-        this.setState({show: false});
+        this.resetFields();
         this.props.closeDialog();
     }
 
@@ -145,17 +145,17 @@ class PersonalInventoryUpdateDialog extends React.Component {
     }
 
     onChangeInfo(event) {
-        this.setState({info: event.target.value, showInfoHelpText: false});
+        this.setState({info: event.target.value});
     }
 
     getConfirmed(){
         const showCountHelpText = (!this.state.deposit && this.state.quantity > this.props.selectedMerchandise.quantity)
             || this.state.quantity <= 0;
+
         const showPriceHelpText = this.state.deposit && this.state.price <= 0;
-        const showInfoHelpText = _.isEmpty(this.state.info);
 
         if (showPriceHelpText || showCountHelpText) {
-            this.setState({showPriceHelpText, showCountHelpText, showInfoHelpText});
+            this.setState({showPriceHelpText, showCountHelpText});
         }
         else {
             this.setState({
@@ -164,8 +164,18 @@ class PersonalInventoryUpdateDialog extends React.Component {
         }
     }
 
+    resetFields() {
+        this.setState({
+            show: false,
+            confirmed: false,
+            showPriceHelpText: false,
+            showCountHelpText: false,
+            quantity: 0,
+        });
+    }
+
     cancelConfirm(){
-        this.setState({confirmed: false});
+        this.resetFields();
     }
 
     getDialogBody() {
@@ -202,7 +212,6 @@ class PersonalInventoryUpdateDialog extends React.Component {
                               onChange={this.onChangeInfo}
                               cols={20} rows={2}
                     />
-                    {this.state.showInfoHelpText && <span style={{color: "red"}}>增加数量必须大于0</span>}
                 </div>
               </form>));
         return dialogBody;
@@ -227,8 +236,8 @@ class PersonalInventoryUpdateDialog extends React.Component {
                     <textarea value={this.state.info}
                               onChange={this.onChangeInfo}
                               cols={20} rows={2}
+                              cols={20} rows={2}
                     />
-                    {this.state.showInfoHelpText && <span style={{color: "red"}}>此为必填项</span>}
                 </div>
               </form>));
         return dialogBody;

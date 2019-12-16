@@ -2,8 +2,8 @@ import React from 'react';
 import InventoryTable from "./common/InventoryTable";
 import {Alert} from 'react-bootstrap';
 import utils from "../utils/utils";
-import PersonalInventoryCreateDialog from './PersonalInventoryCreateDialog';
-import PersonalInventoryUpdateDialog from './PersonalInventoryUpdateDialog';
+import PersonalInventoryCreateDialog from './dialog/PersonalInventoryCreateDialog';
+import PersonalInventoryUpdateDialog from './dialog/PersonalInventoryUpdateDialog';
 
 export default class PersonalDataTable extends React.Component{
     constructor (props) {
