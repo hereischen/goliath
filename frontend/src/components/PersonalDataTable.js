@@ -60,7 +60,6 @@ export default class PersonalDataTable extends React.Component{
                 quantity: invt.quantity,
                 price: invt.price,
                 certification: invt.merchandise.certification,
-                delivery_time: invt.merchandise.delivery_time,
                 spare_parts: invt.merchandise.spare_parts,
                 model: invt.merchandise.model,
                 after_sales: invt.merchandise.after_sales,
@@ -137,11 +136,6 @@ export default class PersonalDataTable extends React.Component{
                 title: "属性",
                 selector: "spare_parts",
                 type: "text"
-            }, {
-                title: "到货时间",
-                type: "action",
-                selector: "delivery_time",
-                renderContent: (row) => (`${row.value} 天`)
             }, {
                 type: "text",
                 title: "修改时间",
