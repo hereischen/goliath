@@ -1,7 +1,7 @@
 import React from 'react';
-import InformationDialog from './common/InformationDialog'
+import InformationDialog from '../common/InformationDialog'
 import PropTypes from 'prop-types';
-import SelectMerchandise from "./SelectMerchandise";
+import SelectMerchandise from "../common/SelectMerchandise";
 
 class PersonalInventoryCreateDialog extends React.Component {
     constructor(props){

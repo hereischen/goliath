@@ -56,6 +56,12 @@ export default class InventoryTable extends React.Component{
                            page={this.state.pageIndex}
                            pageSize={this.props.pageSize}
                            onFetchData={this.props.onFetchData}
+                           previousText='上一页'
+                           nextText='下一页'
+                           noDataText = '没有数据'
+                           pageText = '页码'
+                           ofText = '共'
+                           rowsText = "行"
         />
     }
 };

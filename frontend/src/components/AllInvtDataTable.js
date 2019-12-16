@@ -1,6 +1,6 @@
 import React from 'react';
 import InventoryTable from "./common/InventoryTable";
-import WithdrawDialog from './WithdrawDialog';
+import WithdrawDialog from './dialog/WithdrawDialog';
 import { Alert} from 'react-bootstrap';
 
 export default class AllInvtDataTable extends React.Component{
@@ -105,7 +105,6 @@ export default class AllInvtDataTable extends React.Component{
             title: "商品编码",
             selector: "code",
             type: "text",
-
         }, {
             title: "数量",
             selector: "quantity",

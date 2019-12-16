@@ -1,7 +1,7 @@
 import React from 'react';
-import InformationDialog from './common/InformationDialog';
+import InformationDialog from '../common/InformationDialog';
 import PropTypes from 'prop-types';
-import InventoryTable from "./common/InventoryTable";
+import InventoryTable from "../common/InventoryTable";
 
 export default class WithdrawDialog extends React.Component{
     constructor(props) {
@@ -18,7 +18,6 @@ export default class WithdrawDialog extends React.Component{
         this.onConfirm = this.onConfirm.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.onChangeDepositNumber = this.onChangeDepositNumber.bind(this);
-        this.onChangeInfo = this.onChangeInfo.bind(this);
         this.onChangeDealPrice = this.onChangeDealPrice.bind(this);
         this.onChangeRemark = this.onChangeRemark.bind(this);
     }
@@ -47,8 +46,7 @@ export default class WithdrawDialog extends React.Component{
         return !_.isEmpty(this.state.merchantAndNumberMapping) &&
             _.some(this.props.depositTableData,
                 (mcht) => this.state.merchantAndNumberMapping[mcht.id] &&
-                    this.state.merchantAndNumberMapping[mcht.id].quantity > 0 &&
-                    !_.isEmpty(this.state.merchantAndNumberMapping[mcht.id].info)
+                    this.state.merchantAndNumberMapping[mcht.id].quantity > 0
             );
     }
 
@@ -73,7 +71,6 @@ export default class WithdrawDialog extends React.Component{
                 quantity: this.state.merchantAndNumberMapping[mcht.id].quantity,
                 deal_price: this.state.merchantAndNumberMapping[mcht.id].deal_price || mcht.price,
                 remarks: this.state.merchantAndNumberMapping[mcht.id].remark,
-                info: this.state.merchantAndNumberMapping[mcht.id].info,
             }
         })
             .compact()
@@ -112,12 +109,6 @@ export default class WithdrawDialog extends React.Component{
         const {merchantAndNumberMapping} = this.state;
         merchantAndNumberMapping[invt.id] = merchantAndNumberMapping[invt.id]|| {};
         merchantAndNumberMapping[invt.id].quantity = event.target.value;
-    }
-
-    onChangeInfo(invt, event) {
-        const {merchantAndNumberMapping} = this.state;
-        merchantAndNumberMapping[invt.id] = merchantAndNumberMapping[invt.id]|| {};
-        merchantAndNumberMapping[invt.id].info = event.target.value;
     }
 
     onChangeDealPrice(invt, event) {
@@ -165,6 +156,12 @@ export default class WithdrawDialog extends React.Component{
             },
             {
                 type: "text",
+                title: "供货信息",
+                width: 150,
+                selector: "info",
+            },
+            {
+                type: "text",
                 title: "数量",
                 width: 50,
                 selector: "quantity",
@@ -177,19 +174,7 @@ export default class WithdrawDialog extends React.Component{
                             <input type="number" placeholder={0} onChange={(event) => this.onChangeDepositNumber(row.original, event)}/>
                         </>)
             },
-            {
-                type: "action",
-                title: "供货信息",
-                width: 150,
-                selector: "info",
-                renderContent: (row) =>
-                    (<>
-                        <textarea cols={15}
-                                  rows={2}
-                                  placeholder="请填写供货信息"
-                                  onChange={(event) => this.onChangeInfo(row.original, event)}/>
-                    </>)
-            },
+
             {
                 type: "action",
                 title: "成交价格",
