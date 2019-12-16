@@ -12,13 +12,14 @@ export default class PersonalDataTable extends React.Component{
             next: null,
             previous: null,
             personalInventories: [],
+            originalData: [],
             showCreateInvtDialog: false,
             showUpdateInvtDialog: false,
             showUpdateInvtResult: false,
             message: "",
             messageType: "",
             url: `/inventory/inventories/merchants?id=${this.props.currentUser}`,
-            pageSize: 10,
+            pageSize: 20,
             page: 0,
         };
         this.getPersonalInventories();
@@ -36,6 +37,7 @@ export default class PersonalDataTable extends React.Component{
             const inventories = PersonalDataTable.buildPersonalInventoryTable(data.results);
             this.setState({
                 personalInventories: inventories,
+                originalData: inventories,
                 options: [],
                 pages: Math.ceil(data.count / this.state.pageSize),
             });
@@ -173,6 +175,35 @@ export default class PersonalDataTable extends React.Component{
                 pageSize: state.pageSize
             },  this.getPersonalInventories);
         }
+
+        const personalInventories = this.applySortAndFilter(state.filtered, state.sorted)
+        this.setState({personalInventories})
+    }
+
+    applySortAndFilter(filtered, sorted) {
+        let filteredData = this.state.originalData;
+        if (!_.isEmpty(filtered)) {
+            filteredData = filtered.reduce((filteredSoFar, nextFilter) => {
+                return filteredSoFar.filter(row => {
+                    return (row[nextFilter.id] + "").includes(nextFilter.value);
+                });
+            }, filteredData);
+        }
+        return _.orderBy(
+            filteredData,
+            sorted.map(
+                sort => {
+                    return row => {
+                        if (row[sort.id] === null || row[sort.id] === undefined) {
+                            return -Infinity;
+                        }
+                        return typeof row[sort.id] === "string"
+                            ? row[sort.id].toLowerCase()
+                            : row[sort.id];
+                    };
+                }),
+            sorted.map(d => (d.desc ? "desc" : "asc"))
+        );
     }
 
     render() {

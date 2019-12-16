@@ -15,10 +15,12 @@ export default class HistoryDataTable extends React.Component{
             count:0,
             next: null,
             previous: null,
+            originalHistories: [],
             histories: [],
             url: `/history/histories?current_merchant_id=${this.props.currentUser}`,
-            pageSize: 10,
-            page: 0
+            pageSize: 20,
+            page: 0,
+
         };
         this.getHistories();
         this.onFetchData = this.onFetchData.bind(this);
@@ -28,6 +30,7 @@ export default class HistoryDataTable extends React.Component{
         $.get(`${this.state.url}&page_size=${this.state.pageSize}&page=${this.state.page + 1}`, (data) => {
             const histories = HistoryDataTable.buildHistoryTable(data.results);
             this.setState({
+                originalHistories: histories,
                 histories: histories,
                 pages: Math.ceil(data.count / this.state.pageSize),
             });
@@ -135,6 +138,35 @@ export default class HistoryDataTable extends React.Component{
                 pageSize: state.pageSize
             },  this.getHistories);
         }
+        const histories = this.applySortAndFilter(state.filtered, state.sorted);
+        this.setState({histories})
+    }
+
+
+    applySortAndFilter(filtered, sorted) {
+        let filteredHistory = this.state.originalHistories;
+        if (!_.isEmpty(filtered)) {
+            filteredHistory = filtered.reduce((filteredSoFar, nextFilter) => {
+                return filteredSoFar.filter(row => {
+                    return (row[nextFilter.id] + "").includes(nextFilter.value);
+                });
+            }, filteredHistory);
+        }
+        return _.orderBy(
+            filteredHistory,
+            sorted.map(
+                sort => {
+                    return row => {
+                        if (row[sort.id] === null || row[sort.id] === undefined) {
+                            return -Infinity;
+                        }
+                        return typeof row[sort.id] === "string"
+                            ? row[sort.id].toLowerCase()
+                            : row[sort.id];
+                    };
+                }),
+            sorted.map(d => (d.desc ? "desc" : "asc"))
+        );
     }
 
     render() {

@@ -9,13 +9,14 @@ export default class AllInvtDataTable extends React.Component{
         this.state = {
             next: null,
             previous: null,
+            originalData: [],
             allInventories: [],
             url : "/inventory/inventories",
             depositTableData: [],
             showWithdrawDialog: false,
             selectedMerchandiseId: 0,
             showWithdrawResultAlert: false,
-            pageSize: 10,
+            pageSize: 20,
             page: 0,
         };
         this.getAllInventories();
@@ -31,6 +32,7 @@ export default class AllInvtDataTable extends React.Component{
             const inventories = AllInvtDataTable.buildAllInventoryTable(data.results);
             this.setState({
                 allInventories: inventories,
+                originalData: inventories,
                 showWithdrawDialog: false,
                 pages: Math.ceil(data.count / this.state.pageSize),
             });
@@ -158,7 +160,37 @@ export default class AllInvtDataTable extends React.Component{
                 pageSize: state.pageSize
             },  this.getAllInventories);
         }
+
+        const allInventories =  this.applySortAndFilter(state.filtered, state.sorted);
+        this.setState({allInventories})
     }
+
+    applySortAndFilter(filtered, sorted) {
+        let filteredData = this.state.originalData;
+        if (!_.isEmpty(filtered)) {
+            filteredData = filtered.reduce((filteredSoFar, nextFilter) => {
+                return filteredSoFar.filter(row => {
+                    return (row[nextFilter.id] + "").includes(nextFilter.value);
+                });
+            }, filteredData);
+        }
+        return _.orderBy(
+            filteredData,
+            sorted.map(
+                sort => {
+                    return row => {
+                        if (row[sort.id] === null || row[sort.id] === undefined) {
+                            return -Infinity;
+                        }
+                        return typeof row[sort.id] === "string"
+                            ? row[sort.id].toLowerCase()
+                            : row[sort.id];
+                    };
+                }),
+            sorted.map(d => (d.desc ? "desc" : "asc"))
+        );
+    }
+
     render() {
         return (<div id="all">
             <InventoryTable className="table"
