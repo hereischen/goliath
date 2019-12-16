@@ -1,6 +1,5 @@
 import React from 'react';
 import utils from "../utils/utils";
-import {Pager} from 'react-bootstrap';
 import InventoryTable from "./common/InventoryTable";
 
 export default class HistoryDataTable extends React.Component{
@@ -16,26 +15,24 @@ export default class HistoryDataTable extends React.Component{
             count:0,
             next: null,
             previous: null,
+            originalHistories: [],
             histories: [],
-            url: `/history/histories?current_merchant_id=${this.props.currentUser}`
-        };
-        this.getHistories(this.state.url);
-        this.setNext = this.setNext.bind(this);
-        this.setPrevious = this.setPrevious.bind(this);
+            url: `/history/histories?current_merchant_id=${this.props.currentUser}`,
+            pageSize: 20,
+            page: 0,
 
+        };
+        this.getHistories();
+        this.onFetchData = this.onFetchData.bind(this);
     }
 
-    getHistories(url) {
-        if (!url) {
-            console.error("url should not be null!");
-            return;
-        }
-        $.get(url, (data) => {
+    getHistories() {
+        $.get(`${this.state.url}&page_size=${this.state.pageSize}&page=${this.state.page + 1}`, (data) => {
             const histories = HistoryDataTable.buildHistoryTable(data.results);
             this.setState({
-                next: data.next,
-                previous: data.previous,
+                originalHistories: histories,
                 histories: histories,
+                pages: Math.ceil(data.count / this.state.pageSize),
             });
         });
     }
@@ -47,6 +44,7 @@ export default class HistoryDataTable extends React.Component{
             return {
                 id: hs.id,
                 type: hs.type,
+                info: hs.info,
                 brand: hs.inventory.merchandise.brand.brand,
                 category: hs.inventory.merchandise.category.category,
                 code: hs.inventory.merchandise.code,
@@ -62,14 +60,6 @@ export default class HistoryDataTable extends React.Component{
             }
         })
             .value();
-    }
-
-    setNext() {
-        this.getHistories(this.state.next);
-    }
-
-    setPrevious() {
-        this.getHistories(this.state.previous);
     }
 
     getColumns() {
@@ -114,6 +104,11 @@ export default class HistoryDataTable extends React.Component{
             selector: "price",
             type: "text",
         }, {
+            title: "供货信息",
+            selector: "info",
+            type: "text",
+            width: 150
+        }, {
             title: "成交价",
             selector: "dealPrice",
             type: "text",
@@ -136,16 +131,55 @@ export default class HistoryDataTable extends React.Component{
         }];
     }
 
+    onFetchData(state) {
+        if (this.state.page !== state.page || this.state.pageSize !== state.pageSize) {
+            this.setState({
+                page: state.page,
+                pageSize: state.pageSize
+            },  this.getHistories);
+        }
+        const histories = this.applySortAndFilter(state.filtered, state.sorted);
+        this.setState({histories})
+    }
+
+
+    applySortAndFilter(filtered, sorted) {
+        let filteredHistory = this.state.originalHistories;
+        if (!_.isEmpty(filtered)) {
+            filteredHistory = filtered.reduce((filteredSoFar, nextFilter) => {
+                return filteredSoFar.filter(row => {
+                    return (row[nextFilter.id] + "").includes(nextFilter.value);
+                });
+            }, filteredHistory);
+        }
+        return _.orderBy(
+            filteredHistory,
+            sorted.map(
+                sort => {
+                    return row => {
+                        if (row[sort.id] === null || row[sort.id] === undefined) {
+                            return -Infinity;
+                        }
+                        return typeof row[sort.id] === "string"
+                            ? row[sort.id].toLowerCase()
+                            : row[sort.id];
+                    };
+                }),
+            sorted.map(d => (d.desc ? "desc" : "asc"))
+        );
+    }
+
     render() {
         return (<div id="histories">
             <InventoryTable className="table"
                             data={this.state.histories}
                             columns={this.getColumns()}
+                            showPagination={true}
+                            onFetchData={this.onFetchData}
+                            pages={this.state.pages}
+                            pageSize={this.state.pageSize}
+                            manual={true}
             />
-            <Pager>
-                <Pager.Item onClick={this.setPrevious} disabled={!this.state.previous}>上一页</Pager.Item>
-                <Pager.Item onClick={this.setNext} disabled={!this.state.next}>下一页</Pager.Item>
-            </Pager>
         </div>);
     }
 }

@@ -18,6 +18,7 @@ class PersonalInventoryCreateDialog extends React.Component {
             showMerchandiseHelpText: false,
             price: '',
             quantity: '',
+            info: '',
             confirmed: false
         };
 
@@ -26,6 +27,7 @@ class PersonalInventoryCreateDialog extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.onChangePrice = this.onChangePrice.bind(this);
         this.onChangeCount = this.onChangeCount.bind(this);
+        this.onChangeInfo = this.onChangeInfo.bind(this);
         this.getConfirmed = this.getConfirmed.bind(this);
         this.cancelConfirm = this.cancelConfirm.bind(this);
     }
@@ -59,10 +61,10 @@ class PersonalInventoryCreateDialog extends React.Component {
             merchandise_id: this.state.selectedMerchandiseId,
             quantity: this.state.quantity,
             price: this.state.price,
+            info: this.state.info,
             remarks: "",
         })
             .done((data) => {
-                                console.log(data);
                 this.resetFields({message: data.detail, messageType: data.result});
             })
             .fail((data) => {
@@ -102,12 +104,20 @@ class PersonalInventoryCreateDialog extends React.Component {
         this.setState({quantity: event.target.value});
     }
 
+    onChangeInfo(event) {
+        this.setState({ info: event.target.value})
+    }
+
     isValidQuantity() {
         return this.state.quantity > 0;
     }
 
     isValidPrice() {
         return this.state.price > 0;
+    }
+
+    isValidInfo() {
+        return !_.isEmpty(this.state.info);
     }
 
     isValidSelectMerchandise() {
@@ -118,14 +128,16 @@ class PersonalInventoryCreateDialog extends React.Component {
         const showMerchandiseHelpText = !this.isValidSelectMerchandise();
         const showQuantityHelpText = !this.isValidQuantity();
         const showPriceHelpText = !this.isValidPrice();
-        
+        const showInfoHelpText = !this.isValidInfo();
+
         this.setState({
             showMerchandiseHelpText: showMerchandiseHelpText,
             showQuantityHelpText: showQuantityHelpText,
             showPriceHelpText: showPriceHelpText,
+            showInfoHelpText,
         });
 
-        return !showQuantityHelpText && !showPriceHelpText && !showMerchandiseHelpText;
+        return !showQuantityHelpText && !showPriceHelpText && !showMerchandiseHelpText && !showInfoHelpText;
     }
     getConfirmed(){
         if (this.FormValid()) {
@@ -142,23 +154,34 @@ class PersonalInventoryCreateDialog extends React.Component {
                 价格:{this.state.price}, 数量:{this.state.quantity}</div>)
             : (<form className="fieldSection">
                 <div className="item">
-                    <span>编码:</span>
+                    <label className="title">编码:</label>
                     <SelectMerchandise onChange={this.onChange}/>
                     {this.state.showMerchandiseHelpText && <span style={{color: "red"}}>{helpText}</span>}
                 </div>
-                <div className="item"><span>品牌:</span><input
+                <div className="item">
+                    <label  className="title">品牌:</label>
+                    <input
                     placeholder="品牌"
                     value={this.state.selectedBrand}
                     disabled/></div>
-                <div className="item"><span>品类:</span><input placeholder="品类" value={this.state.selectedCategory}
-                                                             disabled/></div>
-                <div className="item"><span>价格:</span>
+                <div className="item">
+                    <label className="title">品类:</label>
+                    <input placeholder="品类" value={this.state.selectedCategory}  disabled/>
+                </div>
+                <div className="item">
+                    <label className="title">价格:</label>
                     <input placeholder="新建库存价格" name="price" onChange={this.onChangePrice} type="number" min="0"/>
                     {this.state.showPriceHelpText && <span style={{color: "red"}}>{helpText}</span>}
                 </div>
-                <div className="item"><span>数量:</span>
+                <div className="item">
+                    <label className="title">数量:</label>
                     <input placeholder="新建库存数量" onChange={this.onChangeCount} type="number" min="0"/>
                     {this.state.showQuantityHelpText && <span style={{color: "red"}}>{helpText}</span>}
+                </div>
+                <div className="item">
+                    <label className="title">供货信息:</label>
+                    <textarea placeholder="供货信息" onChange={this.onChangeInfo} cols={20} rows={2}/>
+                    {this.state.showInfoHelpText && <span style={{color: "red"}}>{helpText}</span>}
                 </div>
             </form>));
     }

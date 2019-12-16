@@ -8,6 +8,7 @@ export default class InventoryTable extends React.Component{
             inventories: props.data,
             columns: props.columns,
             className: props.className,
+            pageIndex: props.page,
         };
     }
 
@@ -37,6 +38,7 @@ export default class InventoryTable extends React.Component{
                return {
                    Header: column.title,
                    accessor: column.selector,
+                   width: column.width,
                    Cell: (row) => column.renderContent(row)
                }
            }
@@ -46,10 +48,14 @@ export default class InventoryTable extends React.Component{
     render() {
         return <ReactTable data={this.state.inventories}
                            columns={this.getTitle()}
-                           defaultPageSize={10}
                            className="-striped -highlight"
                            filterable={true}
-                           showPagination={false}
+                           showPagination={this.props.showPagination}
+                           manual={this.props.manual}
+                           pages={this.props.pages}
+                           page={this.state.pageIndex}
+                           pageSize={this.props.pageSize}
+                           onFetchData={this.props.onFetchData}
         />
     }
 };

@@ -5,16 +5,29 @@
 
 
   .fieldSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    textarea {
+      resize: none;
+      border-color: #e6e6e6;
+    }
+
     .item {
       width: 100%;
-      padding-left: 30%;
       margin-bottom: 10px;
+      display: flex;
+      align-items: center;
 
       .select {
         display: inline-block;
         width: 134px;
       }
+
       .title {
+        width: 200px;
+        text-align: right;
         margin-right: 10px;
         font-weight: bold;
       }
@@ -44,6 +57,7 @@
     .modal-content {
       .modal-body {
         max-width:100%;
+        max-height: 100%;
         overflow: scroll;
         textarea {
           resize: none;

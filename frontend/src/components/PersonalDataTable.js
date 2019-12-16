@@ -1,6 +1,6 @@
 import React from 'react';
 import InventoryTable from "./common/InventoryTable";
-import {Pager, Alert} from 'react-bootstrap';
+import {Alert} from 'react-bootstrap';
 import utils from "../utils/utils";
 import PersonalInventoryCreateDialog from './PersonalInventoryCreateDialog';
 import PersonalInventoryUpdateDialog from './PersonalInventoryUpdateDialog';
@@ -12,35 +12,34 @@ export default class PersonalDataTable extends React.Component{
             next: null,
             previous: null,
             personalInventories: [],
+            originalData: [],
             showCreateInvtDialog: false,
             showUpdateInvtDialog: false,
             showUpdateInvtResult: false,
             message: "",
             messageType: "",
-            url: `/inventory/inventories/merchants?id=${this.props.currentUser}`
+            url: `/inventory/inventories/merchants?id=${this.props.currentUser}`,
+            pageSize: 20,
+            page: 0,
         };
-        this.getPersonalInventories(this.state.url);
+        this.getPersonalInventories();
         this.showCreateDialog = this.showCreateDialog.bind(this);
-        this.setNext = this.setNext.bind(this);
-        this.setPrevious = this.setPrevious.bind(this);
         this.onRowClick = this.onRowClick.bind(this);
         this.onSaveInventry = this.onSaveInventry.bind(this);
         this.onInventoryCreate = this.onInventoryCreate.bind(this);
+        this.onFetchData = this.onFetchData.bind(this);
     }
 
 
-    getPersonalInventories(url) {
-        if (!url) {
-            console.error("url should not be null!");
-            return;
-        }
+    getPersonalInventories() {
+        const url = `${this.state.url}&page_size=${this.state.pageSize}&page=${this.state.page+1}`;
         $.get(url, (data) => {
             const inventories = PersonalDataTable.buildPersonalInventoryTable(data.results);
             this.setState({
-                next: data.next,
-                previous: data.previous,
                 personalInventories: inventories,
+                originalData: inventories,
                 options: [],
+                pages: Math.ceil(data.count / this.state.pageSize),
             });
         });
     }
@@ -53,6 +52,7 @@ export default class PersonalDataTable extends React.Component{
                 brand: invt.merchandise.brand.brand,
                 category: invt.merchandise.category.category,
                 id: invt.merchandise.id,
+                info: invt.info,
                 code: invt.merchandise.code,
                 remarks: invt.merchandise.remarks,
                 quantity: invt.quantity,
@@ -65,14 +65,6 @@ export default class PersonalDataTable extends React.Component{
             }})
             .value()
             ;
-    }
-
-    setNext() {
-        this.getPersonalInventories(this.state.next);
-    }
-
-    setPrevious() {
-        this.getPersonalInventories(this.state.previous);
     }
 
     showCreateDialog() {
@@ -131,6 +123,11 @@ export default class PersonalDataTable extends React.Component{
                 selector: "after_sales",
                 renderContent: (row) => (`${row.value} 年`)
             }, {
+                title: "供货信息",
+                selector: "info",
+                width: 150,
+                type: "text"
+            }, {
                 title: "属性",
                 selector: "spare_parts",
                 type: "text"
@@ -158,7 +155,7 @@ export default class PersonalDataTable extends React.Component{
             ...result,
         });
 
-        this.getPersonalInventories(this.state.url);
+        this.getPersonalInventories();
     }
 
     onSaveInventry(result) {
@@ -168,19 +165,59 @@ export default class PersonalDataTable extends React.Component{
             ...result,
         });
 
-        this.getPersonalInventories(this.state.url);
+        this.getPersonalInventories();
     }
+
+    onFetchData(state) {
+        if (this.state.page !== state.page || this.state.pageSize !== state.pageSize) {
+            this.setState({
+                page: state.page,
+                pageSize: state.pageSize
+            },  this.getPersonalInventories);
+        }
+
+        const personalInventories = this.applySortAndFilter(state.filtered, state.sorted)
+        this.setState({personalInventories})
+    }
+
+    applySortAndFilter(filtered, sorted) {
+        let filteredData = this.state.originalData;
+        if (!_.isEmpty(filtered)) {
+            filteredData = filtered.reduce((filteredSoFar, nextFilter) => {
+                return filteredSoFar.filter(row => {
+                    return (row[nextFilter.id] + "").includes(nextFilter.value);
+                });
+            }, filteredData);
+        }
+        return _.orderBy(
+            filteredData,
+            sorted.map(
+                sort => {
+                    return row => {
+                        if (row[sort.id] === null || row[sort.id] === undefined) {
+                            return -Infinity;
+                        }
+                        return typeof row[sort.id] === "string"
+                            ? row[sort.id].toLowerCase()
+                            : row[sort.id];
+                    };
+                }),
+            sorted.map(d => (d.desc ? "desc" : "asc"))
+        );
+    }
+
     render() {
         return (<div id="personal">
             <button className="btn btn-default create-inventory" onClick={this.showCreateDialog}>新建库存</button>
             <InventoryTable className="table"
                             data={this.state.personalInventories}
                             columns={this.getColumns()}
+                            pages={this.state.pages}
+                            pageSize={this.state.pageSize}
+                            showPagination={true}
+                            onFetchData={this.onFetchData}
+                            manual={true}
             />
-            <Pager>
-                <Pager.Item onClick={this.setPrevious} disabled={!this.state.previous}>上一页</Pager.Item>
-                <Pager.Item onClick={this.setNext} disabled={!this.state.next}>下一页</Pager.Item>
-            </Pager>
             {this.state.showUpdateInvtResult && <Alert variant={this.state.messageType} closeLabel="close">{this.state.message}</Alert>}
 
             <PersonalInventoryCreateDialog show={this.state.showCreateInvtDialog}

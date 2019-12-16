@@ -1,7 +1,7 @@
 import React from 'react';
 import InventoryTable from "./common/InventoryTable";
 import WithdrawDialog from './WithdrawDialog';
-import {Pager, Alert} from 'react-bootstrap';
+import { Alert} from 'react-bootstrap';
 
 export default class AllInvtDataTable extends React.Component{
     constructor (props) {
@@ -9,33 +9,32 @@ export default class AllInvtDataTable extends React.Component{
         this.state = {
             next: null,
             previous: null,
+            originalData: [],
             allInventories: [],
             url : "/inventory/inventories",
             depositTableData: [],
             showWithdrawDialog: false,
             selectedMerchandiseId: 0,
             showWithdrawResultAlert: false,
+            pageSize: 20,
+            page: 0,
         };
-        this.getAllInventories(this.state.url);
-        this.setNext = this.setNext.bind(this);
-        this.setPrevious = this.setPrevious.bind(this);
+        this.getAllInventories();
         this.onRowClick = this.onRowClick.bind(this);
         this.onCloseDialog = this.onCloseDialog.bind(this);
         this.onConfirmWithDraw = this.onConfirmWithDraw.bind(this);
+        this.onFetchData = this.onFetchData.bind(this);
     }
 
-    getAllInventories(url) {
-        if (!url) {
-            console.error("url should not be null!");
-            return;
-        }
+    getAllInventories() {
+        const url = `${this.state.url}?page_size=${this.state.pageSize}&page=${this.state.page+1}`;
         $.get(url, (data) => {
             const inventories = AllInvtDataTable.buildAllInventoryTable(data.results);
             this.setState({
-                next: data.next,
-                previous: data.previous,
                 allInventories: inventories,
+                originalData: inventories,
                 showWithdrawDialog: false,
+                pages: Math.ceil(data.count / this.state.pageSize),
             });
         });
     }
@@ -57,14 +56,6 @@ export default class AllInvtDataTable extends React.Component{
                 after_sales: invt.merchandise.after_sales,
             }})
             .value();
-    }
-
-    setNext() {
-        this.getAllInventories(this.state.next);
-    }
-
-    setPrevious() {
-        this.getAllInventories(this.state.previous);
     }
 
     onRowClick(merchandise) {
@@ -154,29 +145,70 @@ export default class AllInvtDataTable extends React.Component{
             showWithdrawResultAlert: true,
             ...result
         });
-
-        this.getAllInventories(this.state.url);
+        this.getAllInventories();
     }
 
     onCloseDialog() {
         this.setState({showWithdrawDialog: false});
     }
+
+
+    onFetchData(state) {
+        if (this.state.page !== state.page || this.state.pageSize !== state.pageSize) {
+            this.setState({
+                page: state.page,
+                pageSize: state.pageSize
+            },  this.getAllInventories);
+        }
+
+        const allInventories =  this.applySortAndFilter(state.filtered, state.sorted);
+        this.setState({allInventories})
+    }
+
+    applySortAndFilter(filtered, sorted) {
+        let filteredData = this.state.originalData;
+        if (!_.isEmpty(filtered)) {
+            filteredData = filtered.reduce((filteredSoFar, nextFilter) => {
+                return filteredSoFar.filter(row => {
+                    return (row[nextFilter.id] + "").includes(nextFilter.value);
+                });
+            }, filteredData);
+        }
+        return _.orderBy(
+            filteredData,
+            sorted.map(
+                sort => {
+                    return row => {
+                        if (row[sort.id] === null || row[sort.id] === undefined) {
+                            return -Infinity;
+                        }
+                        return typeof row[sort.id] === "string"
+                            ? row[sort.id].toLowerCase()
+                            : row[sort.id];
+                    };
+                }),
+            sorted.map(d => (d.desc ? "desc" : "asc"))
+        );
+    }
+
     render() {
         return (<div id="all">
             <InventoryTable className="table"
                             data={this.state.allInventories}
                             columns={this.getColumns()}
+                            showPagination={true}
+                            onFetchData={this.onFetchData}
+                            pages={this.state.pages}
+                            pageSize={this.state.pageSize}
+                            manual={true}
             />
-            <Pager>
-                <Pager.Item onClick={this.setPrevious} disabled={!this.state.previous}>上一页</Pager.Item>
-                <Pager.Item onClick={this.setNext} disabled={!this.state.next}>下一页</Pager.Item>
-            </Pager>
             <WithdrawDialog depositTableData= {this.state.depositTableData}
                             show={this.state.showWithdrawDialog}
                             onClose={this.onCloseDialog}
                             onConfirm={this.onConfirmWithDraw}
                             currentUser={this.props.currentUser}
                             selectedMerchandiseId={this.state.selectedMerchandiseId}
+
             />
             {this.state.showWithdrawResultAlert && <Alert variant={this.state.messageType} closeLabel="close">{this.state.message}</Alert>}
         </div>);
