@@ -243,9 +243,10 @@ class WithdrawFromOthersInvtSerializer(UpdateInvtBaseSerializer):
                 return self.status_code_500("找不到对应商户的库存")
             if int(item['quantity']) > withdraw_inv.quantity:
                 return self.status_code_500("对应商户的库存不足")
+            # 借调他人只生成库存记录, 但是不会真的减少被借调人的库存
             prev_quantity = withdraw_inv.quantity
-            withdraw_inv.quantity -= int(item['quantity'])
-            withdraw_inv.save()
+            # withdraw_inv.quantity -= int(item['quantity'])
+            # withdraw_inv.save()
 
             deal_price = item.get('deal_price', withdraw_inv.price)
             History.objects.create(
