@@ -83,6 +83,7 @@ export default class AllInvtDataTable extends React.Component{
                     quantity: mcht.quantity,
                     price: mcht.price,
                     id: mcht.id,
+                    info: mcht.info,
                 }
             }))
             .value();
@@ -143,7 +144,14 @@ export default class AllInvtDataTable extends React.Component{
         this.setState({
             showWithdrawResultAlert: true,
             ...result
-        });
+        },
+            () => {
+            window.setTimeout(()=>{
+                this.setState({showWithdrawResultAlert:false})
+            },2000)
+        }
+        );
+
         this.getAllInventories();
     }
 
@@ -209,7 +217,7 @@ export default class AllInvtDataTable extends React.Component{
                             selectedMerchandiseId={this.state.selectedMerchandiseId}
 
             />
-            {this.state.showWithdrawResultAlert && <Alert variant={this.state.messageType} closeLabel="close">{this.state.message}</Alert>}
+            {this.state.showWithdrawResultAlert && <Alert bsStyle={this.state.messageType}>{this.state.message}</Alert>}
         </div>);
     }
 }

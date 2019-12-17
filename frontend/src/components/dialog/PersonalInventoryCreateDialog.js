@@ -71,7 +71,10 @@ class PersonalInventoryCreateDialog extends React.Component {
                 this.resetFields({message: data.responseJSON.detail, messageType: data.responseJSON.result})
             })
             .always(() => {
-                this.props.onInventoryCreate({message: this.state.message, messageType: this.state.messageType});
+                this.props.onInventoryCreate({
+                    message: this.state.message,
+                    messageType: this.state.messageType !== 'success' ?
+                        "danger" : this.state.messageType,});
             });
     }
 
