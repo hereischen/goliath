@@ -75,12 +75,12 @@ class UpdateInvtBaseSerializer(serializers.Serializer):
     def staff_error():
         """为管理员的商户, 实际上不应该是实体商户, 不具备操作库存权限"""
         return ({"result": "fail", "detail": "错误的商户权限"},
-                status.HTTP_500_INTERNAL_SERVER_ERROR)
+                status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
-    def status_code_500(detail):
+    def status_client_error(detail):
         return ({"result": "fail", "detail": detail},
-                status.HTTP_500_INTERNAL_SERVER_ERROR)
+                status.HTTP_400_BAD_REQUEST)
 
     @staticmethod
     def status_code_200(detail):
@@ -103,7 +103,7 @@ class CreateNewInvtSerializer(UpdateInvtBaseSerializer):
             if cm.is_staff:
                 return self.staff_error()
         except ObjectDoesNotExist:
-            return self.status_code_500("商户或商品不存在")
+            return self.status_client_error("商户或商品不存在")
 
         try:
             inv = Inventory.objects.create(
@@ -114,7 +114,7 @@ class CreateNewInvtSerializer(UpdateInvtBaseSerializer):
                 info=self.validated_data['info'],
                 remarks=self.validated_data.get('remarks'))
         except ValidationError:
-            return self.status_code_500("该商品的库存已经存在")
+            return self.status_client_error("该商品的库存已经存在")
 
         History.objects.create(
             inventory=inv,
@@ -142,7 +142,7 @@ class DepositToInvtSerializer(UpdateInvtBaseSerializer):
                 merchandise=self.validated_data['merchandise_id'],
                 merchant=cm)
         except ObjectDoesNotExist:
-            return self.status_code_500("商户或库存不存在")
+            return self.status_client_error("商户或库存不存在")
 
         prev_quantity = inv.quantity
         if self.validated_data.get("price"):
@@ -178,10 +178,10 @@ class WithdrawFromInvtSerializer(UpdateInvtBaseSerializer):
                 merchandise=self.validated_data['merchandise_id'],
                 merchant=cm)
         except ObjectDoesNotExist:
-            return self.status_code_500("商户或库存不存在")
+            return self.status_client_error("商户或库存不存在")
 
         if self.validated_data['quantity'] > inv.quantity:
-            return self.status_code_500("您的库存不足")
+            return self.status_client_error("您的库存不足")
         prev_quantity = inv.quantity
         inv.quantity -= self.validated_data['quantity']
         inv.info = self.validated_data.get('info')
@@ -228,21 +228,21 @@ class WithdrawFromOthersInvtSerializer(UpdateInvtBaseSerializer):
                 merchandise=self.validated_data['merchandise_id'],
                 merchant=cm)
             if current_inv.quantity > 0:
-                return self.status_code_500("该商品库存不为0,请先使用自己的库存")
+                return self.status_client_error("该商品库存不为0,请先使用自己的库存")
         except ObjectDoesNotExist:
-            return self.status_code_500("商户或库存不存在")
+            return self.status_client_error("商户或库存不存在")
 
         for item in self.validated_data.get('withdraw_from', []):
             if item['merchant'] == self.validated_data['current_merchant_id']:
-                return self.status_code_500("错误的商户信息")
+                return self.status_client_error("错误的商户信息")
             try:
                 withdraw_inv = Inventory.objects.get(
                     merchandise=self.validated_data['merchandise_id'],
                     merchant=item['merchant'])
             except ObjectDoesNotExist:
-                return self.status_code_500("找不到对应商户的库存")
+                return self.status_client_error("找不到对应商户的库存")
             if int(item['quantity']) > withdraw_inv.quantity:
-                return self.status_code_500("对应商户的库存不足")
+                return self.status_client_error("对应商户的库存不足")
             # 借调他人只生成库存记录, 但是不会真的减少被借调人的库存
             prev_quantity = withdraw_inv.quantity
             # withdraw_inv.quantity -= int(item['quantity'])
