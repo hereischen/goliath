@@ -148,7 +148,7 @@ export default class AllInvtDataTable extends React.Component{
             () => {
             window.setTimeout(()=>{
                 this.setState({showWithdrawResultAlert:false})
-            },2000)
+            },4000)
         }
         );
 

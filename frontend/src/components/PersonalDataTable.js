@@ -157,7 +157,7 @@ export default class PersonalDataTable extends React.Component{
             () => {
             window.setTimeout(()=>{
                 this.setState({showUpdateInvtResult:false})
-            },2000)
+            },4000)
         }
         );
 
@@ -172,7 +172,7 @@ export default class PersonalDataTable extends React.Component{
         }, () => {
             window.setTimeout(()=>{
                 this.setState({showUpdateInvtResult:false})
-            },2000)
+            },4000)
         });
 
         this.getPersonalInventories();
