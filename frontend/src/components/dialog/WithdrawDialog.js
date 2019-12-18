@@ -99,7 +99,7 @@ export default class WithdrawDialog extends React.Component{
             });
         }).always(() =>{
             this.props.onConfirm({
-                messageType: this.state.messageType === 'fail' ? "danger" : this.state.messageType,
+                messageType: this.state.messageType !== 'success' ? "danger" : this.state.messageType,
                 message: this.state.message
             });
         });

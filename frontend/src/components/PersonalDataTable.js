@@ -153,7 +153,13 @@ export default class PersonalDataTable extends React.Component{
             showCreateInvtDialog: false,
             showUpdateInvtResult: true,
             ...result,
-        });
+        },
+            () => {
+            window.setTimeout(()=>{
+                this.setState({showUpdateInvtResult:false})
+            },4000)
+        }
+        );
 
         this.getPersonalInventories();
     }
@@ -163,6 +169,10 @@ export default class PersonalDataTable extends React.Component{
             showUpdateInvtDialog: false,
             showUpdateInvtResult: true,
             ...result,
+        }, () => {
+            window.setTimeout(()=>{
+                this.setState({showUpdateInvtResult:false})
+            },4000)
         });
 
         this.getPersonalInventories();
@@ -218,7 +228,7 @@ export default class PersonalDataTable extends React.Component{
                             onFetchData={this.onFetchData}
                             manual={true}
             />
-            {this.state.showUpdateInvtResult && <Alert variant={this.state.messageType} closeLabel="close">{this.state.message}</Alert>}
+            {this.state.showUpdateInvtResult && <Alert bsStyle={this.state.messageType}>{this.state.message}</Alert>}
 
             <PersonalInventoryCreateDialog show={this.state.showCreateInvtDialog}
                                            closeDialog={() => {this.setState( { showCreateInvtDialog: false});}}
