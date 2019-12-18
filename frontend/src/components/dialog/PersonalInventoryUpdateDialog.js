@@ -196,7 +196,7 @@ class PersonalInventoryUpdateDialog extends React.Component {
                     <input value={this.state.price}
                            onChange={this.onChangePrice}
                            type="number"
-                           min="0"
+                           placeholder="0"
                     />
                    {this.state.showPriceHelpText && <span style={{color: "red"}}>价格必须大于0</span>}
 
@@ -204,13 +204,16 @@ class PersonalInventoryUpdateDialog extends React.Component {
                 <div className="item"><label className="title">新增数量:</label>
                     <input value={this.state.quantity}
                            onChange={this.onChangeCount}
-                           type="number" min="0"/>
+                           type="number"
+                           placeholder="新增数量"
+                    />
                     {this.state.showCountHelpText && <span style={{color: "red"}}>增加数量必须大于0</span>}
                 </div>
                 <div className="item"><label className="title">供货信息:</label>
                     <textarea value={this.state.info}
                               onChange={this.onChangeInfo}
                               cols={20} rows={2}
+                              placeholder="供货信息"
                     />
                 </div>
               </form>));
@@ -229,7 +232,7 @@ class PersonalInventoryUpdateDialog extends React.Component {
                     <input placeholder="取出数量"
                            value={this.state.quantity}
                            onChange={this.onChangeCount}
-                           type="number" min="0"/>
+                           type="number" />
                     {this.state.showCountHelpText && <span style={{color: "red"}}>取出数量需要小于用户拥有的数量</span>}
                 </div>
                 <div className="item"><label className="title">供货信息:</label>
@@ -237,6 +240,7 @@ class PersonalInventoryUpdateDialog extends React.Component {
                               onChange={this.onChangeInfo}
                               cols={20} rows={2}
                               cols={20} rows={2}
+                              placeholder="供货信息"
                     />
                 </div>
               </form>));
