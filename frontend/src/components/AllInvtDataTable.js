@@ -71,19 +71,19 @@ export default class AllInvtDataTable extends React.Component{
 
     buildDepositData(data) {
         return _(data)
-            .filter(mcht => mcht.merchant.id !== this.props.currentUser)
-            .map((mcht => {
+            .filter(invt => invt.merchant.id !== this.props.currentUser)
+            .map((invt => {
                 return {
-                    merchantName: mcht.merchant.name,
-                    merchantId: mcht.merchant.id,
-                    mobile: mcht.merchant.mobile,
-                    email: mcht.merchant.email,
-                    dingding: mcht.merchant.dingding,
-                    address: mcht.merchant.address,
-                    quantity: mcht.quantity,
-                    price: mcht.price,
-                    id: mcht.id,
-                    info: mcht.info,
+                    merchantName: invt.merchant.name,
+                    merchantId: invt.merchant.id,
+                    mobile: invt.merchant.mobile,
+                    email: invt.merchant.email,
+                    dingding: invt.merchant.dingding,
+                    address: invt.merchant.address,
+                    quantity: invt.quantity,
+                    price: invt.price,
+                    id: invt.id,
+                    info: invt.info,
                 }
             }))
             .value();
