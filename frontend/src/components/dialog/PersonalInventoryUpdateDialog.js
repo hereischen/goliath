@@ -227,13 +227,13 @@ class PersonalInventoryUpdateDialog extends React.Component {
                 <div className="item"><label className="title">品牌:</label><span>{this.props.selectedMerchandise.brand}</span></div>
                 <div className="item"><label className="title">品类:</label><span>{this.props.selectedMerchandise.category}</span></div>
                 <div className="item"><label className="title">商品编码:</label><span>{this.props.selectedMerchandise.category}</span></div>
-                <div className="item"><label className="title">最新价格:</label><span> {this.state.price}</span></div>
+                <div className="item"><label className="title">最新价格:</label><span> {this.props.selectedMerchandise.price}</span></div>
                 <div className="item"><label className="title" >取出数量</label>
                     <input placeholder="取出数量"
                            value={this.state.quantity}
                            onChange={this.onChangeCount}
                            type="number" />
-                    {this.state.showCountHelpText && <span style={{color: "red"}}>取出数量需要小于用户拥有的数量</span>}
+                    {this.state.showCountHelpText && <span style={{color: "red"}}>取出数量需要小于用户拥有的数量且大于0</span>}
                 </div>
                 <div className="item"><label className="title">供货信息:</label>
                     <textarea value={this.state.info}

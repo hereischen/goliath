@@ -31,7 +31,8 @@ export default class InventoryTable extends React.Component{
                return {
                    Header: column.title,
                    accessor: column.selector,
-                   width: width
+                   width: width,
+                   ...column,
                }
            }
            if (column.type === "action") {
@@ -39,7 +40,8 @@ export default class InventoryTable extends React.Component{
                    Header: column.title,
                    accessor: column.selector,
                    width: column.width,
-                   Cell: (row) => column.renderContent(row)
+                   Cell: (row) => column.renderContent(row),
+                   ...column
                }
            }
         });
