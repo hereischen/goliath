@@ -73,7 +73,15 @@ export default class HistoryDataTable extends React.Component{
             selector: "type",
             renderContent: (row) => {
                 return (`${HistoryDataTable.TYPE[row.value]}`)
-            }
+            },
+            Filter: ({ filter, onChange }) => (<select
+                className="type-select"
+                value={filter ? filter.value : ""}
+                onChange={event => onChange(event.target.value)}>
+                <option value={0}>存入</option>
+                <option value={1}>自取出</option>
+                <option value={2}>调配</option>
+            </select>),
         },{
             title: "品牌",
             selector: "brand",
