@@ -8,9 +8,9 @@ export default class HistoryDataTable extends React.Component{
         1: '自取出',
         2: '调配'
     };
-
     constructor (props) {
         super(props);
+        this.CURRENT_KEY = 'history';
         this.state = {
             count:0,
             next: null,
@@ -22,8 +22,13 @@ export default class HistoryDataTable extends React.Component{
             page: 0,
 
         };
-        this.getHistories();
         this.onFetchData = this.onFetchData.bind(this);
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.currentKey !== this.CURRENT_KEY && this.props.currentKey === this.CURRENT_KEY) {
+            this.getHistories();
+        }
     }
 
     getHistories() {
@@ -75,13 +80,14 @@ export default class HistoryDataTable extends React.Component{
                 return (`${HistoryDataTable.TYPE[row.value]}`)
             },
             Filter: ({ filter, onChange }) => (<select
-                className="type-select"
-                value={filter ? filter.value : ""}
-                onChange={event => onChange(event.target.value)}>
-                <option value={0}>存入</option>
-                <option value={1}>自取出</option>
-                <option value={2}>调配</option>
-            </select>),
+                    className="type-select"
+                    value={filter ? filter.value : ""}
+                    onChange={event => onChange(event.target.value)}>
+                    <option value="">所有</option>
+                    <option value={0}>存入</option>
+                    <option value={1}>自取出</option>
+                    <option value={2}>调配</option>
+                </select>)
         },{
             title: "品牌",
             selector: "brand",

@@ -19,11 +19,38 @@ export default class AllInvtDataTable extends React.Component{
             pageSize: 20,
             page: 0,
         };
+        this.CURRENT_KEY = 'all';
         this.getAllInventories();
         this.onRowClick = this.onRowClick.bind(this);
         this.onCloseDialog = this.onCloseDialog.bind(this);
         this.onConfirmWithDraw = this.onConfirmWithDraw.bind(this);
         this.onFetchData = this.onFetchData.bind(this);
+    }
+
+    static buildAllInventoryTable(inventories) {
+        return _.chain(inventories)
+            .orderBy(invt => invt.merchandise.id)
+            .map(invt => {
+                return {
+                    brand: invt.merchandise.brand.brand,
+                    category: invt.merchandise.category.category,
+                    id: invt.merchandise.id,
+                    code: invt.merchandise.code,
+                    remarks: invt.merchandise.remarks,
+                    quantity: invt.quantity,
+                    certification: invt.merchandise.certification,
+                    spare_parts: invt.merchandise.spare_parts,
+                    model: invt.merchandise.model,
+                    after_sales: invt.merchandise.after_sales,
+                }})
+            .value();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.currentKey !== this.CURRENT_KEY && this.props.currentKey === this.CURRENT_KEY) {
+            this.getAllInventories();
+        }
+        return this.state;
     }
 
     getAllInventories() {
@@ -39,24 +66,6 @@ export default class AllInvtDataTable extends React.Component{
         });
     }
 
-    static buildAllInventoryTable(inventories) {
-        return _.chain(inventories)
-            .orderBy(invt => invt.merchandise.id)
-            .map(invt => {
-            return {
-                brand: invt.merchandise.brand.brand,
-                category: invt.merchandise.category.category,
-                id: invt.merchandise.id,
-                code: invt.merchandise.code,
-                remarks: invt.merchandise.remarks,
-                quantity: invt.quantity,
-                certification: invt.merchandise.certification,
-                spare_parts: invt.merchandise.spare_parts,
-                model: invt.merchandise.model,
-                after_sales: invt.merchandise.after_sales,
-            }})
-            .value();
-    }
 
     onRowClick(merchandise) {
         $.get(`inventory/inventories/merchandise?id=${merchandise.id}`, (data) => {
