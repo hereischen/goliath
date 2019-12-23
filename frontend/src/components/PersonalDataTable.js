@@ -6,6 +6,28 @@ import PersonalInventoryCreateDialog from './dialog/PersonalInventoryCreateDialo
 import PersonalInventoryUpdateDialog from './dialog/PersonalInventoryUpdateDialog';
 
 export default class PersonalDataTable extends React.Component{
+    static buildPersonalInventoryTable(inventories) {
+        return _.chain(inventories)
+            .orderBy(invt => invt.merchandise.id)
+            .map(invt => {
+                return {
+                    brand: invt.merchandise.brand.brand,
+                    category: invt.merchandise.category.category,
+                    id: invt.merchandise.id,
+                    info: invt.info,
+                    code: invt.merchandise.code,
+                    remarks: invt.merchandise.remarks,
+                    quantity: invt.quantity,
+                    price: invt.price,
+                    certification: invt.merchandise.certification,
+                    spare_parts: invt.merchandise.spare_parts,
+                    model: invt.merchandise.model,
+                    after_sales: invt.merchandise.after_sales,
+                    modifiedDate: utils.formatDate(invt.modified_date, "YYYY-MM-DD hh:mm"),
+                }})
+            .value();
+    }
+
     constructor (props) {
         super(props);
         this.state = {
@@ -22,7 +44,7 @@ export default class PersonalDataTable extends React.Component{
             pageSize: 20,
             page: 0,
         };
-        this.getPersonalInventories();
+        this.CURRENT_KEY = 'personal';
         this.showCreateDialog = this.showCreateDialog.bind(this);
         this.onRowClick = this.onRowClick.bind(this);
         this.onSaveInventry = this.onSaveInventry.bind(this);
@@ -30,6 +52,11 @@ export default class PersonalDataTable extends React.Component{
         this.onFetchData = this.onFetchData.bind(this);
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.currentKey !== this.CURRENT_KEY && this.props.currentKey === this.CURRENT_KEY) {
+            this.getPersonalInventories();
+        }
+    }
 
     getPersonalInventories() {
         const url = `${this.state.url}&page_size=${this.state.pageSize}&page=${this.state.page+1}`;
@@ -42,29 +69,6 @@ export default class PersonalDataTable extends React.Component{
                 pages: Math.ceil(data.count / this.state.pageSize),
             });
         });
-    }
-
-    static buildPersonalInventoryTable(inventories) {
-        return _.chain(inventories)
-            .orderBy(invt => invt.merchandise.id)
-            .map(invt => {
-            return {
-                brand: invt.merchandise.brand.brand,
-                category: invt.merchandise.category.category,
-                id: invt.merchandise.id,
-                info: invt.info,
-                code: invt.merchandise.code,
-                remarks: invt.merchandise.remarks,
-                quantity: invt.quantity,
-                price: invt.price,
-                certification: invt.merchandise.certification,
-                spare_parts: invt.merchandise.spare_parts,
-                model: invt.merchandise.model,
-                after_sales: invt.merchandise.after_sales,
-                modifiedDate: utils.formatDate(invt.modified_date, "YYYY-MM-DD HH:MM"),
-            }})
-            .value()
-            ;
     }
 
     showCreateDialog() {
