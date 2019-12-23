@@ -50,6 +50,10 @@ body {
     border: none;
     border-radius: 0;
     box-shadow: none;
+
+    &:active, &:focus {
+      box-shadow: none;
+    }
   }
   button.btn, .btn-primary {
     height: 28px;
@@ -132,6 +136,10 @@ body {
     line-height: 8px;
     margin-top: 10px;
   }
+}
+
+.alert-dismissable .close, .alert-dismissible .close {
+  right: 5px;
 }
 
 /*.form-signin input[type="text"] {*/
