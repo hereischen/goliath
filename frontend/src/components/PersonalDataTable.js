@@ -23,7 +23,7 @@ export default class PersonalDataTable extends React.Component{
                     spare_parts: invt.merchandise.spare_parts,
                     model: invt.merchandise.model,
                     after_sales: invt.merchandise.after_sales,
-                    modifiedDate: utils.formatDate(invt.modified_date, "YYYY-MM-DD HH:MM"),
+                    modifiedDate: utils.formatDate(invt.modified_date, "YYYY-MM-DD hh:mm"),
                 }})
             .value();
     }

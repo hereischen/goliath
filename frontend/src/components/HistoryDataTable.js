@@ -61,7 +61,7 @@ export default class HistoryDataTable extends React.Component{
                 prevQuantity: hs.prev_quantity,
                 quantity: hs.quantity,
                 remarks: hs.remarks,
-                createdDate: utils.formatDate(hs.created_date, "YYYY-MM-DD HH:MM"),
+                createdDate: utils.formatDate(hs.created_date, "YYYY-MM-DD hh:mm"),
             }
         })
             .value();
