@@ -30,7 +30,7 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Merchandise)
 class MerchandiseAdmin(admin.ModelAdmin):
     list_display = ('brand', 'category', 'code', 'model', 'certification',
-                    'after_sales', 'spare_parts', 'in_stock',
+                    'spare_parts', 'in_stock',
                     'remarks', 'created_date', 'modified_date')
     readonly_fields = ('created_date', 'modified_date')
 
