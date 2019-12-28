@@ -124,11 +124,17 @@ export default class PersonalDataTable extends React.Component{
                 title: "供货信息",
                 selector: "info",
                 width: 150,
-                type: "text"
+                type: "action",
+                renderContent: row => {
+                    return <span title={row.value}>{row.value}</span>
+                }
             }, {
                 title: "属性",
                 selector: "spare_parts",
-                type: "text"
+                type: "action",
+                renderContent: row => {
+                    return <span title={row.value}>{row.value}</span>
+                }
             }, {
                 type: "text",
                 title: "修改时间",

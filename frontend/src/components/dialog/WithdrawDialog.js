@@ -155,10 +155,13 @@ export default class WithdrawDialog extends React.Component{
                 selector: "price",
             },
             {
-                type: "text",
                 title: "供货信息",
-                width: 150,
                 selector: "info",
+                width: 150,
+                type: "action",
+                renderContent: row => {
+                    return <span title={row.value}>{row.value}</span>
+                }
             },
             {
                 type: "text",
