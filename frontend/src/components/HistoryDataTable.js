@@ -120,8 +120,11 @@ export default class HistoryDataTable extends React.Component{
         }, {
             title: "供货信息",
             selector: "info",
-            type: "text",
-            width: 150
+            width: 150,
+            type: "action",
+            renderContent: row => {
+                return <span title={row.value}>{row.value}</span>
+            }
         }, {
             title: "成交价",
             selector: "dealPrice",

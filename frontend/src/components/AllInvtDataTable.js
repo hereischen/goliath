@@ -129,7 +129,10 @@ export default class AllInvtDataTable extends React.Component{
         }, {
             title: "属性",
             selector: "spare_parts",
-            type: "text"
+            type: "action",
+            renderContent: row => {
+                return <span title={row.value}>{row.value}</span>
+            }
         }, {
             title: "操作",
             type: "action",
