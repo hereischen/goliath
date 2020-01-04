@@ -176,4 +176,4 @@ typings/
 yarn.lock
 
 # excels
-.xlsx
+*.xlsx
