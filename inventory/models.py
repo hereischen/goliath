@@ -48,8 +48,8 @@ class Merchandise(models.Model):
     """商品."""
     brand = models.ForeignKey(Brand, verbose_name='品牌')
     category = models.ForeignKey(Category, verbose_name='品类')
-    code = models.CharField(max_length=24, unique=True, verbose_name='商品编码')
-    model = models.CharField(max_length=36, null=True,
+    code = models.CharField(max_length=64, unique=True, verbose_name='商品编码')
+    model = models.CharField(max_length=256, null=True,
                              blank=True, verbose_name='商品型号')
     certification = models.CharField(max_length=36, default="无",
                                      verbose_name='认证')
