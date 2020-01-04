@@ -155,10 +155,13 @@ export default class WithdrawDialog extends React.Component{
                 selector: "price",
             },
             {
-                type: "text",
                 title: "供货信息",
-                width: 150,
                 selector: "info",
+                width: 150,
+                type: "action",
+                renderContent: row => {
+                    return <span title={row.value}>{row.value}</span>
+                }
             },
             {
                 type: "text",
@@ -171,7 +174,7 @@ export default class WithdrawDialog extends React.Component{
                 title: "借调数量",
                 renderContent: (row) =>
                         (<>
-                            <input type="number" placeholder={0} onChange={(event) => this.onChangeDepositNumber(row.original, event)}/>
+                            <input className="input" type="number" placeholder={0} onChange={(event) => this.onChangeDepositNumber(row.original, event)}/>
                         </>)
             },
 
@@ -180,7 +183,7 @@ export default class WithdrawDialog extends React.Component{
                 title: "成交价格",
                 renderContent: (row) => {
                     return (<>
-                        <input type="number" placeholder={row.original.price} defaultValue={row.original.price} onChange={(event) => this.onChangeDealPrice(row.original, event)}/>
+                        <input className="input" type="number" placeholder={row.original.price} defaultValue={row.original.price} onChange={(event) => this.onChangeDealPrice(row.original, event)}/>
                     </>);
                 }
             },
@@ -188,7 +191,7 @@ export default class WithdrawDialog extends React.Component{
                 type: "action",
                 title: "备注",
                 renderContent: (row) => {
-                    return (<><textarea cols={10} rows={2} placeholder="请填写备注" onChange={(event) => this.onChangeRemark(row.original, event)}/></>);
+                    return (<><textarea className="input" cols={10} rows={2} placeholder="请填写备注" onChange={(event) => this.onChangeRemark(row.original, event)}/></>);
                 }
             },
 

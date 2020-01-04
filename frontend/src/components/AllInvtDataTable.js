@@ -41,7 +41,6 @@ export default class AllInvtDataTable extends React.Component{
                     certification: invt.merchandise.certification,
                     spare_parts: invt.merchandise.spare_parts,
                     model: invt.merchandise.model,
-                    after_sales: invt.merchandise.after_sales,
                 }})
             .value();
     }
@@ -128,15 +127,13 @@ export default class AllInvtDataTable extends React.Component{
             selector: "certification",
             type: "text"
         }, {
-            title: "售后服务",
-            type: "action",
-            selector: "after_sales",
-            renderContent: (row) => `${row.value} 年`,
-        }, {
             title: "属性",
             selector: "spare_parts",
-            type: "text"
-        },{
+            type: "action",
+            renderContent: row => {
+                return <span title={row.value}>{row.value}</span>
+            }
+        }, {
             title: "操作",
             type: "action",
             renderContent: (row) =>

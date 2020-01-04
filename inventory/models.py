@@ -48,13 +48,11 @@ class Merchandise(models.Model):
     """商品."""
     brand = models.ForeignKey(Brand, verbose_name='品牌')
     category = models.ForeignKey(Category, verbose_name='品类')
-    code = models.CharField(max_length=24, unique=True, verbose_name='商品编码')
-    model = models.CharField(max_length=36, null=True,
+    code = models.CharField(max_length=64, unique=True, verbose_name='商品编码')
+    model = models.CharField(max_length=256, null=True,
                              blank=True, verbose_name='商品型号')
     certification = models.CharField(max_length=36, default="无",
                                      verbose_name='认证')
-    after_sales = models.SmallIntegerField(default=1, verbose_name='售后服务',
-                                           help_text='年')
     spare_parts = models.TextField(null=True, blank=True, verbose_name='属性')
     in_stock = models.BooleanField(default=True, verbose_name='是否上架')
     remarks = models.TextField(null=True, blank=True, verbose_name='备注')
