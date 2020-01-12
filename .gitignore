@@ -175,5 +175,3 @@ typings/
 .idea/
 yarn.lock
 
-# excels
-*.xlsx
