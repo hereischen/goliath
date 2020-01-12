@@ -22,4 +22,4 @@ def load_data(xlsx):
                                                  spare_parts=row[1][u'属性'])
 
 
-load_data('./scripts/henan-2020-01-02.xlsx')
+load_data('./scripts/henan-2020-01-11.xlsx')
