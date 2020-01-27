@@ -14,6 +14,7 @@ class Merchant(AbstractUser):
     address = models.CharField(max_length=128, null=True, blank=True,
                                verbose_name='地址')
     mobile = models.CharField(max_length=15, unique=True, verbose_name='手机号')
+    show_price = models.BooleanField(default=False, verbose_name='是否可查看价格')
     # form中必填, 之后修改这里
     dingding = models.CharField(max_length=15, null=True, blank=True,
                                 verbose_name='钉钉')

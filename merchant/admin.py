@@ -12,10 +12,10 @@ class MerchantAdmin(UserAdmin):
     model = Merchant
 
     fieldsets = (
-        ("商户详细信息", {'fields': ('name', 'address', 'mobile', 'dingding')}),
+        ("商户详细信息", {'fields': ('name', 'address', 'mobile', 'dingding', 'show_price')}),
     ) + UserAdmin.fieldsets
 
-    list_display = ('username', 'name', 'mobile', 'address', 'is_active')
+    list_display = ('username', 'name', 'mobile', 'address', 'is_active', 'show_price')
 
     def has_delete_permission(self, request, obj=None):
         return False

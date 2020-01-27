@@ -9,6 +9,7 @@ from rest_framework import status, filters
 from rest_framework.generics import ListAPIView
 
 from goliath.pagination import StandardPagination
+from merchant.models import Merchant
 from .models import (Brand,
                      Category,
                      Merchandise,
@@ -132,6 +133,9 @@ class MerchandiseInventoryList(ListAPIView):
                     self.request.data)
         _id = self.request.query_params.get('id')
         queryset = Inventory.objects.all().filter(merchandise=_id)
+        merchant = Merchant.objects.get(id=self.request._cached_user.id)
+        if not merchant.show_price:
+            queryset.update(price=-1)
         return queryset
 
 
