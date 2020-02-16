@@ -46,7 +46,8 @@ export default class WithdrawDialog extends React.Component{
         return !_.isEmpty(this.state.merchantAndNumberMapping) &&
             _.some(this.props.depositTableData,
                 (mcht) => this.state.merchantAndNumberMapping[mcht.id] &&
-                    this.state.merchantAndNumberMapping[mcht.id].quantity > 0
+                    this.state.merchantAndNumberMapping[mcht.id].quantity > 0 &&
+                    this.state.merchantAndNumberMapping[mcht.id].deal_price > 0
             );
     }
 
@@ -149,10 +150,16 @@ export default class WithdrawDialog extends React.Component{
                 selector: "dingding",
             },
             {
-                type: "text",
+                type: "action",
                 title: "价格",
                 width: 100,
                 selector: "price",
+                renderContent: row => {
+                    if (row.value < 0 ){
+                        return <span>需权限</span>
+                    }
+                    return <span title={row.value}>{row.value}</span>
+                }
             },
             {
                 title: "供货信息",
@@ -200,7 +207,10 @@ export default class WithdrawDialog extends React.Component{
 
     getConfirmDialogBody() {
         const withdraw_from_info = _(this.props.depositTableData).map((mcht, index) => {
-            if (!this.state.merchantAndNumberMapping[mcht.id] || this.state.merchantAndNumberMapping[mcht.id].quantity < 0) {
+            if (!this.state.merchantAndNumberMapping[mcht.id]
+                || this.state.merchantAndNumberMapping[mcht.id].quantity < 0
+                || this.state.merchantAndNumberMapping[mcht.id].deal_price <= 0
+            ) {
                 return;
             }
             return (<li key={index}>请确认从 {mcht.merchantName} 处借调 {this.state.merchantAndNumberMapping[mcht.id].quantity}件商品</li>)
