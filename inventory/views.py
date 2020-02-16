@@ -125,17 +125,18 @@ class MerchandiseInventoryList(ListAPIView):
     pagination_class = StandardPagination
     serializer_class = MerchandiseInventorySerializer
     filter_backends = (filters.OrderingFilter,)
-    ordering_fields = ('modified_date',)
-    ordering = ('modified_date',)
+    # ordering_fields = ('modified_date',)
+    # ordering = ('modified_date',)
 
     def get_queryset(self):
         logger.info('[MerchantInventoryList] Received data : %s' %
                     self.request.data)
         _id = self.request.query_params.get('id')
-        queryset = Inventory.objects.all().filter(merchandise=_id)
+        queryset = list(Inventory.objects.all().filter(merchandise=_id))
         merchant = Merchant.objects.get(id=self.request._cached_user.id)
         if not merchant.show_price:
-            queryset.update(price=-1)
+            for inv in queryset:
+                inv.price = -1
         return queryset
 
 
