@@ -139,7 +139,7 @@ STATICFILES_DIRS = (
 AUTH_USER_MODEL = 'merchant.Merchant'
 
 SUIT_CONFIG = {
-    'ADMIN_NAME': '河南省政府采购网上商城共享库存',
+    'ADMIN_NAME': '优宜巧购共享库',
     'SHOW_REQUIRED_ASTERISK': True,
     'CONFIRM_UNSAVED_CHANGES': True
 }
