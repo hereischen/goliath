@@ -223,11 +223,13 @@ class WithdrawFromOthersInvtSerializer(UpdateInvtBaseSerializer):
             if cm.is_staff:
                 return self.staff_error()
             # 借库存需当前用户无库存或数量为0
-            current_inv = Inventory.objects.get(
-                merchandise=self.validated_data['merchandise_id'],
-                merchant=cm)
-            if current_inv.quantity > 0:
-                return self.status_client_error("该商品库存不为0,请先使用自己的库存")
+            # 这部分假定借方也有相同的库存 但实际上可能没有对应的库存
+            # 因为原来要互相增减 现在先不检查 自己的库存数量
+            # current_inv = Inventory.objects.get(
+            #     merchandise=self.validated_data['merchandise_id'],
+            #     merchant=cm)
+            # if current_inv.quantity > 0:
+            #     return self.status_client_error("该商品库存不为0,请先使用自己的库存")
         except ObjectDoesNotExist:
             return self.status_client_error("商户或库存不存在")
 
