@@ -13,6 +13,7 @@ from .models import (Brand,
 class BrandAdmin(admin.ModelAdmin):
     list_display = ('brand', 'in_stock', 'created_date', 'modified_date')
     readonly_fields = ('created_date', 'modified_date')
+    search_fields = ('brand',)
 
     def has_delete_permission(self, request, obj=None):
         return False
@@ -22,6 +23,7 @@ class BrandAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('category', 'in_stock', 'created_date', 'modified_date')
     readonly_fields = ('created_date', 'modified_date')
+    search_fields = ('category',)
 
     def has_delete_permission(self, request, obj=None):
         return False
@@ -33,6 +35,7 @@ class MerchandiseAdmin(admin.ModelAdmin):
                     'spare_parts', 'in_stock',
                     'remarks', 'created_date', 'modified_date')
     readonly_fields = ('created_date', 'modified_date')
+    search_fields = ('brand', 'category',)
 
     def has_delete_permission(self, request, obj=None):
         return False
